@@ -59,6 +59,14 @@ def setup(offline_if_cached: bool = True) -> None:
             except Exception:
                 pass
             os.environ["PATH"] = str(d) + os.pathsep + os.environ.get("PATH", "")
+        # cuDNN이 여러 벌 있다(torch/lib 9.1, ctranslate2 번들 디스패처, pip nvidia-cudnn). 먼저 로드된
+        # 버전이 프로세스 전체에 쓰이는데, 디스패처와 하위 라이브러리 버전이 섞이면
+        # "Could not load symbol cudnnGetLibConfig" 후 프로세스가 죽는다. torch를 먼저 import해서
+        # 한 벌(torch 번들)로 통일한다. torch가 CPU 빌드면 pip nvidia-* 가 쓰인다.
+        try:
+            import torch  # noqa: F401
+        except Exception:
+            pass
     else:
         # Linux: ctranslate2는 LD_LIBRARY_PATH가 필요할 수 있다. 미리 로드해 둔다.
         import ctypes

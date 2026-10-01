@@ -13,7 +13,7 @@ from typing import Callable, Optional
 import numpy as np
 
 
-def filter_segments(segs: list[dict], cfg_asr: dict) -> str:
+def filter_segments(segs: list[dict], cfg_asr: dict, hotwords: Optional[list[str]] = None) -> str:
     """segs: [{"text", "no_speech_prob", "avg_logprob"}] -> 통과한 텍스트."""
     out = []
     for s in segs:
@@ -25,7 +25,24 @@ def filter_segments(segs: list[dict], cfg_asr: dict) -> str:
         if not txt or is_blacklisted(txt, cfg_asr.get("blacklist", [])):
             continue
         out.append(txt)
-    return " ".join(out).strip()
+    text = " ".join(out).strip()
+    if cfg_asr.get("drop_hotword_echo", True) and hotwords and is_hotword_echo(text, hotwords):
+        return ""
+    return text
+
+
+def is_hotword_echo(text: str, hotwords: list[str]) -> bool:
+    """"민수 민수", "민수 씨 민수 씨 …" 처럼 핫워드만 반복된 출력(무음/잡음에서 흔한 환각)."""
+    import re
+    t = re.sub(r"[\s,.!?~…]+", "", text)
+    base = min((h.replace(" ", "") for h in hotwords if h.strip()), key=len, default="")
+    if not base or t.count(base) < 2:
+        return False
+    rest = t
+    for h in sorted({h.replace(" ", "") for h in hotwords}, key=len, reverse=True):
+        rest = rest.replace(h, "")
+    rest = re.sub(r"(씨|님|야|아|이)", "", rest)
+    return len(rest) <= 1
 
 
 def is_blacklisted(text: str, blacklist: list[str]) -> bool:
@@ -43,6 +60,8 @@ class WhisperASR:
         self.model = None
         self.desc = "none"
         name = cfg["wearer"]["name"]
+        self.name_check: Optional[Callable[[str], bool]] = None   # pipeline이 호명 감지기로 설정
+        self.hotword_list = [name] + list(cfg["wearer"].get("name_variants", []))
         self.hotwords = " ".join(dict.fromkeys([name] + [v for v in cfg["wearer"].get("name_variants", [])]))
         tried = [(self.a["model"], self.a["device"], self.a["compute_type"]),
                  (self.a["fallback_model"], self.a["fallback_device"], self.a["fallback_compute_type"])]
@@ -67,17 +86,31 @@ class WhisperASR:
         except Exception:
             self.model = WhisperModel(model, **kw)
 
-    def transcribe(self, audio: np.ndarray) -> tuple[str, list[dict]]:
-        if self.model is None:
-            return "", []
+    def _run(self, audio: np.ndarray, hot: bool) -> tuple[str, list[dict]]:
         kw = dict(language=self.a["language"], beam_size=self.a["beam_size"], vad_filter=False,
                   condition_on_previous_text=False, without_timestamps=True)
-        try:
-            segs, _ = self.model.transcribe(audio.astype(np.float32), hotwords=self.hotwords, **kw)
-        except TypeError:  # 구버전: hotwords 미지원
-            segs, _ = self.model.transcribe(audio.astype(np.float32), initial_prompt=self.hotwords, **kw)
+        x = audio.astype(np.float32)
+        if hot:
+            try:
+                segs, _ = self.model.transcribe(x, hotwords=self.hotwords, **kw)
+            except TypeError:  # 구버전: hotwords 미지원
+                segs, _ = self.model.transcribe(x, initial_prompt=self.hotwords, **kw)
+        else:
+            segs, _ = self.model.transcribe(x, **kw)
         raw = [{"text": s.text, "no_speech_prob": s.no_speech_prob, "avg_logprob": s.avg_logprob} for s in segs]
-        return filter_segments(raw, self.a), raw
+        return filter_segments(raw, self.a, self.hotword_list), raw
+
+    def transcribe(self, audio: np.ndarray) -> tuple[str, list[dict]]:
+        """hotwords=착용자 이름으로 받아쓴다. 결과에 이름이 나오면 핫워드 없이 한 번 더 받아써서
+        이름이 여전히 있을 때만 믿는다(핫워드가 "지훈아"를 "민수"로 바꾸는 편향 방지)."""
+        if self.model is None:
+            return "", []
+        text, raw = self._run(audio, hot=True)
+        if self.a.get("verify_hotword", True) and self.name_check and text and self.name_check(text):
+            text2, raw2 = self._run(audio, hot=False)
+            if not self.name_check(text2):
+                return text2, raw2
+        return text, raw
 
 
 @dataclass

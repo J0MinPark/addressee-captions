@@ -101,7 +101,10 @@ class PolicyEngine:
         self.spk_threshold = cfg["speaker"]["spk_threshold"]
         self.short_s = cfg["speaker"]["min_embed_s"]   # 이보다 짧고 화자 미상이면 상속 규칙 적용
         self.inherit_gap = cfg["speaker"]["inherit_gap_s"]
-        self.call_window = cfg.get("llm", {}).get("call_window_s", p["timing_half_max_s"])
+        llm = cfg.get("llm", {})
+        self.call_window = llm.get("call_window_s", p["timing_half_max_s"])
+        self.ctx_window = llm.get("context_window_s", 30.0)
+        self.merge_gap = llm.get("wearer_merge_gap_s", 1.5)
         self.mode = mode or p.get("default_mode", "full")
         assert self.mode in MODES, self.mode
         self.llm_available = llm_available
@@ -111,7 +114,7 @@ class PolicyEngine:
     def reset(self) -> None:
         self.speakers: dict[int, SpeakerInfo] = {}
         self.turns: list[WearerTurn] = []
-        self.history: list[tuple[str, object]] = []   # ("wearer", WearerTurn) | ("other", text)
+        self.history: list[tuple[str, object, float]] = []   # (kind, WearerTurn | (text, t0, t1), t0) 시간순
         self.pending: dict[str, _Pending] = {}
         self.prev_seg: Optional[tuple[Optional[int], float, float]] = None  # (spk, t_end, sim)
         self.partner_count = 0
@@ -173,12 +176,20 @@ class PolicyEngine:
         now = t_end if now is None else now
         turn = WearerTurn(turn_id=len(self.turns), t_start=t_start, t_end=t_end)
         self.turns.append(turn)
-        self.history.append(("wearer", turn))
+        self._hist_add("wearer", turn, t_start)
         # 착용자가 상대의 말에 바로 답했다 -> 그 상대와의 교대
         for s in self.speakers.values():
             if s.state == "partner" and self.p["timing_early_s"] <= t_start - s.last_end <= self.p["timing_half_max_s"]:
                 s.last_exchange = max(s.last_exchange, t_end)
         return turn.turn_id, []
+
+    def _hist_add(self, kind: str, obj, t0: float) -> None:
+        """대화 기록은 말한 시각 순서로 유지한다(ASR 완료 순서와 다를 수 있음)."""
+        import bisect
+        keys = [h[2] for h in self.history]
+        self.history.insert(bisect.bisect_right(keys, t0), (kind, obj, t0))
+        if len(self.history) > 200:
+            del self.history[:50]
 
     def set_wearer_text(self, turn_id: int, text: str) -> None:
         if 0 <= turn_id < len(self.turns):
@@ -212,19 +223,36 @@ class PolicyEngine:
         if turn_id is None or not (0 <= turn_id < len(self.turns)):
             return None, []
         turn = self.turns[turn_id]
-        idx = next((i for i, (k, v) in enumerate(self.history) if k == "wearer" and v is turn), None)
-        prev = []
-        if idx is not None:
-            for k, v in reversed(self.history[:idx]):
-                if len(prev) >= n_prev:
-                    break
-                if k == "wearer":
-                    if v.text:
-                        prev.append(("A", v.text))
-                elif v:
-                    prev.append(("B", v))
-            prev.reverse()
-        return turn.text, prev
+        if turn.text is None:
+            return None, []
+        idx = next((i for i, (k, v, _) in enumerate(self.history) if k == "wearer" and v is turn), None)
+        if idx is None:
+            return turn.text, []
+        # 착용자 말이 짧은 쉼으로 여러 조각이 됐으면 하나로 합친다("안녕하세요" + "혹시 자리 있어요")
+        parts, j, start = [turn.text], idx - 1, turn.t_start
+        while j >= 0 and self.history[j][0] == "wearer" and start - self.history[j][1].t_end <= self.merge_gap:
+            parts.insert(0, self.history[j][1].text or "")
+            start = self.history[j][1].t_start
+            j -= 1
+        a_text = " ".join(p for p in parts if p)
+        # 그 이전 대화: 최근 context_window_s 안, 같은 화자 연속 발화는 합쳐서 n턴
+        prev: list[tuple[str, str]] = []
+        for k, v, _ in reversed(self.history[:j + 1]):
+            t_end = v.t_end if k == "wearer" else v[2]
+            if start - t_end > self.ctx_window:
+                break
+            who, text = ("A", v.text) if k == "wearer" else ("B", v[0])
+            if not text:
+                continue
+            if prev and prev[-1][0] == who:
+                prev[-1] = (who, f"{text} {prev[-1][1]}")
+            elif len(prev) >= n_prev:
+                break
+            else:
+                prev.append((who, text))
+        prev.reverse()
+        prev = [(w, t if len(t) <= 60 else "…" + t[-60:]) for w, t in prev]   # 맥락은 짧게(작은 모델이 흔들림)
+        return a_text, prev
 
     # ------------------------------------------------------------- 점수
     def score(self, T: float, S: float, L: Optional[float], mode: Optional[str] = None) -> float:
@@ -305,8 +333,8 @@ class PolicyEngine:
             for k in list(self.pending)[:100]:
                 del self.pending[k]
         self.prev_seg = (feat.speaker_id, feat.t_end, feat.sim)
-        if pd.role == "partner" and feat.text:
-            self.history.append(("other", feat.text))
+        if pd.final and pd.role == "partner" and feat.text:
+            self._hist_add("other", (feat.text, feat.t_start, feat.t_end), feat.t_start)
         return self._decision(pd), events
 
     def on_llm_result(self, seg_id: str, result: Optional[dict], now: float) -> tuple[Optional[dict], list[dict]]:
@@ -314,7 +342,6 @@ class PolicyEngine:
         pd = self.pending.get(seg_id)
         if pd is None or pd.final:
             return None, []
-        was_partner = pd.role == "partner"
         if result is not None:
             pd.L = float(result["prob"])
             pd.pair = bool(result.get("pair"))
@@ -322,8 +349,8 @@ class PolicyEngine:
             pd.prob = self.score(pd.T, pd.S, pd.L)
             pd.role = self._role(pd.prob, pd.feat.speaker_id)
         events = self._finalize(pd, now)
-        if pd.role == "partner" and not was_partner and pd.feat.text:
-            self.history.append(("other", pd.feat.text))
+        if pd.role == "partner" and pd.feat.text:
+            self._hist_add("other", (pd.feat.text, pd.feat.t_start, pd.feat.t_end), pd.feat.t_start)
         d = self._decision(pd)
         upd = {k: d[k] for k in ("id", "role", "prob", "evidence", "chip", "pending_llm", "speaker_id")}
         return upd, events

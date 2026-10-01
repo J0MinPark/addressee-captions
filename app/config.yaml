@@ -35,6 +35,7 @@ ownvoice:
   hangover_s: 0.3
   min_own_s: 0.2
   overlap_ratio: 0.5       # 주변 구간이 본인 발화와 이 비율 이상 겹치면 착용자 구간
+  tail_guard_s: 0.1        # 착용자 발화 끝 직후 B 마이크의 잔향 꼬리를 무시하는 시간
   single_mic_sim: 0.6      # 단일 마이크 모드: 등록 음성과 유사도가 이 이상이면 착용자
 
 speaker:
@@ -60,6 +61,8 @@ asr:
   beam_size: 1
   no_speech_prob_max: 0.6
   avg_logprob_min: -1.0
+  verify_hotword: true     # 이름이 들리면 핫워드 없이 재확인(핫워드 편향으로 인한 거짓 호명 방지)
+  drop_hotword_echo: true  # 텍스트가 이름(핫워드)만 2번 이상 반복이면 환각으로 버림
   max_queue: 12            # 넘으면 오래된 비착용자 작업부터 버린다
   cpu_threads: 4
   blacklist:
@@ -114,6 +117,8 @@ llm:
   temperature: 0
   cache_size: 512
   context_turns: 2
+  context_window_s: 30     # 이보다 오래된 대화는 맥락에서 뺀다
+  wearer_merge_gap_s: 1.5  # 착용자 말 조각 사이 쉼이 이 이하면 하나의 말로 합친다
   call_window_s: 1.5       # 착용자 발화 종료 후 이 시간 안에 시작한 구간만 판정
   always_call: false       # true면 소거 모드와 무관하게 호출(재생·평가용)
 

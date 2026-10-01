@@ -122,6 +122,8 @@ class Pipeline:
         self.svad_b = StreamingVAD(models.vad_b, self.sr)
         self.own = OwnVoiceDetector(cfg)
         self.b_hist: deque = deque(maxlen=48)   # 최근 B VAD 청크 (~1.5초)
+        self.tail_guard = cfg["ownvoice"].get("tail_guard_s", 0.1)
+        self.pad = cfg["vad"].get("pad_s", 0.1)
         self.segmenter = Segmenter(cfg, prefix="s")
         self.registry = SpeakerRegistry(cfg)
         judge_ok = bool(models.judge and models.judge.available)
@@ -131,6 +133,8 @@ class Pipeline:
                                          nc.get("short_max_edit_distance", nc["max_edit_distance"]),
                                          nc.get("short_jamo_len", 0)) if nc.get("enabled", True) else None
         self.debouncer = AlertDebouncer(cfg)
+        if self.namecall is not None and hasattr(models.asr, "name_check"):
+            models.asr.name_check = lambda text: self.namecall.detect(text) is not None
         self.asr = ASRWorker(models.asr or _NullASR(), cfg["asr"]["max_queue"], log)
         self.sound = SoundWorker(models.sound, self._on_sound, log) if models.sound else None
         self.ctl: "queue.Queue[tuple]" = queue.Queue()
@@ -139,6 +143,7 @@ class Pipeline:
         self.seg_info: dict[str, dict] = {}
         self.records: dict[str, dict] = {}          # segments.jsonl 용
         self.record_segments = record_segments
+        self.embs: dict[str, np.ndarray] = {}      # 특징 캐시(보정용 임베딩)
         self.llm_deadline: dict[str, float] = {}
         self.llm_deferred: list[tuple[str, int]] = []
         self.lat_ms: deque[float] = deque(maxlen=200)
@@ -282,6 +287,8 @@ class Pipeline:
                         break
                     continue
                 self._process_block(blk)
+                if not getattr(self.src, "realtime", True):
+                    self._backpressure()
                 if self.sound and blk.t >= self.next_sound_t:
                     self.sound.submit(blk.t, self.ring_b.get(blk.t - win, blk.t))
                     self.next_sound_t += interval
@@ -297,13 +304,19 @@ class Pipeline:
         t = self.ring_b.t_now
         own = self.own.flush()
         if own and not self.single_mic:
-            self.ctl.put(("wearer", own, time.monotonic()))
+            self._push_wearer(own)
         seg = self.segmenter.flush()
         if seg:
             seg.wearer_overlap = self.own.overlap_ratio(seg.t_start, seg.t_end, t)
             self.ctl.put(("seg", seg))
         self.ctl.put(("tick", t))
         self.audio_done.set()
+
+    def _backpressure(self) -> None:
+        """최대 속도 재생: 버리지 말고 기다린다(평가가 결정적이도록). 실시간에서는 쓰지 않는다."""
+        while self.running and (self.asr.qsize() >= 2 or self.ctl.qsize() > 20
+                                or (self.sound is not None and not self.sound.idle())):
+            time.sleep(0.002)
 
     def _process_block(self, blk: Block) -> None:
         dur = len(blk.b) / self.sr
@@ -321,21 +334,27 @@ class Pipeline:
             if was_active and not self.own.active:
                 own_closed = self.own.last_own
             if own:
-                self.ctl.put(("wearer", own, time.monotonic()))
+                self._push_wearer(own)
         chunks = self.svad_b.push(blk.t, blk.b)
         if own_closed is not None:
             # 착용자 발화가 끝났다: hangover 동안 가려졌던 B 프레임을 실제 종료 시점부터 다시 넣는다
             for tc, p, d in self.b_hist:
-                if tc + d > own_closed:
+                if tc >= own_closed + self.tail_guard:
                     self._push_seg(self.segmenter.update(tc, p, d))
         self.b_hist.extend(chunks)
         if self.single_mic or not self.own.active:
             for tc, p, d in chunks:
                 self._push_seg(self.segmenter.update(tc, p, d))
 
+    def _push_wearer(self, iv: tuple[float, float]) -> None:
+        ring = self.ring_b if self.single_mic else self.ring_a
+        audio = ring.get(iv[0] - self.pad, iv[1] + self.pad)
+        self.ctl.put(("wearer", iv, time.monotonic(), audio))
+
     def _push_seg(self, seg: Optional[Segment]) -> None:
         if seg is None:
             return
+        seg.audio = self.ring_b.get(seg.t_start - self.pad, seg.t_end + self.pad)
         seg.wearer_overlap = 0.0 if self.single_mic else \
             self.own.overlap_ratio(seg.t_start, seg.t_end, self.t_stream)
         self.ctl.put(("seg", seg))
@@ -404,7 +423,8 @@ class Pipeline:
         for ev in self.policy.tick(self._now(t)):
             self.emit(ev)
 
-    def _on_wearer(self, iv: tuple[float, float], closed_wall: float, by: str = "margin") -> None:
+    def _on_wearer(self, iv: tuple[float, float], closed_wall: float, audio: Optional[np.ndarray] = None,
+                   by: str = "margin") -> None:
         t0, t1 = iv
         turn_id, evs = self.policy.on_wearer_end(t0, t1, now=self._now(t1))
         for ev in evs:
@@ -412,8 +432,9 @@ class Pipeline:
         self.n_wearer += 1
         wid = f"w{self.n_wearer:05d}"
         self.turn_rec[turn_id] = wid
-        ring = self.ring_b if self.single_mic else self.ring_a
-        audio = ring.get(t0 - 0.15, t1 + 0.15)
+        if audio is None:
+            ring = self.ring_b if self.single_mic else self.ring_a
+            audio = ring.get(t0 - self.pad, t1 + self.pad)
         self.seg_info[wid] = {"t_start": t0, "t_end": t1, "closed_wall": closed_wall, "turn_id": turn_id}
         self.records[wid] = {"seg_id": wid, "t_start": round(t0, 3), "t_end": round(t1, 3), "is_wearer": True,
                              "wearer_by": by, "turn_id": turn_id, "text": None}
@@ -428,7 +449,7 @@ class Pipeline:
                                         "t_end": round(seg.t_end, 3), "is_wearer": True,
                                         "wearer_by": "overlap", "overlap": round(ov, 3), "skip": True}
             return
-        audio = self.ring_b.get(seg.t_start, seg.t_end)
+        audio = seg.audio if seg.audio is not None else self.ring_b.get(seg.t_start - self.pad, seg.t_end + self.pad)
         emb = None
         if self.m.embedder is not None and self.registry.needs_embedding(seg.duration):
             try:
@@ -438,9 +459,11 @@ class Pipeline:
         if self.single_mic and emb is not None and self.registry.wearer is not None:
             ws = self.registry.wearer_sim(emb)
             if ws >= self.cfg["ownvoice"]["single_mic_sim"]:
-                self._on_wearer((seg.t_start, seg.t_end), seg.closed_wall, by=f"ecapa:{ws:.2f}")
+                self._on_wearer((seg.t_start, seg.t_end), seg.closed_wall, audio, by=f"ecapa:{ws:.2f}")
                 return
         sid, sim, is_new = self.registry.assign(emb, seg.duration)
+        if self.record_segments and emb is not None:
+            self.embs[seg.seg_id] = emb
         self.seg_info[seg.seg_id] = {"t_start": seg.t_start, "t_end": seg.t_end, "closed_wall": seg.closed_wall,
                                      "speaker_id": sid, "sim": sim}
         self.records[seg.seg_id] = {"seg_id": seg.seg_id, "t_start": round(seg.t_start, 3),
@@ -585,6 +608,8 @@ class Pipeline:
             f.write(json.dumps(meta, ensure_ascii=False) + "\n")
             for r in recs:
                 f.write(json.dumps(r, ensure_ascii=False, default=_json_default) + "\n")
+        if self.embs:
+            np.savez_compressed(str(path).replace(".segments.jsonl", ".emb.npz"), **self.embs)
         return len(recs)
 
     def close(self) -> None:

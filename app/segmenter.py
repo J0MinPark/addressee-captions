@@ -110,6 +110,8 @@ class Segment:
     t_end: float
     forced: bool = False         # 최대 길이로 강제 절단됨
     closed_wall: float = field(default_factory=time.monotonic)
+    audio: Optional[np.ndarray] = None   # 닫힐 때 오디오 스레드에서 복사(링버퍼 덮어쓰기 방지)
+    wearer_overlap: float = 0.0
 
     @property
     def duration(self) -> float:
@@ -138,7 +140,7 @@ class Segmenter:
         if t1 - t0 < self.min_speech:
             return None
         self.n += 1
-        return Segment(f"{self.prefix}{self.n:05d}", max(0.0, t0 - self.pad), t1 + self.pad, forced)
+        return Segment(f"{self.prefix}{self.n:05d}", t0, t1, forced)   # 시간은 말소리 그대로(패딩은 오디오 추출 때만)
 
     def update(self, t: float, prob: float, dur: float) -> Optional[Segment]:
         end = t + dur

@@ -1,0 +1,8 @@
+{
+ "scenario": "demo_trap",
+ "synthetic": true,
+ "duration_s": 72.26,
+ "devices": [
+  "synthetic (Windows SAPI ko-KR, pitch-shifted speakers)"
+ ]
+}

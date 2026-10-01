@@ -20,31 +20,33 @@ SYSTEM_PROMPT = (
 
 PAIR_TYPES = ["질문-대답", "인사-인사", "요청-수락거절", "제안-응답", "평가-반응", "없음"]
 
+# 필드 순서가 중요하다: 작은 모델은 먼저 type(행위 분류)을 고르게 하면 pair 판단이 정확해진다
+# (18개 점검 문장에서 pair 먼저 11/18 → type 먼저 13/18, qwen3:4b 기준).
 SCHEMA = {
     "type": "object",
     "properties": {
+        "type": {"type": "string", "enum": PAIR_TYPES},
         "pair": {"type": "boolean"},
         "confidence": {"type": "string", "enum": ["high", "medium", "low"]},
-        "type": {"type": "string", "enum": PAIR_TYPES},
     },
-    "required": ["pair", "confidence", "type"],
+    "required": ["type", "pair", "confidence"],
 }
 
 # few-shot 6개: 짝 3개, 짝 아님 3개 (짝 아님에는 "착용자 직후 옆 사람이 다른 사람에게 하는 말" 포함)
 FEW_SHOT = [
     ({"prev": [], "a": "혹시 지금 몇 시예요?", "b": "세 시 반이요."},
-     {"pair": True, "confidence": "high", "type": "질문-대답"}),
+     {"type": "질문-대답", "pair": True, "confidence": "high"}),
     ({"prev": [], "a": "안녕하세요, 오랜만이에요.", "b": "어 안녕하세요! 잘 지내셨어요?"},
-     {"pair": True, "confidence": "high", "type": "인사-인사"}),
+     {"type": "인사-인사", "pair": True, "confidence": "high"}),
     ({"prev": [("B", "이거 어떻게 하는 거예요?")], "a": "그 파일 좀 저한테 보내 주실 수 있어요?",
       "b": "네, 지금 바로 보내 드릴게요."},
-     {"pair": True, "confidence": "high", "type": "요청-수락거절"}),
+     {"type": "요청-수락거절", "pair": True, "confidence": "high"}),
     ({"prev": [], "a": "점심 뭐 드실래요?", "b": "야 지훈아, 너 어제 그 경기 봤어? 대박이더라."},
-     {"pair": False, "confidence": "high", "type": "없음"}),
+     {"type": "없음", "pair": False, "confidence": "high"}),
     ({"prev": [], "a": "이 발표 자료 어떤 것 같아요?", "b": "아 맞다, 나 주차비 정산 안 했네."},
-     {"pair": False, "confidence": "high", "type": "없음"}),
+     {"type": "없음", "pair": False, "confidence": "high"}),
     ({"prev": [], "a": "여기 앉아도 돼요?", "b": "엄마, 나 오늘 좀 늦을 것 같아. 저녁 먼저 먹어."},
-     {"pair": False, "confidence": "high", "type": "없음"}),
+     {"type": "없음", "pair": False, "confidence": "high"}),
 ]
 
 
