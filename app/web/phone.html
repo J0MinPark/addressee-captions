@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>나에게 온 말 자막</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #000; color: #fff; overflow: hidden;
+    font-family: "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif; }
+  #wrap { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 16px 16px max(24px, env(safe-area-inset-bottom)); }
+  .line { font-size: 9vw; line-height: 1.22; font-weight: 800; word-break: keep-all; margin-top: 14px;
+    border-left: 6px solid var(--c); padding-left: 12px; transition: opacity .3s; }
+  .line.old { opacity: .35; font-size: 6.5vw; }
+  .line .who { font-size: 4vw; color: var(--c); font-weight: 700; display: block; }
+  #status { position: absolute; top: 8px; right: 12px; font-size: 13px; color: #888; }
+  #status.off { color: #ff453a; }
+  #alert { position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+    text-align: center; font-size: 11vw; font-weight: 900; padding: 20px; z-index: 5; }
+  #alert.on { display: flex; animation: blink .35s steps(1) 6; }
+  #alert.danger { background: #ff3b30; color: #fff; }
+  #alert.name { background: #ffcc00; color: #000; }
+  @keyframes blink { 50% { background: #000; color: #fff; } }
+  #tap { position: absolute; inset: 0; background: rgba(0,0,0,.85); display: flex; align-items: center;
+    justify-content: center; font-size: 6vw; z-index: 9; text-align: center; padding: 20px; }
+</style>
+</head>
+<body>
+<div id="status" class="off">연결 중…</div>
+<div id="wrap"></div>
+<div id="alert"></div>
+<div id="tap">화면을 한 번 눌러 주세요<br><small>(진동·화면 켜짐 유지 허용)</small></div>
+<script>
+const PALETTE = ["#4f8cff","#ff9f0a","#30d158","#bf5af2","#ff375f","#64d2ff","#ffd60a","#ac8e68","#5e5ce6","#66d4cf"];
+const color = id => id == null ? "#aaa" : PALETTE[(id - 1) % PALETTE.length];
+const wrap = document.getElementById("wrap"), st = document.getElementById("status");
+const shown = {};   // id -> element (partner만)
+let ws, wakeLock = null;
+
+async function keepAwake() {
+  try { if ("wakeLock" in navigator) { wakeLock = await navigator.wakeLock.request("screen"); } } catch (e) {}
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") keepAwake(); });
+document.getElementById("tap").onclick = e => { e.currentTarget.remove(); keepAwake(); try { navigator.vibrate && navigator.vibrate(30); } catch (e) {} };
+
+function connect() {
+  ws = new WebSocket((location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws");
+  ws.onopen = () => { st.textContent = "연결됨"; st.className = ""; };
+  ws.onclose = () => { st.textContent = "재연결 중…"; st.className = "off"; setTimeout(connect, 2000); };
+  ws.onerror = () => ws.close();
+  ws.onmessage = m => { try { handle(JSON.parse(m.data)); } catch (e) {} };
+}
+setInterval(() => { if (ws && ws.readyState === 1) ws.send('{"cmd":"ping"}'); }, 15000);
+
+function handle(ev) {
+  if (ev.type === "snapshot") {
+    wrap.innerHTML = ""; for (const k in shown) delete shown[k];
+    (ev.captions || []).filter(c => c.role === "partner").slice(-3).forEach(show);
+  } else if (ev.type === "caption") {
+    texts[ev.id] = ev;
+    if (ev.role === "partner") show(ev);
+  } else if (ev.type === "caption_update") {
+    const el = shown[ev.id], c = texts[ev.id];
+    if (c) Object.assign(c, ev);
+    if (el && ev.role && ev.role !== "partner") { el.remove(); delete shown[ev.id]; restyle(); }
+    else if (!el && ev.role === "partner" && c) show(c);
+  } else if (ev.type === "alert") {
+    alertNow(ev);
+  } else if (ev.type === "reset") {
+    wrap.innerHTML = ""; for (const k in shown) delete shown[k];
+  }
+}
+const texts = {};
+function show(c) {
+  texts[c.id] = c;
+  const ids = Object.keys(texts); if (ids.length > 300) ids.slice(0, 100).forEach(k => delete texts[k]);
+  const el = document.createElement("div");
+  el.className = "line"; el.style.setProperty("--c", color(c.speaker_id));
+  el.innerHTML = `<span class="who">${c.speaker_id != null ? "화자 #" + c.speaker_id : ""}</span>`;
+  el.appendChild(document.createTextNode(c.text || ""));
+  wrap.appendChild(el); shown[c.id] = el;
+  restyle();
+}
+function restyle() {
+  const els = [...wrap.children];
+  while (els.length > 3) { const x = els.shift(); x.remove(); for (const k in shown) if (shown[k] === x) delete shown[k]; }
+  els.forEach((e, i) => e.classList.toggle("old", i < els.length - 1));
+}
+const KIND = {siren: "🚨 사이렌", alarm: "🔥 경보음", horn: "📯 경적", name: "🙋 누가 부릅니다"};
+let alertTimer;
+function alertNow(ev) {
+  const a = document.getElementById("alert");
+  a.textContent = KIND[ev.kind] || ev.label;
+  a.className = "on " + (ev.kind === "name" ? "name" : "danger");
+  try { navigator.vibrate && navigator.vibrate([300, 100, 300]); } catch (e) {}
+  clearTimeout(alertTimer); alertTimer = setTimeout(() => a.className = "", 2500);
+}
+connect();
+</script>
+</body>
+</html>

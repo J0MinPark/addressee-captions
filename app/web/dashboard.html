@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>나에게 온 말 자막 · 대시보드</title>
+<style>
+  :root {
+    --bg: #0f1115; --panel: #171a21; --line: #262b36; --text: #eef1f6; --dim: #8a93a6;
+    --other: #5b6375; --red: #ff3b30; --ok: #34c759; --warn: #ffcc00; --accent: #4f8cff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
+    font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; }
+  body { display: grid; grid-template-rows: auto 1fr; overflow: hidden; }
+  header { display: flex; align-items: center; gap: 16px; padding: 10px 20px; border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 22px; margin: 0; font-weight: 700; }
+  #conn { width: 12px; height: 12px; border-radius: 50%; background: var(--red); }
+  #conn.on { background: var(--ok); }
+  #modelinfo { color: var(--dim); font-size: 14px; margin-left: auto; }
+  #banner { position: fixed; top: 0; left: 0; right: 0; z-index: 20; padding: 18px 24px; font-size: 34px;
+    font-weight: 800; text-align: center; transform: translateY(-120%); transition: transform .2s; }
+  #banner.show { transform: translateY(0); }
+  #banner.danger { background: var(--red); color: #fff; }
+  #banner.name { background: var(--warn); color: #111; }
+  #banner.info { background: var(--accent); color: #fff; }
+  #flash { position: fixed; inset: 0; background: var(--red); opacity: 0; pointer-events: none; z-index: 10; }
+  #flash.on { animation: flash 0.4s linear 5; }
+  @keyframes flash { 0%,100% { opacity: 0; } 50% { opacity: .75; } }
+
+  main { display: grid; grid-template-columns: 1fr 400px; min-height: 0; }
+  #stream { overflow-y: auto; padding: 18px 28px 40vh; scroll-behavior: smooth; }
+  .cap { margin: 10px 0; }
+  .cap.partner { border-left: 8px solid var(--c, var(--accent)); padding: 6px 0 6px 18px; }
+  .cap.partner .who { font-size: 18px; color: var(--c, var(--accent)); font-weight: 700; }
+  .cap.partner .txt { font-size: 44px; line-height: 1.25; font-weight: 700; word-break: keep-all; }
+  .cap.other, .cap.unknown { color: var(--other); font-size: 20px; white-space: nowrap; overflow: hidden;
+    text-overflow: ellipsis; cursor: pointer; padding: 2px 0 2px 18px; }
+  .cap.other.expanded, .cap.unknown.expanded { white-space: normal; }
+  .cap.wearer { text-align: right; color: var(--dim); font-size: 22px; padding-right: 6px; }
+  .cap.wearer .who { font-size: 14px; }
+  .chip { display: inline-block; font-size: 15px; color: var(--dim); margin-top: 4px; }
+  .cap.other .chip, .cap.unknown .chip { font-size: 14px; margin: 0 0 0 10px; }
+  .pending { display: inline-block; font-size: 14px; padding: 2px 8px; border-radius: 10px; background: #333a48;
+    color: var(--warn); margin-left: 8px; animation: pulse 1s infinite; }
+  @keyframes pulse { 50% { opacity: .4; } }
+  .prob { font-size: 14px; color: var(--dim); margin-left: 8px; }
+  .changed { animation: changed 1.2s ease-out; }
+  @keyframes changed { from { background: rgba(79,140,255,.35); } to { background: transparent; } }
+
+  aside { border-left: 1px solid var(--line); background: var(--panel); overflow-y: auto; padding: 14px 16px; }
+  aside h2 { font-size: 15px; color: var(--dim); text-transform: uppercase; letter-spacing: .08em; margin: 18px 0 8px; }
+  .spk { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 10px; margin-bottom: 6px;
+    background: #1e222b; cursor: pointer; user-select: none; font-size: 18px; }
+  .spk:hover { background: #262b36; }
+  .spk .dot { width: 16px; height: 16px; border-radius: 50%; background: var(--c); }
+  .spk .st { margin-left: auto; font-size: 14px; padding: 2px 8px; border-radius: 8px; background: #2b3140; }
+  .spk.partner .st { background: var(--ok); color: #062; font-weight: 700; }
+  .spk.candidate .st { background: var(--warn); color: #331; }
+  .spk.expired .st { background: #555; }
+  .spk .sim { font-size: 13px; color: var(--dim); }
+  .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .modes button, .btn { font: inherit; font-size: 16px; padding: 10px 8px; border-radius: 10px; border: 1px solid var(--line);
+    background: #1e222b; color: var(--text); cursor: pointer; }
+  .modes button.on { background: var(--accent); border-color: var(--accent); font-weight: 700; }
+  .modes button:last-child { grid-column: span 2; }
+  .btn.reset { width: 100%; margin-top: 8px; background: #3a1f22; border-color: #5a2a2f; }
+  table.metrics { width: 100%; font-size: 15px; border-collapse: collapse; }
+  table.metrics td { padding: 3px 0; } table.metrics td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  #log { font-size: 13px; color: var(--dim); font-family: ui-monospace, Consolas, monospace; max-height: 30vh; overflow-y: auto; }
+  #log div { padding: 2px 0; border-bottom: 1px dashed #222; }
+  .hint { font-size: 13px; color: var(--dim); }
+</style>
+</head>
+<body>
+<div id="banner"></div>
+<div id="flash"></div>
+<header>
+  <div id="conn" title="서버 연결"></div>
+  <h1>나에게 온 말만 · <span id="wearer"></span></h1>
+  <div id="modelinfo"></div>
+</header>
+<main>
+  <section id="stream"></section>
+  <aside>
+    <h2>화자 (클릭 = 수동 등록/해제)</h2>
+    <div id="speakers"><div class="hint">아직 화자 없음</div></div>
+    <h2>소거 모드</h2>
+    <div class="modes" id="modes"></div>
+    <button class="btn reset" id="reset">초기화 (상태·화자 리셋)</button>
+    <h2>지연</h2>
+    <table class="metrics" id="metrics"></table>
+    <h2>최근 판정</h2>
+    <div id="log"></div>
+  </aside>
+</main>
+<script>
+const MODES = [["all","전부 표시"],["timing","타이밍"],["timing_speaker","타이밍+화자"],["full","전체 융합"],["semantic","의미만"]];
+const PALETTE = ["#4f8cff","#ff9f0a","#30d158","#bf5af2","#ff375f","#64d2ff","#ffd60a","#ac8e68","#5e5ce6","#66d4cf"];
+const color = id => id == null ? "#8a93a6" : PALETTE[(id - 1) % PALETTE.length];
+const $ = s => document.querySelector(s);
+const esc = s => (s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let ws, mode = "full", speakers = {}, caps = {};
+const stream = $("#stream");
+
+function connect() {
+  ws = new WebSocket((location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws");
+  ws.onopen = () => $("#conn").classList.add("on");
+  ws.onclose = () => { $("#conn").classList.remove("on"); setTimeout(connect, 2000); };
+  ws.onerror = () => ws.close();
+  ws.onmessage = m => { try { handle(JSON.parse(m.data)); } catch (e) { console.error(e); } };
+}
+function send(o) { if (ws && ws.readyState === 1) ws.send(JSON.stringify(o)); }
+setInterval(() => send({cmd: "ping"}), 15000);
+
+function handle(ev) {
+  switch (ev.type) {
+    case "snapshot":
+      stream.innerHTML = ""; caps = {}; speakers = {};
+      $("#wearer").textContent = "착용자 " + (ev.wearer || "");
+      $("#modelinfo").textContent = Object.entries(ev.models || {}).map(([k, v]) => `${k}: ${v ?? "없음"}`).join(" · ") + (ev.profile ? ` · ${ev.profile}` : "");
+      (ev.speakers || []).forEach(s => speakers[s.speaker_id] = s);
+      (ev.captions || []).forEach(c => addCaption(c, false));
+      setMode(ev.mode); renderSpeakers(); scrollEnd(); break;
+    case "caption": addCaption(ev, true); logLine(ev); break;
+    case "caption_update": updateCaption(ev); logLine(ev, true); break;
+    case "speaker_state": speakers[ev.speaker_id] = ev; renderSpeakers(); break;
+    case "partner_added": banner(ev.label, "info", 2500); break;
+    case "alert": onAlert(ev); break;
+    case "metrics": renderMetrics(ev); break;
+    case "mode": setMode(ev.mode); break;
+    case "reset": stream.innerHTML = ""; caps = {}; speakers = {}; renderSpeakers(); break;
+  }
+}
+
+function capHTML(c) {
+  const role = c.role;
+  const who = role === "wearer" ? "나" : (c.speaker_id != null ? `화자 #${c.speaker_id}` : "화자 미상");
+  const pend = c.pending_llm ? `<span class="pending">판정 중</span>` : "";
+  const prob = c.prob != null ? `<span class="prob">${(c.prob * 100).toFixed(0)}%</span>` : "";
+  if (role === "partner")
+    return `<div class="who">${who}${pend}${prob}</div><div class="txt">${esc(c.text)}</div><div class="chip">${esc(c.chip || "")}</div>`;
+  if (role === "wearer")
+    return `<div class="who">${who}</div><div>${esc(c.text)}</div>`;
+  return `다른 대화 · ${who} · ${esc(c.text)}${pend}<span class="chip">${esc(c.chip || "")}</span>`;
+}
+function addCaption(c, live) {
+  caps[c.id] = c;
+  const el = document.createElement("div");
+  el.id = "c_" + c.id;
+  paint(el, c);
+  el.onclick = () => el.classList.toggle("expanded");
+  const nearBottom = stream.scrollHeight - stream.scrollTop - stream.clientHeight < 300;
+  stream.appendChild(el);
+  while (stream.children.length > 200) stream.removeChild(stream.firstChild);
+  if (!live || nearBottom) scrollEnd();
+}
+function paint(el, c) {
+  el.className = "cap " + c.role;
+  el.style.setProperty("--c", color(c.speaker_id));
+  el.innerHTML = capHTML(c);
+}
+function updateCaption(u) {
+  const c = caps[u.id]; if (!c) return;
+  const changed = u.role && u.role !== c.role;
+  Object.assign(c, u);
+  const el = document.getElementById("c_" + u.id); if (!el) return;
+  paint(el, c);
+  if (changed) { el.classList.remove("changed"); void el.offsetWidth; el.classList.add("changed"); }
+}
+function scrollEnd() { stream.scrollTop = stream.scrollHeight; }
+
+function renderSpeakers() {
+  const box = $("#speakers");
+  const list = Object.values(speakers).sort((a, b) => a.speaker_id - b.speaker_id);
+  if (!list.length) { box.innerHTML = '<div class="hint">아직 화자 없음</div>'; return; }
+  const label = {unknown: "미상", candidate: "후보", partner: "대화 상대", expired: "만료"};
+  box.innerHTML = list.map(s => `<div class="spk ${s.state}" data-id="${s.speaker_id}" style="--c:${color(s.speaker_id)}">
+      <span class="dot"></span>화자 #${s.speaker_id}<span class="sim">${s.sim != null ? s.sim.toFixed(2) : ""}${s.manual ? " · 수동" : ""}</span>
+      <span class="st">${label[s.state] || s.state}</span></div>`).join("");
+  box.querySelectorAll(".spk").forEach(el => el.onclick = () =>
+    send({cmd: "toggle_partner", speaker_id: +el.dataset.id}));
+}
+
+function setMode(m) {
+  if (m) mode = m;
+  $("#modes").innerHTML = MODES.map(([k, l]) => `<button data-m="${k}" class="${k === mode ? "on" : ""}">${l}</button>`).join("");
+  $("#modes").querySelectorAll("button").forEach(b => b.onclick = () => send({cmd: "set_mode", mode: b.dataset.m}));
+}
+$("#reset").onclick = () => { if (confirm("상태와 화자 목록을 초기화할까요?")) send({cmd: "reset"}); };
+
+const KIND = {siren: "🚨 사이렌", alarm: "🔥 경보음", horn: "📯 경적", name: "🙋 이름 호명"};
+let bannerTimer;
+function banner(text, cls, ms) {
+  const b = $("#banner"); b.textContent = text; b.className = "show " + cls;
+  clearTimeout(bannerTimer); bannerTimer = setTimeout(() => b.className = "", ms);
+}
+function onAlert(ev) {
+  const danger = ev.kind !== "name";
+  banner(`${KIND[ev.kind] || ev.kind} · ${ev.label}${ev.score != null ? ` (${(ev.score * 100).toFixed(0)}%)` : ""}`, danger ? "danger" : "name", danger ? 4000 : 3000);
+  if (danger) { const f = $("#flash"); f.classList.remove("on"); void f.offsetWidth; f.classList.add("on"); }
+  logLine({id: "alert", role: ev.kind, text: ev.label});
+}
+
+function renderMetrics(m) {
+  const f = (v, u = "ms") => v == null ? "–" : `${Math.round(v)} ${u}`;
+  $("#metrics").innerHTML = [
+    ["판정 지연 평균", f(m.latency_mean_ms)], ["판정 지연 p95", f(m.latency_p95_ms)],
+    ["LLM 지연 평균 / p95", `${f(m.llm_mean_ms)} / ${f(m.llm_p95_ms)}`], ["LLM 타임아웃", m.llm_timeouts],
+    ["ASR 큐 / 버림", `${m.asr_queue} / ${m.asr_dropped}`], ["ASR 처리 평균", f(m.asr_mean_ms)],
+    ["메모리", f(m.rss_mb, "MB")], ["스트림 시간", f(m.stream_t, "s")],
+  ].map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("");
+}
+function logLine(c, upd) {
+  const log = $("#log"); const d = document.createElement("div");
+  const p = c.prob != null ? (c.prob * 100).toFixed(0) + "%" : "";
+  d.textContent = `${upd ? "↻" : "•"} ${c.id} ${c.role || ""} ${p} ${c.chip || c.text || ""}`.slice(0, 120);
+  log.prepend(d); while (log.children.length > 60) log.removeChild(log.lastChild);
+}
+setMode(); connect();
+</script>
+</body>
+</html>

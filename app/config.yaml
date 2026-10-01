@@ -1,0 +1,161 @@
+# 나에게 온 말만 보여주는 자막 — 모든 파라미터
+# 프로필(profiles.*)은 아래 기본값 위에 덮어쓴다(deep merge).
+# 실행: python -m app.server --profile gpu_4060 | cpu_light
+
+wearer:
+  name: "민수"
+  # 호명 감지용 변형. 공백/문장부호는 비교 시 제거된다.
+  name_variants: ["민수", "민수야", "민수씨", "민수 씨", "민수님"]
+
+audio:
+  sample_rate: 16000
+  block_ms: 20
+  ring_seconds: 30
+  # 장치 이름의 일부 문자열(대소문자 무시). "" 이면 시스템 기본 입력 장치.
+  device_wearer: ""        # 채널 A: 착용자 핀마이크
+  device_ambient: ""       # 채널 B: 주변 마이크
+  prefer_wasapi: true      # Windows에서 WASAPI 장치 우선
+  single_mic: false        # 마이크 하나만 있을 때: 착용자 목소리 등록 + ECAPA로 본인 판정
+  enroll_seconds: 10
+  enroll_wav: ""           # 지정 시 이 WAV로 착용자 목소리 등록(단일 마이크 모드)
+  drift_max_s: 0.5         # 두 장치 간 버퍼 차이가 이보다 크면 앞선 쪽을 버려 맞춘다
+
+vad:
+  backend: silero          # silero | energy (silero 로딩 실패 시 자동으로 energy)
+  threshold: 0.5
+  neg_threshold: 0.35      # 히스테리시스: 이 값 아래로 내려가야 무음으로 본다
+  min_speech_s: 0.3
+  end_silence_s: 0.4
+  max_segment_s: 8.0
+  pad_s: 0.1               # 구간 앞뒤 여유
+  energy_margin_db: 10.0   # energy VAD 폴백: 잡음 바닥 + 이 값 이상이면 말소리
+
+ownvoice:
+  own_margin_db: 6.0       # A_dB - B_dB >= 이 값 (tools/calibrate.py로 보정)
+  hangover_s: 0.3
+  min_own_s: 0.2
+  overlap_ratio: 0.5       # 주변 구간이 본인 발화와 이 비율 이상 겹치면 착용자 구간
+  single_mic_sim: 0.6      # 단일 마이크 모드: 등록 음성과 유사도가 이 이상이면 착용자
+
+speaker:
+  enabled: true
+  model: "speechbrain/spkrec-ecapa-voxceleb"
+  device: cpu
+  min_embed_s: 1.0         # 이 이상이면 임베딩으로 배정/신규 생성
+  short_s: 0.8             # 이 미만은 임베딩을 믿지 않음(상속 또는 unknown)
+  max_embed_s: 8.0
+  spk_threshold: 0.55
+  ema: 0.8
+  inherit_gap_s: 1.0
+  max_speakers: 30
+
+asr:
+  model: "large-v3-turbo"
+  device: cuda
+  compute_type: int8_float16
+  fallback_model: "small"
+  fallback_device: cpu
+  fallback_compute_type: int8
+  language: ko
+  beam_size: 1
+  no_speech_prob_max: 0.6
+  avg_logprob_min: -1.0
+  max_queue: 12            # 넘으면 오래된 비착용자 작업부터 버린다
+  cpu_threads: 4
+  blacklist:
+    - "시청해 주셔서 감사합니다"
+    - "시청해주셔서 감사합니다"
+    - "구독과 좋아요"
+    - "구독 좋아요"
+    - "MBC 뉴스"
+    - "KBS 뉴스"
+    - "SBS 뉴스"
+    - "자막 제공"
+    - "자막 by"
+    - "다음 영상에서 만나요"
+    - "끝까지 시청"
+
+sound:
+  enabled: true
+  backend: ast             # ast | yamnet | auto (ast 실패 시 yamnet, 그것도 실패 시 비활성)
+  ast_model: "MIT/ast-finetuned-audioset-10-10-0.4593"
+  device: cuda
+  interval_s: 0.5
+  window_s: 1.0
+  score_threshold: 0.3
+  consecutive: 2
+  cooldown_s: 5.0
+  # AudioSet 라벨 -> 알림 종류
+  classes:
+    "Siren": siren
+    "Civil defense siren": siren
+    "Ambulance (siren)": siren
+    "Fire engine, fire truck (siren)": siren
+    "Police car (siren)": siren
+    "Fire alarm": alarm
+    "Smoke detector, smoke alarm": alarm
+    "Car alarm": alarm
+    "Vehicle horn, car horn, honking": horn
+
+namecall:
+  enabled: true
+  max_edit_distance: 2
+  short_max_edit_distance: 1   # 자모 short_jamo_len개 이하 변형(예: "민수")에 적용
+  short_jamo_len: 5
+
+llm:
+  enabled: true
+  url: "http://127.0.0.1:11434"
+  models: ["qwen3:4b", "qwen3:1.7b", "qwen2.5:3b"]   # 앞에서부터 설치된 첫 모델 사용
+  timeout_s: 2.5
+  warmup_timeout_s: 60
+  keep_alive: "30m"
+  num_predict: 64
+  temperature: 0
+  cache_size: 512
+  context_turns: 2
+  call_window_s: 1.5       # 착용자 발화 종료 후 이 시간 안에 시작한 구간만 판정
+  always_call: false       # true면 소거 모드와 무관하게 호출(재생·평가용)
+
+policy:
+  bias: -1.0
+  w_t: 1.5
+  w_s: 2.5
+  w_l: 2.0
+  show_threshold: 0.6
+  register_threshold: 0.6
+  timing_full_max_s: 1.0   # 0 <= g <= 이 값 -> T=1
+  timing_early_s: -0.3     # 이 값 <= g < 0 -> T=0.5
+  timing_half_max_s: 1.5   # timing_full_max < g <= 이 값 -> T=0.5
+  timing_only_turns: 2     # LLM None일 때 타이밍만으로 등록에 필요한 연속 교대 수
+  partner_expire_s: 60
+  candidate_expire_s: 60
+  default_mode: full       # all | timing | timing_speaker | full | semantic
+  llm_prob:
+    yes_high: 0.95
+    yes_medium: 0.8
+    yes_low: 0.65
+    no_low: 0.35
+    no_medium: 0.2
+    no_high: 0.05
+
+server:
+  host: "0.0.0.0"
+  port: 8000
+  history: 60              # 새 접속자에게 보낼 최근 자막 수
+  metrics_interval_s: 1.0
+
+paths:
+  models_dir: "models"
+  logs_dir: "logs"
+  data_dir: "data"
+  results_dir: "results"
+
+profiles:
+  gpu_4060:
+    asr: {model: "large-v3-turbo", device: cuda, compute_type: int8_float16}
+    sound: {backend: ast, device: cuda}
+  cpu_light:
+    asr: {model: "small", device: cpu, compute_type: int8, cpu_threads: 4}
+    sound: {backend: auto, device: cpu, interval_s: 1.0}
+    llm: {models: ["qwen3:1.7b", "qwen2.5:3b", "qwen3:4b"], timeout_s: 3.5}
