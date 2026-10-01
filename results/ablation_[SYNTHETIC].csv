@@ -1,0 +1,14 @@
+﻿table,mode,precision,recall,f1,contamination,reg_delay_s,misreg_rate,trap_shown_rate,synthetic
+all,all,0.6,1.0,0.7499999999999999,0.38064516129032255,1.5786666666666658,,,True
+all,timing,0.8333333333333334,0.5555555555555556,0.6666666666666667,0.21951219512195122,1.5786666666666658,,,True
+all,timing_speaker,0.9,1.0,0.9473684210526316,0.15789473684210525,1.5786666666666658,,,True
+all,full,0.8888888888888888,0.8888888888888888,0.8888888888888888,0.17142857142857143,2.4560499999999994,,,True
+all,semantic,0.75,0.3333333333333333,0.46153846153846156,0.35294117647058826,2.4560499999999994,,,True
+trap,all,,,,,,1.0,1.0,True
+trap,timing,,,,,,0.5,1.0,True
+trap,timing_speaker,,,,,,0.5,1.0,True
+trap,full,,,,,,0.5,1.0,True
+trap,semantic,,,,,,0.5,1.0,True
+llm_confusion,"label=n,llm=pair",1,,,,,,,True
+llm_confusion,"label=y,llm=nopair",2,,,,,,,True
+llm_confusion,"label=y,llm=pair",3,,,,,,,True

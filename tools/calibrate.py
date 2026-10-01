@@ -157,11 +157,23 @@ def main():
     ap.add_argument("--scenario", action="append", default=[], help="라벨된 시나리오(캐시 임베딩 사용)")
     ap.add_argument("--ownvoice", default=None, help="2채널 녹음 접두사 (data/NAME)")
     ap.add_argument("--profile", default=None)
+    ap.add_argument("--allow-untagged", action="store_true",
+                    help="_take1 표시 없는 시나리오도 보정에 사용(기록돼서 이후 평가에서는 제외됨)")
     args = ap.parse_args()
     cfg = load_config(args.profile)
     if not (args.speaker or args.scenario or args.ownvoice):
         ap.print_help()
         return
+    # 데이터 분할: 보정은 보정용(_take1)만. 쓴 녹음은 기록해서 evaluate.py 가 평가에서 거부한다.
+    sys.path.insert(0, str(ROOT / "tools"))
+    from datasplit import check_calibration_inputs, register_calibration, role, scenario_name
+    scen = [scenario_name(n) for n in args.scenario] + ([scenario_name(args.ownvoice)] if args.ownvoice else [])
+    check_calibration_inputs(scen, args.allow_untagged)
+    spk_files = [s.split("=", 1)[1] for s in args.speaker]
+    bad = [f for f in spk_files if role(scenario_name(f)) == "eval"]
+    if bad:
+        raise SystemExit(f"[분할 오류] 평가용(_take2) 녹음은 보정에 쓸 수 없습니다: {', '.join(bad)}")
+    register_calibration(scen + [scenario_name(f) for f in spk_files])
     if args.speaker:
         from app.audio_source import read_wav
         spk = {}
