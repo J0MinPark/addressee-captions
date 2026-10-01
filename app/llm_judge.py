@@ -53,18 +53,60 @@ FEW_SHOT = [
 ]
 
 
-def _prompt_version() -> str:
-    """프롬프트·few-shot·스키마가 바뀌면 바뀌는 8자리 해시. 캐시 키와 결과 기록에 들어간다."""
-    blob = json.dumps([SYSTEM_PROMPT, FEW_SHOT, SCHEMA], ensure_ascii=False, sort_keys=True)
+# 영어 버전(AMI 평가용). type 값(enum)은 한국어 그대로 둔다(정책·평가 코드와 공유).
+SYSTEM_PROMPT_EN = (
+    "You are a conversation analyzer. A has just spoken, and B spoke right after. Decide whether B's utterance "
+    "forms an adjacency pair as a response to A's utterance (question→answer, greeting→greeting, "
+    "request→accept/decline, proposal→response, assessment→reaction). If B is talking to someone other than A, "
+    "or about a topic unrelated to what A said, pair is false. Output JSON only. "
+    "type must be one of: 질문-대답 (question-answer), 인사-인사 (greeting), 요청-수락거절 (request-accept/decline), "
+    "제안-응답 (proposal-response), 평가-반응 (assessment-reaction), 없음 (none)."
+)
+
+FEW_SHOT_EN = [
+    ({"prev": [], "a": "What time is the next meeting?", "b": "I think it's at three."},
+     {"type": "질문-대답", "pair": True, "confidence": "high"}),
+    ({"prev": [], "a": "Shall we go with the rubber case then?", "b": "Yeah, that sounds good to me."},
+     {"type": "제안-응답", "pair": True, "confidence": "high"}),
+    ({"prev": [("B", "So that's the budget.")], "a": "Could you send me those slides after the meeting?",
+      "b": "Sure, I'll email them to you."},
+     {"type": "요청-수락거절", "pair": True, "confidence": "high"}),
+    ({"prev": [], "a": "Do you think the remote needs a display?",
+      "b": "Mark, can you pass me that pen over there?"},
+     {"type": "없음", "pair": False, "confidence": "high"}),
+    ({"prev": [], "a": "I really like the yellow colour.", "b": "Wait, is the projector still on?"},
+     {"type": "없음", "pair": False, "confidence": "high"}),
+    ({"prev": [], "a": "How much would the speech recognition add to the cost?",
+      "b": "Sarah, did you get the email from the marketing people?"},
+     {"type": "없음", "pair": False, "confidence": "high"}),
+]
+
+PROMPTS = {"ko": (SYSTEM_PROMPT, FEW_SHOT), "en": (SYSTEM_PROMPT_EN, FEW_SHOT_EN)}
+PROBES = {"ko": ([], "이거 얼마예요?", "만 이천 원입니다."),          # 헬스체크용 문장 쌍(정답: 짝)
+          "en": ([], "How much does this cost?", "It's twelve euros.")}
+
+
+def _prompt_version(lang: str = "ko") -> str:
+    """프롬프트·few-shot·스키마·언어가 바뀌면 바뀌는 8자리 해시. 캐시 키와 결과 기록에 들어간다."""
+    sys_p, shots = PROMPTS[lang]
+    blob = json.dumps([lang, sys_p, shots, SCHEMA], ensure_ascii=False, sort_keys=True)
     return hashlib.sha1(blob.encode("utf-8")).hexdigest()[:8]
 
 
-PROMPT_VERSION = _prompt_version()
-PROBE = ([], "이거 얼마예요?", "만 이천 원입니다.")   # 헬스체크용 문장 쌍(정답: 짝)
+PROMPT_VERSION = _prompt_version("ko")
+PROBE = PROBES["ko"]
 
 
-def format_user(prev: list[tuple[str, str]], a: str, b: str) -> str:
+def format_user(prev: list[tuple[str, str]], a: str, b: str, lang: str = "ko") -> str:
     lines = []
+    if lang == "en":
+        if prev:
+            lines.append("Previous conversation:")
+            lines += [f"{who}: {txt}" for who, txt in prev]
+            lines.append("")
+        lines.append(f"A (just said): {a}")
+        lines.append(f"B (right after): {b}")
+        return "\n".join(lines)
     if prev:
         lines.append("이전 대화:")
         lines += [f"{who}: {txt}" for who, txt in prev]
@@ -126,6 +168,8 @@ class LLMJudge:
         self.url = self.c["url"].rstrip("/")
         self.model: Optional[str] = None
         self.use_cache = bool(self.c.get("cache", True))
+        self.lang = self.c.get("prompt_lang", "ko") if self.c.get("prompt_lang", "ko") in PROMPTS else "ko"
+        self.prompt_version = _prompt_version(self.lang)
         self.think_supported = True
         self.cache: OrderedDict = OrderedDict()
         self.lock = threading.Lock()
@@ -190,7 +234,7 @@ class LLMJudge:
         """실제 판정 1회로 지연을 잰다. 성공하면 status=ok."""
         t0 = time.perf_counter()
         try:
-            res = self._call(*PROBE, timeout=timeout)
+            res = self._call(*PROBES[self.lang], timeout=timeout)
         except Exception as e:
             self._set("fail", f"판정 호출 실패({type(e).__name__})")
             return False
@@ -300,11 +344,12 @@ class LLMJudge:
 
     # ------------------------------------------------------------ 호출
     def _messages(self, prev, a, b) -> list[dict]:
-        msgs = [{"role": "system", "content": SYSTEM_PROMPT}]
-        for ex_in, ex_out in FEW_SHOT:
-            msgs.append({"role": "user", "content": format_user(ex_in["prev"], ex_in["a"], ex_in["b"])})
+        sys_p, shots = PROMPTS[self.lang]
+        msgs = [{"role": "system", "content": sys_p}]
+        for ex_in, ex_out in shots:
+            msgs.append({"role": "user", "content": format_user(ex_in["prev"], ex_in["a"], ex_in["b"], self.lang)})
             msgs.append({"role": "assistant", "content": json.dumps(ex_out, ensure_ascii=False)})
-        user = format_user(prev, a, b)
+        user = format_user(prev, a, b, self.lang)
         if not self.think_supported:
             user += " /no_think"
         msgs.append({"role": "user", "content": user})
@@ -334,7 +379,7 @@ class LLMJudge:
         if not self.available or not a or not b:
             return None
         model = self.model
-        key = (model, PROMPT_VERSION, tuple(tuple(x) for x in prev), a, b)
+        key = (model, self.prompt_version, tuple(tuple(x) for x in prev), a, b)
         if self.use_cache:
             with self.lock:
                 if key in self.cache:
@@ -361,7 +406,7 @@ class LLMJudge:
         self.lat_ms.append(ms)
         if res is None:
             return None
-        res.update(latency_ms=round(ms, 1), model=model, prompt_version=PROMPT_VERSION)
+        res.update(latency_ms=round(ms, 1), model=model, prompt_version=self.prompt_version)
         if self.use_cache:
             with self.lock:
                 self.cache[key] = res

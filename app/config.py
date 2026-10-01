@@ -42,8 +42,9 @@ def load_config(profile: Optional[str] = None, path: Optional[str] = None,
 
 def resolve_path(cfg: dict, key: str) -> Path:
     """paths.* 를 프로젝트 루트 기준 절대경로로."""
-    if key == "models_dir" and os.environ.get("HEARME_MODELS_DIR"):
-        p = Path(os.environ["HEARME_MODELS_DIR"])
+    env = {"models_dir": "HEARME_MODELS_DIR", "data_dir": "HEARME_DATA_DIR"}.get(key)
+    if env and os.environ.get(env):
+        p = Path(os.environ[env])
         p.mkdir(parents=True, exist_ok=True)
         return p
     p = Path(cfg["paths"][key])

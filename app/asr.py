@@ -61,8 +61,9 @@ class WhisperASR:
         self.desc = "none"
         name = cfg["wearer"]["name"]
         self.name_check: Optional[Callable[[str], bool]] = None   # pipeline이 호명 감지기로 설정
-        self.hotword_list = [name] + list(cfg["wearer"].get("name_variants", []))
-        self.hotwords = " ".join(dict.fromkeys([name] + [v for v in cfg["wearer"].get("name_variants", [])]))
+        use_hot = bool(self.a.get("hotwords", True)) and bool(name)
+        self.hotword_list = ([name] + list(cfg["wearer"].get("name_variants", []))) if use_hot else []
+        self.hotwords = " ".join(dict.fromkeys(self.hotword_list)) if use_hot else None
         tried = [(self.a["model"], self.a["device"], self.a["compute_type"]),
                  (self.a["fallback_model"], self.a["fallback_device"], self.a["fallback_compute_type"])]
         for model, device, ctype in dict.fromkeys(tried):
@@ -90,7 +91,7 @@ class WhisperASR:
         kw = dict(language=self.a["language"], beam_size=self.a["beam_size"], vad_filter=False,
                   condition_on_previous_text=False, without_timestamps=True)
         x = audio.astype(np.float32)
-        if hot:
+        if hot and self.hotwords:
             try:
                 segs, _ = self.model.transcribe(x, hotwords=self.hotwords, **kw)
             except TypeError:  # 구버전: hotwords 미지원

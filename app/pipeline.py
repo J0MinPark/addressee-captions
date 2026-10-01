@@ -652,7 +652,8 @@ class Pipeline:
                     "models": self.m.describe(), "single_mic": self.single_mic,
                     "wearer": self.cfg["wearer"]["name"],
                     "llm_model": getattr(self.m.judge, "model", None),
-                    "llm_prompt_version": _prompt_version(),
+                    "llm_prompt_version": getattr(self.m.judge, "prompt_version", None) or _prompt_version(),
+                    "language": self.cfg["asr"].get("language"),
                     "llm_cache": bool(self.cfg["llm"].get("cache", True)),
                     "synthetic": bool(getattr(self.src, "meta", {}).get("synthetic", False))}
             f.write(json.dumps(meta, ensure_ascii=False) + "\n")
