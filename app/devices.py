@@ -56,6 +56,11 @@ def find_input(name_part: str, prefer_wasapi: bool = True) -> Optional[int]:
 
 
 def main():
+    import sys
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
     try:
         devs = list_inputs()
     except Exception as e:  # pragma: no cover
@@ -68,6 +73,8 @@ def main():
         default_in = None
     print("입력 장치 목록 (config.yaml audio.device_wearer / device_ambient 에 이름 일부를 적으세요)")
     print("-" * 78)
+    if not devs:
+        print("  (입력 장치 없음 — 마이크를 연결하세요. 마이크 없이 시연: python tools/replay.py data/demo --realtime)")
     for d in devs:
         mark = "*" if d["index"] == default_in else " "
         print(f"{mark}[{d['index']:>2}] {d['name'][:44]:<44} {d['hostapi']:<22} ch={d['channels']} sr={d['default_sr']}")

@@ -6,7 +6,7 @@
 
 대시보드: http://<LAN IP>:8000/   폰: http://<LAN IP>:8000/phone
 """
-from __future__ import annotations
+# (FastAPI가 지역 import 타입 힌트를 해석해야 하므로 from __future__ import annotations 를 쓰지 않는다)
 
 import argparse
 import asyncio
@@ -147,10 +147,10 @@ def _put_nowait_drop(q: asyncio.Queue, data: str):
     q.put_nowait(data)
 
 
-def make_source(cfg, replay: str | None, realtime: bool):
+def make_source(cfg, replay: str | None, realtime: bool, loop: bool = False):
     from app.audio_source import LiveSource, ReplaySource
     if replay:
-        return ReplaySource(replay, cfg, realtime=realtime)
+        return ReplaySource(replay, cfg, realtime=realtime, loop=loop)
     return LiveSource(cfg)
 
 
@@ -190,6 +190,7 @@ def main(argv=None):
     ap.add_argument("--config", default=None)
     ap.add_argument("--replay", default=None, help="녹음 접두사(예: data/demo) — 마이크 대신 재생")
     ap.add_argument("--realtime", action="store_true", help="재생을 실시간 속도로")
+    ap.add_argument("--loop", action="store_true", help="재생을 무한 반복(부스 시연·장시간 안정성 시험)")
     ap.add_argument("--mode", default=None, help="all|timing|timing_speaker|full|semantic")
     ap.add_argument("--port", type=int, default=None)
     ap.add_argument("--single-mic", action="store_true")
@@ -203,7 +204,7 @@ def main(argv=None):
     cfg = load_config(args.profile, args.config, over)
     print(f"[server] 프로필: {cfg['_profile']}")
     try:
-        source = make_source(cfg, args.replay, args.realtime or not args.replay)
+        source = make_source(cfg, args.replay, args.realtime or not args.replay, args.loop)
     except Exception as e:
         print(f"[server] 오디오 소스 열기 실패: {e}")
         print("  → `python -m app.devices`로 장치 이름을 확인하고 config.yaml audio.device_* 를 고치세요.")

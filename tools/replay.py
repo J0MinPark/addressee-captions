@@ -32,6 +32,7 @@ def main():
     ap.add_argument("--profile", default=None)
     ap.add_argument("--mode", default=None)
     ap.add_argument("--no-llm", action="store_true")
+    ap.add_argument("--loop", action="store_true", help="--realtime 과 함께: 무한 반복")
     ap.add_argument("--port", type=int, default=None)
     args = ap.parse_args()
     over = {"llm": {"always_call": True}}
@@ -46,7 +47,7 @@ def main():
     if args.realtime:
         from app.server import serve
         prefix = args.prefixes[0]
-        src = ReplaySource(prefix, cfg, realtime=True)
+        src = ReplaySource(prefix, cfg, realtime=True, loop=args.loop)
         out = results / f"{src.name}.segments.jsonl"
 
         def done(pipe):

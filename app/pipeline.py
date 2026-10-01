@@ -419,7 +419,16 @@ class Pipeline:
             "stream_t": round(self.t_stream, 1),
         }
 
+    def _trim(self) -> None:
+        """장시간 실행: 기록용이 아니면 오래된 구간 기록을 버린다(메모리 일정)."""
+        if not self.record_segments and len(self.records) > 1000:
+            for k in list(self.records)[:300]:
+                del self.records[k]
+            for k in list(self.turn_rec)[:-200]:
+                del self.turn_rec[k]
+
     def _on_tick(self, t: float) -> None:
+        self._trim()
         for ev in self.policy.tick(self._now(t)):
             self.emit(ev)
 

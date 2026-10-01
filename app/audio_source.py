@@ -287,7 +287,9 @@ class ReplaySource(AudioSource):
     _B.wav가 없으면 단일 마이크 녹음으로 간주(b=a)."""
 
     def __init__(self, prefix: str | Path, cfg: dict, realtime: bool = False,
-                 single_mic: Optional[bool] = None):
+                 single_mic: Optional[bool] = None, loop: bool = False):
+        self.loop = loop
+        self.offset = 0
         self.sr = cfg["audio"]["sample_rate"]
         self.block = int(self.sr * cfg["audio"]["block_ms"] / 1000)
         pa, pb, pj = scenario_paths(prefix)
@@ -314,8 +316,11 @@ class ReplaySource(AudioSource):
 
     def read(self, timeout: float = 1.0) -> Optional[Block]:
         if self.pos + self.block > len(self.a):
-            return None
-        t = self.pos / self.sr
+            if not self.loop:
+                return None
+            self.offset += self.pos   # 처음으로 되감기, 스트림 시간은 계속 증가
+            self.pos = 0
+        t = (self.offset + self.pos) / self.sr
         if self.realtime:
             wait = self.t0_wall + t + self.block / self.sr - time.monotonic()
             if wait > 0:
@@ -327,4 +332,4 @@ class ReplaySource(AudioSource):
 
     @property
     def finished(self) -> bool:
-        return self.pos + self.block > len(self.a)
+        return not self.loop and self.pos + self.block > len(self.a)
