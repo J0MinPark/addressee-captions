@@ -140,6 +140,7 @@ python tools/evaluate.py                                 # results/ablation.md, 
 | ASR이 `small/cpu`로 떠 있음 | GPU 로딩 실패 시 자동 폴백. 터미널의 `[asr] ... 실패:` 메시지 확인 |
 | `[llm] Ollama 연결 실패` | Ollama 실행 확인(`ollama list`). 없으면 LLM 없이 동작(타이밍 2회 교대 규칙으로 등록) |
 | `설치된 모델 없음` | `ollama pull qwen3:4b` (cpu_light는 `qwen3:1.7b`) |
+| 시작 로그에 `llm=None` | LLM 없이 도는 중(full 모드가 타이밍 규칙으로만 등록). 다른 Ollama 모델이 VRAM을 잡고 있으면 실패할 수 있다 → `ollama ps` 확인, `ollama stop qwen3:1.7b` 후 재시작. **발표 전 시작 로그에서 `llm=qwen3:4b` 확인 필수** |
 | LLM 타임아웃이 잦음 | 대시보드 "LLM 타임아웃" 증가 → `llm.timeout_s` 늘리거나 cpu_light 모델로. 첫 호출은 모델 로딩으로 느림(워밍업이 처리) |
 | 폰이 접속 안 됨 | 같은 핫스팟인지, 방화벽 개인 네트워크 허용, 주소가 `http://`(https 아님)인지. 터미널에 IP가 여러 개면 핫스팟 대역(예: 172.20.x / 192.168.43.x) 것을 쓴다 |
 | 폰 진동이 안 옴 | iOS Safari는 진동 API 미지원(화면 깜박임만). 안드로이드 크롬은 화면을 한 번 터치해야 허용 |
