@@ -319,12 +319,12 @@ def main():
         except Exception as e:
             add(title, "FAIL", f"점검 중 오류: {type(e).__name__}: {e}")
 
-    w = max(len(n) for n, _, _ in ROWS) + 2
+    w = max(_w(n) for n, _, _ in ROWS) + 2
     print("\n" + "=" * 100)
-    print(f"{'항목':<{w}} 결과   상세")
+    print(f"{_pad('항목', w)} 결과   상세")
     print("-" * 100)
     for n, st, d in ROWS:
-        print(f"{n:<{w}} {COLOR.get(st, '')}{st:<5}{COLOR['END']}  {d}")
+        print(f"{_pad(n, w)} {COLOR.get(st, '')}{st:<5}{COLOR['END']}  {d}")
     print("=" * 100)
     fails = [n for n, st, _ in ROWS if st == "FAIL"]
     print(f"총 {time.perf_counter() - t_all:.0f}초 · PASS {sum(st == 'PASS' for _, st, _ in ROWS)} · "
