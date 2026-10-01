@@ -29,7 +29,7 @@ pip install -r requirements.txt # torch cu124 휠 포함(약 3GB). GPU 없는 �
 ```bash
 scripts\start_ollama.bat      # Windows: 트레이 앱·고아 러너(llama-server.exe)까지 종료 후 OLLAMA_MAX_LOADED_MODELS=1 로 serve
 ./scripts/start_ollama.sh     # Ubuntu (systemd 서비스면 Environment="OLLAMA_MAX_LOADED_MODELS=1")
-scriptsun_demo.bat          # Ollama(없으면 위 방식으로) → preflight → 서버, 한 번에
+scripts\run_demo.bat          # Ollama(없으면 위 방식으로) → preflight → 서버, 한 번에
 ```
 영구 설정: `setx OLLAMA_MAX_LOADED_MODELS 1` 후 트레이 앱 재시작.
 서버는 시작할 때 config 모델이 아닌 로드된 모델을 내리고(`keep_alive: 0`), 실제 판정 1회로 지연을 재서
@@ -74,59 +74,80 @@ Windows 방화벽 창이 뜨면 **개인 네트워크 허용**. 그래도 안 �
 ## 4. 실행
 
 ```bash
+python -m app.preflight --profile gpu_4060   # 사전 점검: 마이크·dB 차·GPU/VRAM·ASR·LLM·사이렌·LAN/QR → PASS/WARN/FAIL 표
 python -m app.server --profile gpu_4060      # 실시간 시연 (RTX 4060)
 python -m app.server --profile cpu_light     # GPU 없는 노트북: Whisper small/CPU, AST CPU, qwen3:1.7b
 python tools/replay.py data/demo --realtime  # 마이크 없이 녹음 재생 + 같은 화면 (라이브 실패 시 백업)
 python -m app.server --replay data/demo --realtime --loop   # 무한 반복(부스 시연)
 ```
 - 대시보드: `http://<IP>:8000/` (프로젝터) · 폰: `http://<IP>:8000/phone`
-- 옵션: `--mode full|timing|...`, `--no-llm`, `--single-mic`, `--port 8001`
+- 옵션: `--mode full|timing|...`, `--no-llm`, `--no-llm-cache`, `--single-mic`, `--port 8001`
 - 모든 이벤트는 `logs/run_<timestamp>.jsonl` 에 기록된다.
 
 **대시보드**: 왼쪽 자막(대화 상대 = 화자 색 큰 글씨, 다른 대화 = 회색 한 줄·클릭하면 펼침, 착용자 = 작게 오른쪽), 오른쪽 화자 목록(**클릭 = 수동 등록/해제**), 소거 모드 5개 토글, 지연 지표, 판정 로그, 초기화 버튼. 위험 소리는 화면 전체 빨간 깜박임.
 
 ## 5. 임계값 보정 순서 (현장 도착 후 10분)
 
+**데이터 분할 규칙**: 같은 시나리오를 역할을 바꿔 두 번 녹음한다. **1회차 `NAME_take1` = 보정용**, **2회차 `NAME_take2` = 평가용**.
+`calibrate.py`는 `_take1`만 받고(쓴 녹음은 `results/calibration_used.json`에 기록), `evaluate.py`·`diff_modes.py`는 `_take2`만 기본으로 쓴다.
+보정용 녹음이 평가 집합에 들어가면 오류로 멈춘다.
+
 1. **본인 발화 마진**: 2채널로 30초 녹음(착용자 말 + 상대 말 섞어서) → 측정
    ```bash
-   python tools/record.py --scenario calib --seconds 30
-   python tools/calibrate.py --ownvoice data/calib          # → ownvoice.own_margin_db 제안
+   python tools/record.py --scenario cafe_take1 --seconds 30
+   python tools/calibrate.py --ownvoice data/cafe_take1     # → ownvoice.own_margin_db 제안
    ```
    녹음 중 화면의 `A-B dB` 값이 착용자 말 때 +10dB 이상, 상대 말 때 음수여야 정상. 아니면 마이크 위치부터 고친다.
-2. **화자 임계값**: 팀원 각자 20초씩 혼자 녹음 → 
+2. **화자 임계값**: 팀원 각자 20초씩 혼자 녹음(개인 등록 녹음은 분할 표시가 없어도 되지만 `_take2`는 거부) →
    ```bash
    python tools/calibrate.py --speaker 민수=data/spk1_B.wav --speaker 지영=data/spk2_B.wav --speaker 현우=data/spk3_B.wav
    ```
    → `speaker.spk_threshold` 제안(1초 구간 기준). 같은 사람이 여러 화자 번호로 쪼개지면 낮추고, 다른 사람이 합쳐지면 올린다.
 3. **이름**: `wearer.name`, `wearer.name_variants` 를 착용자 이름으로.
-4. 시나리오 녹음 → `replay` → `label` → `evaluate` 로 표를 뽑고, 필요하면 `policy.*` 가중치를 조정(아래 6절).
 
 ## 6. 녹음 · 재생 · 라벨 · 평가 (발표용 표)
 
 ```bash
-python tools/record.py --scenario cafe_trap1             # data/cafe_trap1_A.wav, _B.wav, .json  (Ctrl+C 종료)
-python tools/replay.py data/cafe_trap1                   # results/cafe_trap1.segments.jsonl (+ .emb.npz 특징 캐시)
-python tools/label.py data/cafe_trap1                    # y=나에게 n=아님 w=본인 s=건너뜀 p=듣기 b=이전 q=종료
-python tools/evaluate.py                                 # results/ablation.md, ablation.csv
+python tools/record.py --scenario cafe_trap_take2        # 평가용: data/cafe_trap_take2_A.wav, _B.wav, .json (Ctrl+C 종료)
+python tools/replay.py data/cafe_trap_take2              # results/cafe_trap_take2.segments.jsonl (+ .emb.npz 특징 캐시)
+python tools/label.py data/cafe_trap_take2               # y=나에게 n=아님 w=본인 s=건너뜀 p=듣기 b=이전 q=종료
+python tools/evaluate.py                                 # _take2 전부 → results/ablation.md, ablation.csv
+python tools/diff_modes.py --a full --b timing_speaker   # 판정이 갈린 구간 목록 → results/diff_full_vs_timing_speaker.md
 ```
-- replay는 LLM을 착용자 직후 구간 **전부**에 호출해 캐시한다 → evaluate는 모델 없이 5개 모드의 정책만 다시 돌린다(가중치 바꿔 가며 몇 초 만에 재평가).
-- 이름에 `trap` 이 들어간 시나리오는 함정 표에 따로 모인다. 함정 = 착용자가 말한 직후 옆 사람이 다른 사람에게 하는 말.
+- replay는 LLM을 착용자 직후 구간 **전부**에 호출해 결과를 segments.jsonl에 캐시한다(모델명·프롬프트 버전도 기록).
+  evaluate·diff_modes는 모델 없이 5개 모드의 정책만 다시 돌린다. 시나리오마다 LLM 모델/프롬프트가 다르면 표에 경고가 붙는다.
+  LLM 지연을 새로 재려면 `--no-llm-cache`.
+- `ablation.md` 구성: **표 1 전체**(정밀도·재현율·F1·자막 오염도·등록 지연), **표 2 함정 시나리오만**(이름에 `trap`: 오등록률·함정 구간 오표시율),
+  **표 3 LLM 혼동행렬**(착용자 직후 구간의 라벨 y/n × LLM 짝/짝 아님/결과 없음).
+- **합성 데이터**(`data/NAME.json`의 `"synthetic": true`, 예: `data/demo`, `demo_trap`)로 만든 결과는 파일 이름과 표 제목에 `[SYNTHETIC]`이 붙고
+  (`ablation_[SYNTHETIC].md`, `diff_..._[SYNTHETIC].md`) 실제 녹음 결과와 섞이지 않는다. **발표 자료에는 `[SYNTHETIC]` 없는 파일만.**
 - 라벨러는 착용자 구간에 자동으로 `w`를 붙이고 건너뛴다. 키 하나로 넘어가며 소리도 자동 재생 → 200구간 10분 이내.
 - 실제 녹음 전 개발용: `python tools/make_test_scenario.py --name demo_trap` (Windows 내장 한국어 음성으로 합성한 2채널 대화 + 정답) → `python tools/label.py demo_trap --auto`.
 
-예시 결과(합성 시나리오 `demo_trap`, 72초, 실제 모델 전부 사용 · 라벨 y 9 / n 5 — 표본이 작으니 경향만 볼 것):
+예시 결과 **[SYNTHETIC]** (합성 시나리오 `demo_trap`, 72초, 실제 모델 전부 사용 · 라벨 y 9 / n 6 — 발표용 아님, 경향만):
 
-| 모드 | 정밀도 | 재현율 | F1 | 자막 오염도 ↓ | 오등록률 ↓ |
-|---|---:|---:|---:|---:|---:|
-| 전부 표시 | 64% | 100% | 0.78 | 34% | 2/2 |
-| 타이밍 | 83% | 56% | 0.67 | 22% | 1/2 |
-| 타이밍+화자 | 90% | 100% | 0.95 | 16% | 1/2 |
-| 전체 융합 | 89% | 89% | 0.89 | 17% | 1/2 |
-| 의미만 | 75% | 33% | 0.46 | 35% | 1/2 |
+| 모드 | 정밀도 | 재현율 | F1 | 자막 오염도 ↓ |
+|---|---:|---:|---:|---:|
+| 전부 표시 | 60% | 100% | 0.75 | 38% |
+| 타이밍 | 83% | 56% | 0.67 | 22% |
+| 타이밍+화자 | 90% | 100% | 0.95 | 16% |
+| 전체 융합 | 89% | 89% | 0.89 | 17% |
+| 의미만 | 75% | 33% | 0.46 | 35% |
 
 ## 7. 시연 런북 (90초)
 
-**사전 (발표 10분 전)**: 핫스팟 켜기 → 노트북·폰 연결 → `python -m app.server --profile gpu_4060` → 폰 QR 접속·화면 터치 → 대시보드 프로젝터 → **초기화** 버튼 → 모드 **전체 융합**. 백업 터미널에 `python tools/replay.py data/demo --realtime --port 8001` 준비(포트 다름).
+**발표 전 체크리스트** (순서대로, 발표 15분 전)
+
+1. [ ] GPU 쓰는 프로그램(게임·영상 편집 등) 종료. 핫스팟 켜고 노트북·폰을 같은 핫스팟에 연결.
+2. [ ] `scripts\start_ollama.bat` (트레이 Ollama·고아 러너 종료 후 모델 1개 모드로 실행. 켜지는 데 ~15초)
+3. [ ] `python -m app.preflight --profile gpu_4060` → 안내에 따라 착용자/상대가 5초씩 말하기 → **모든 항목 PASS** 확인
+   (FAIL이면 상세 칸의 조치대로. 마이크 녹음이 FAIL이면 5절 1번 보정)
+4. [ ] 서버를 **새로** 시작(메모리·화자 상태 초기화): 떠 있던 서버는 Ctrl+C 후 `python -m app.server --profile gpu_4060`
+   → 터미널 배너가 `llm=qwen3:4b ok …ms (GPU)` 인지 확인(`!!` 배너면 원인 해결 후 재시작)
+5. [ ] 대시보드 상단 **상태 칩이 초록**(`LLM: qwen3:4b · GPU · 0.xs`)이고 빨간 "LLM 끊김" 배너가 없는지 확인
+6. [ ] 폰으로 QR 접속 → 화면 한 번 터치(진동·화면 켜짐 허용) → 우상단 "연결됨" 확인
+7. [ ] 대시보드 **초기화** → 모드 **전체 융합** → 프로젝터 연결
+8. [ ] 백업 터미널에 `python tools/replay.py data/demo --realtime --port 8001` 준비(포트 다름, `data/demo`는 실제 시연 녹음으로 교체해 둘 것)
 사이렌 소리는 다른 폰에 영상(유튜브 "ambulance siren" 등, **미리 오프라인 저장**)으로 준비.
 
 | 시간 | 행동 | 화면에서 보여줄 것 |
@@ -180,7 +201,10 @@ app/llm_judge.py     Ollama 인접쌍 판정(think:false, JSON 스키마, 2.5초
 app/policy.py        정책 엔진(순수 로직, 시간은 인자) — 단위 테스트 대상
 app/pipeline.py      스레드 연결: audio → control(정책은 한 스레드에서 순서대로) / asr / sound / llm
 app/server.py        FastAPI + WebSocket 방송, LAN 주소·QR
-tools/               record, replay, label, evaluate, calibrate, make_test_scenario(개발용)
+app/preflight.py     발표 전 사전 점검(PASS/WARN/FAIL 표)
+tools/               record, replay, label, evaluate, diff_modes, calibrate, datasplit(분할 규칙), make_test_scenario(개발용)
+scripts/             download_models, start_ollama(.bat/.sh), run_demo.bat
+assets/              preflight용 3초 음성·사이렌 샘플
 tests/               policy (a)~(f), namecall, ownvoice, asr 필터, 합성 재생 통합 테스트
 ```
 테스트: `python -m pytest -q tests` (모델 없이 돈다).
@@ -205,3 +229,9 @@ tests/               policy (a)~(f), namecall, ownvoice, asr 필터, 합성 재�
 16. **모델 경로**: `HEARME_MODELS_DIR` 환경변수가 있으면 그 경로를 쓰고, 없으면 `models/`를 쓴다. HF·Torch·TF Hub 캐시는 모두 이 아래에 둔다.
 17. **Windows cuDNN**: 명세대로 pip `nvidia-cublas-cu12`, `nvidia-cudnn-cu12`를 받아 `os.add_dll_directory`로 등록한다. 다만 torch cu124 휠이 cuDNN 9.1을 함께 넣어 오므로, 버전이 섞이지 않게 torch를 먼저 import한다(8절 첫 줄).
 18. **합성 테스트 데이터**: `tools/make_test_scenario.py`는 시스템 TTS로 **테스트 녹음만** 만드는 개발 도구다. 제품은 음성을 출력하지 않는다. 피치를 바꾼 같은 목소리라 실제 사람보다 화자 구분이 어렵고 ASR은 쉽다. 발표 수치는 반드시 실제 녹음으로 다시 뽑을 것.
+19. **LLM 상태 판정**: `ok` = 설치된 config 모델이 실제 판정 1회에 응답하고, `/api/ps`상 그 모델만 로드돼 있고, GPU에 올라가 있음(`size_vram`이 `size`의 95% 이상이면 GPU, 0보다 크면 GPU+CPU로 노랑 칩, 0이면 FAIL). 타임아웃 2회 연속이면 FAIL이고, 다음 점검에서 판정 1회가 성공하면 복구된다. FAIL인 동안은 LLM을 부르지 않는다(정책은 LLM None 규칙). `--no-llm`은 FAIL이 아니라 OFF(회색 칩, 배너 없음)로 표시한다.
+20. **다른 모델 정리**: 명세는 "config 모델이 아닌 모델"을 내리라고 했지만, VRAM 확보를 위해 **선택된 모델 외에는 모두** 내린다. config 폴백 목록에 있는 모델도 포함한다.
+21. **복구 시간**: 실패 중에는 2초마다 점검한다. 이 PC에서 `ollama serve` 자체가 API 응답까지 ~14초(Windows GPU 탐색), 모델 로딩이 ~3.5초 걸려, 프로세스 시작부터 정상 표시까지는 ~19초다. API가 뜬 뒤 감지·로딩·점검까지는 ~5초다.
+22. **기존 LLM 캐시**: 디스크에 따로 저장되던 LLM 캐시 파일은 없었다(프로세스 메모리 캐시). 재생 결과(`results/*.segments.jsonl`)에 들어 있던 LLM 결과가 모델·프롬프트 버전 기록이 없는 캐시라서, 이것을 `cache/legacy/`로 옮기고 다시 생성했다.
+23. **함정 구간**: 착용자 발화 직후(LLM 호출 창 −0.3~1.5초 안)에 시작했는데 라벨이 n인 구간이다. 표 2의 오표시율은 그중 큰 자막으로 표시된 비율이다.
+24. **분할 미지정 이름**: `_take1`/`_take2` 표시가 없는 시나리오는 평가 기본 집합에서 빠진다. 이름을 직접 지정하면 경고와 함께 평가한다. 보정에는 `--allow-untagged`가 있어야 쓰이고, 쓰인 뒤에는 기록돼서 평가에서 거부된다.
