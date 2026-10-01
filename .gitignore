@@ -7,3 +7,5 @@ data/*.wav
 results/*.segments.jsonl
 .venv/
 cache/
+results/*.emb.npz
+results/calibration_used.json
