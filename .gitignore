@@ -6,3 +6,4 @@ logs/
 data/*.wav
 results/*.segments.jsonl
 .venv/
+cache/
