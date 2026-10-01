@@ -12,12 +12,19 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
     font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; }
-  body { display: grid; grid-template-rows: auto 1fr; overflow: hidden; }
+  body { display: grid; grid-template-rows: auto auto 1fr; overflow: hidden; }
   header { display: flex; align-items: center; gap: 16px; padding: 10px 20px; border-bottom: 1px solid var(--line); }
   header h1 { font-size: 22px; margin: 0; font-weight: 700; }
   #conn { width: 12px; height: 12px; border-radius: 50%; background: var(--red); }
   #conn.on { background: var(--ok); }
   #modelinfo { color: var(--dim); font-size: 14px; margin-left: auto; }
+  #llmchip { font-size: 16px; font-weight: 700; padding: 5px 12px; border-radius: 14px; background: #333a48; white-space: nowrap; }
+  #llmchip.ok { background: #143d22; color: #5fe08a; }
+  #llmchip.warn { background: #4a3d10; color: var(--warn); }
+  #llmchip.fail { background: var(--red); color: #fff; }
+  #llmdown { display: none; background: var(--red); color: #fff; font-size: 24px; font-weight: 800; text-align: center;
+    padding: 8px 16px; }
+  #llmdown.on { display: block; animation: pulse 1.6s infinite; }
   #banner { position: fixed; top: 0; left: 0; right: 0; z-index: 20; padding: 18px 24px; font-size: 34px;
     font-weight: 800; text-align: center; transform: translateY(-120%); transition: transform .2s; }
   #banner.show { transform: translateY(0); }
@@ -79,7 +86,9 @@
   <div id="conn" title="서버 연결"></div>
   <h1>나에게 온 말만 · <span id="wearer"></span></h1>
   <div id="modelinfo"></div>
+  <div id="llmchip" title="LLM 의미 판정 상태">LLM: …</div>
 </header>
+<div id="llmdown">LLM 끊김 — 의미 판정 꺼짐</div>
 <main>
   <section id="stream"></section>
   <aside>
@@ -121,13 +130,14 @@ function handle(ev) {
       $("#modelinfo").textContent = Object.entries(ev.models || {}).map(([k, v]) => `${k}: ${v ?? "없음"}`).join(" · ") + (ev.profile ? ` · ${ev.profile}` : "");
       (ev.speakers || []).forEach(s => speakers[s.speaker_id] = s);
       (ev.captions || []).forEach(c => addCaption(c, false));
-      setMode(ev.mode); renderSpeakers(); scrollEnd(); break;
+      setMode(ev.mode); renderSpeakers(); scrollEnd(); llmStatus(ev.llm_status); break;
+    case "llm_status": llmStatus(ev); break;
     case "caption": addCaption(ev, true); logLine(ev); break;
     case "caption_update": updateCaption(ev); logLine(ev, true); break;
     case "speaker_state": speakers[ev.speaker_id] = ev; renderSpeakers(); break;
     case "partner_added": banner(ev.label, "info", 2500); break;
     case "alert": onAlert(ev); break;
-    case "metrics": renderMetrics(ev); break;
+    case "metrics": renderMetrics(ev); llmStatus(ev.llm_status); break;
     case "mode": setMode(ev.mode); break;
     case "reset": stream.innerHTML = ""; caps = {}; speakers = {}; renderSpeakers(); break;
   }
@@ -202,11 +212,28 @@ function onAlert(ev) {
   logLine({id: "alert", role: ev.kind, text: ev.label});
 }
 
+function llmStatus(st) {
+  if (!st) return;
+  const chip = $("#llmchip"), down = $("#llmdown");
+  if (st.state === "ok") {
+    const ms = st.ms != null ? ` · ${(st.ms / 1000).toFixed(1)}s` : "";
+    chip.textContent = `LLM: ${st.model} · ${st.device}${ms}`;
+    chip.className = st.device === "GPU" ? "ok" : "warn";
+    chip.title = st.reason || "정상";
+    down.className = "";
+  } else if (st.state === "off") {
+    chip.textContent = "LLM: 꺼짐"; chip.className = ""; chip.title = st.reason || ""; down.className = "";
+  } else {
+    chip.textContent = `LLM: FAIL`; chip.className = "fail"; chip.title = st.reason || "";
+    down.textContent = `LLM 끊김 — 의미 판정 꺼짐 (${st.reason || st.state})`;
+    down.className = st.state === "init" ? "" : "on";
+  }
+}
 function renderMetrics(m) {
   const f = (v, u = "ms") => v == null ? "–" : `${Math.round(v)} ${u}`;
   $("#metrics").innerHTML = [
     ["판정 지연 평균", f(m.latency_mean_ms)], ["판정 지연 p95", f(m.latency_p95_ms)],
-    ["LLM 지연 평균 / p95", `${f(m.llm_mean_ms)} / ${f(m.llm_p95_ms)}`], ["LLM 타임아웃", m.llm_timeouts],
+    ["LLM 지연 평균 / p95", `${f(m.llm_mean_ms)} / ${f(m.llm_p95_ms)}`], ["LLM 호출 / 캐시 / 타임아웃", `${m.llm_calls ?? 0} / ${m.llm_cache_hits ?? 0} / ${m.llm_timeouts}`],
     ["ASR 큐 / 버림", `${m.asr_queue} / ${m.asr_dropped}`], ["ASR 처리 평균", f(m.asr_mean_ms)],
     ["메모리", f(m.rss_mb, "MB")], ["스트림 시간", f(m.stream_t, "s")],
   ].map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("");

@@ -32,12 +32,15 @@ def main():
     ap.add_argument("--profile", default=None)
     ap.add_argument("--mode", default=None)
     ap.add_argument("--no-llm", action="store_true")
+    ap.add_argument("--no-llm-cache", action="store_true", help="LLM 판정 캐시 끄기(매번 새로 호출)")
     ap.add_argument("--loop", action="store_true", help="--realtime 과 함께: 무한 반복")
     ap.add_argument("--port", type=int, default=None)
     args = ap.parse_args()
     over = {"llm": {"always_call": True}}
     if args.no_llm:
         over["llm"]["enabled"] = False
+    if args.no_llm_cache:
+        over["llm"]["cache"] = False
     cfg = load_config(args.profile, overrides=over)
     results = resolve_path(cfg, "results_dir")
 
@@ -63,6 +66,8 @@ def main():
     for prefix in args.prefixes:
         src = ReplaySource(prefix, cfg, realtime=False)
         t0 = time.perf_counter()
+        calls0 = getattr(models.judge, "calls", 0)
+        hits0 = getattr(models.judge, "cache_hits", 0)
         pipe = Pipeline(cfg, src, models, mode=args.mode, record_segments=True,
                         run_name=f"replay_{src.name}_{time.strftime('%H%M%S')}")
         n_ev = {"caption": 0, "caption_update": 0, "alert": 0, "partner_added": 0}
@@ -80,6 +85,12 @@ def main():
         n = pipe.write_segments(out)
         pipe.close()
         dt = time.perf_counter() - t0
+        j = models.judge
+        if j is not None:
+            lat = list(j.lat_ms)[-max(j.calls - calls0, 0):] if j.calls > calls0 else []
+            print(f"[replay] LLM: {j.health_line()} · 이번 호출 {j.calls - calls0}회, 캐시 적중 {j.cache_hits - hits0}회, "
+                  f"지연 평균 {sum(lat) / len(lat):.0f}ms" if lat else
+                  f"[replay] LLM: {j.health_line()} · 이번 호출 {j.calls - calls0}회, 캐시 적중 {j.cache_hits - hits0}회")
         print(f"[replay] {src.name}: {src.duration:.1f}s 오디오 → {dt:.1f}s 처리 (x{src.duration / max(dt, 1e-6):.1f}), "
               f"{n}개 구간 → {out}  이벤트 {n_ev}" + ("" if ok else "  [경고: 시간 초과]"))
     print("다음: python tools/label.py " + " ".join(args.prefixes))

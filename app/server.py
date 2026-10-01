@@ -171,7 +171,11 @@ def serve(cfg, source, models=None, mode=None, port=None, on_finished=None, run_
     print("=" * 60)
     print_qr(f"http://{ips[0]}:{port}/phone")
     print("폰이 접속 안 되면: 노트북과 폰을 같은 휴대폰 핫스팟에 연결하세요(README 참고).")
-    print(f"이벤트 로그: {pipe.log_path}\n")
+    print(f"이벤트 로그: {pipe.log_path}")
+    if models.judge is not None:
+        from app.pipeline import log_llm_banner
+        log_llm_banner(models.judge)
+    print()
 
     if on_finished is not None:
         def watcher():
@@ -195,12 +199,15 @@ def main(argv=None):
     ap.add_argument("--port", type=int, default=None)
     ap.add_argument("--single-mic", action="store_true")
     ap.add_argument("--no-llm", action="store_true")
+    ap.add_argument("--no-llm-cache", action="store_true", help="LLM 판정 캐시 끄기(매번 새로 호출)")
     args = ap.parse_args(argv)
     over = {}
     if args.single_mic:
         over.setdefault("audio", {})["single_mic"] = True
     if args.no_llm:
         over.setdefault("llm", {})["enabled"] = False
+    if args.no_llm_cache:
+        over.setdefault("llm", {})["cache"] = False
     cfg = load_config(args.profile, args.config, over)
     print(f"[server] 프로필: {cfg['_profile']}")
     try:

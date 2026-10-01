@@ -102,7 +102,21 @@ def load_models(cfg: dict, log=print, skip: tuple = ()) -> Models:
         m.judge = timed("llm", llm)
     log("[load] 워밍업 시간(s): " + ", ".join(f"{k}={v}" for k, v in m.timings.items()))
     log("[load] 사용 모델: " + ", ".join(f"{k}={v}" for k, v in m.describe().items()))
+    if m.judge is not None:
+        log_llm_banner(m.judge, log)
     return m
+
+
+def log_llm_banner(judge, log=print) -> None:
+    """LLM 상태를 시작 로그에 크게. FAIL이면 의미 판정이 꺼진 채로 돈다는 뜻이다."""
+    line = judge.health_line()
+    bad = judge.status["state"] != "ok"
+    bar = ("!" if bad else "=") * 64
+    log(bar)
+    log(f"{'!!' if bad else '  '}  {line}")
+    if bad and judge.status["state"] != "off":
+        log("!!  → 의미 판정 꺼짐: 타이밍 규칙으로만 등록됩니다. Ollama를 켜면 10초 안에 자동 복구.")
+    log(bar)
 
 
 # ----------------------------------------------------------------- 파이프라인
@@ -192,7 +206,14 @@ class Pipeline:
     def snapshot(self) -> dict:
         return {"type": "snapshot", "mode": self.policy.mode, "speakers": self.policy.speakers_snapshot(),
                 "captions": list(self.captions.values()), "models": self.m.describe(),
-                "wearer": self.cfg["wearer"]["name"], "profile": self.cfg.get("_profile")}
+                "wearer": self.cfg["wearer"]["name"], "profile": self.cfg.get("_profile"),
+                "llm_status": self._llm_status()}
+
+    def _llm_status(self) -> dict:
+        j = self.m.judge
+        if j is None or not hasattr(j, "status"):
+            return {"state": "off", "model": None, "device": "-", "ms": None, "reason": "LLM 없음"}
+        return dict(j.status)
 
     # ------------------------------------------------------------ 명령
     def command(self, cmd: dict) -> None:
@@ -210,9 +231,22 @@ class Pipeline:
         self.th_ctl.start()
         self.th_audio.start()
         self.emit({"type": "mode", "mode": self.policy.mode})
+        j = self.m.judge
+        if j is not None and hasattr(j, "start_monitor"):
+            j.start_monitor(self.cfg["llm"].get("monitor_interval_s", 10),
+                            lambda st: self.ctl.put(("llm_status", st)))
+        self.emit({"type": "llm_status", **self._llm_status()})
+
+    def _on_llm_status(self, st: dict) -> None:
+        """LLM 상태 변화: 정책의 LLM 사용 여부를 맞추고 대시보드에 알린다."""
+        self.policy.llm_available = st["state"] == "ok"
+        self.log(f"[llm] 상태 변경 → {self.m.judge.health_line()}")
+        self.emit({"type": "llm_status", **st})
 
     def stop(self) -> None:
         self.running = False
+        if self.m.judge is not None and hasattr(self.m.judge, "stop_monitor"):
+            self.m.judge.stop_monitor()
         try:
             self.src.stop()
         except Exception:
@@ -414,6 +448,9 @@ class Pipeline:
             "asr_mean_ms": round(float(np.mean(self.asr.proc_ms)), 1) if self.asr.proc_ms else None,
             "control_queue": self.ctl.qsize(),
             "llm_inflight": j.inflight if j else 0,
+            "llm_calls": getattr(j, "calls", 0) if j else 0,
+            "llm_cache_hits": getattr(j, "cache_hits", 0) if j else 0,
+            "llm_status": self._llm_status(),
             "sound_skipped": self.sound.skipped if self.sound else 0,
             "rss_mb": rss,
             "stream_t": round(self.t_stream, 1),
@@ -613,7 +650,11 @@ class Pipeline:
         with open(path, "w", encoding="utf-8") as f:
             meta = {"_meta": True, "run": self.run_name, "profile": self.cfg.get("_profile"),
                     "models": self.m.describe(), "single_mic": self.single_mic,
-                    "wearer": self.cfg["wearer"]["name"]}
+                    "wearer": self.cfg["wearer"]["name"],
+                    "llm_model": getattr(self.m.judge, "model", None),
+                    "llm_prompt_version": _prompt_version(),
+                    "llm_cache": bool(self.cfg["llm"].get("cache", True)),
+                    "synthetic": bool(getattr(self.src, "meta", {}).get("synthetic", False))}
             f.write(json.dumps(meta, ensure_ascii=False) + "\n")
             for r in recs:
                 f.write(json.dumps(r, ensure_ascii=False, default=_json_default) + "\n")
@@ -625,6 +666,14 @@ class Pipeline:
         if self.log_file:
             self.log_file.close()
             self.log_file = None
+
+
+def _prompt_version() -> str:
+    try:
+        from app.llm_judge import PROMPT_VERSION
+        return PROMPT_VERSION
+    except Exception:
+        return "?"
 
 
 class _NullASR:

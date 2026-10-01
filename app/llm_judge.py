@@ -1,9 +1,12 @@
 """인접쌍 판정: 로컬 Ollama LLM. 타임아웃 2.5초, 실패 시 None, 같은 입력은 캐시.
 
 Qwen3 사고 모드는 끈다: /api/chat 에 "think": false. 지원하지 않는 Ollama면 프롬프트 끝에 "/no_think".
+LLM 상태는 숨기지 않는다: 시작 헬스체크(실제 판정 1회 + 지연), 10초마다 /api/ps 점검,
+status 를 시작 로그·대시보드 칩/배너·metrics.llm_status 로 내보낸다.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import threading
@@ -50,6 +53,16 @@ FEW_SHOT = [
 ]
 
 
+def _prompt_version() -> str:
+    """프롬프트·few-shot·스키마가 바뀌면 바뀌는 8자리 해시. 캐시 키와 결과 기록에 들어간다."""
+    blob = json.dumps([SYSTEM_PROMPT, FEW_SHOT, SCHEMA], ensure_ascii=False, sort_keys=True)
+    return hashlib.sha1(blob.encode("utf-8")).hexdigest()[:8]
+
+
+PROMPT_VERSION = _prompt_version()
+PROBE = ([], "이거 얼마예요?", "만 이천 원입니다.")   # 헬스체크용 문장 쌍(정답: 짝)
+
+
 def format_user(prev: list[tuple[str, str]], a: str, b: str) -> str:
     lines = []
     if prev:
@@ -91,60 +104,203 @@ def parse_output(content: str) -> Optional[dict]:
     return {"pair": pair, "confidence": conf, "type": typ}
 
 
+def model_device(m: dict) -> str:
+    """/api/ps 항목 → GPU | GPU+CPU | CPU."""
+    size, vram = m.get("size", 0) or 0, m.get("size_vram", 0) or 0
+    if vram <= 0:
+        return "CPU"
+    return "GPU" if vram >= 0.95 * size else "GPU+CPU"
+
+
 class LLMJudge:
+    """Ollama 인접쌍 판정기 + 상태 감시.
+
+    status = {"state": ok|fail|off|init, "model", "device": GPU|GPU+CPU|CPU|-, "ms", "reason"}
+    state 가 ok 가 아니면 available=False → 파이프라인은 LLM을 부르지 않고 정책은 타이밍 규칙으로 간다.
+    """
+
     def __init__(self, cfg: dict, log=print):
         self.c = cfg["llm"]
         self.table = cfg["policy"]["llm_prob"]
         self.log = log
         self.url = self.c["url"].rstrip("/")
         self.model: Optional[str] = None
+        self.use_cache = bool(self.c.get("cache", True))
         self.think_supported = True
         self.cache: OrderedDict = OrderedDict()
         self.lock = threading.Lock()
         self.pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="llm")
         self.lat_ms: deque[float] = deque(maxlen=100)
-        self.calls = self.timeouts = self.failures = 0
+        self.calls = self.timeouts = self.failures = self.cache_hits = 0
+        self.consec_timeouts = 0
         self.inflight = 0
+        self.status = {"state": "init", "model": None, "device": "-", "ms": None, "reason": "시작 전"}
+        self._mon_stop = threading.Event()
         import requests
         self.session = requests.Session()
         self.session.trust_env = False  # 프록시 무시(로컬)
 
+    # ------------------------------------------------------------ 상태
     @property
     def available(self) -> bool:
-        return self.model is not None
+        return self.model is not None and self.status["state"] == "ok"
 
-    def setup(self) -> bool:
-        """설치된 모델 중 config 순서대로 첫 번째를 고르고 워밍업한다."""
+    def _set(self, state: str, reason: str = "", **kw) -> None:
+        st = {"state": state, "model": self.model, "device": self.status.get("device", "-"),
+              "ms": self.status.get("ms"), "reason": reason}
+        if state in ("fail", "off") and "device" not in kw:
+            st["device"] = "-"
+        st.update(kw)
+        self.status = st
+
+    def health_line(self) -> str:
+        st = self.status
+        if st["state"] == "ok":
+            return f"llm={st['model']} ok {st['ms']:.0f}ms ({st['device']})"
+        if st["state"] == "off":
+            return "llm=OFF (--no-llm 또는 config)"
+        return f"llm=FAIL {st['reason']}"
+
+    def _tags(self) -> list[str]:
+        r = self.session.get(f"{self.url}/api/tags", timeout=2.0)
+        r.raise_for_status()
+        return [m["name"] for m in r.json().get("models", [])]
+
+    def _ps(self) -> list[dict]:
+        r = self.session.get(f"{self.url}/api/ps", timeout=2.0)
+        r.raise_for_status()
+        return r.json().get("models", []) or []
+
+    def unload_others(self) -> list[str]:
+        """선택한 모델이 아닌, 로드된 모델을 내린다(VRAM 확보)."""
+        out = []
+        try:
+            for m in self._ps():
+                name = m.get("name") or m.get("model")
+                if name and name != self.model:
+                    self.session.post(f"{self.url}/api/generate", json={"model": name, "keep_alive": 0}, timeout=5)
+                    out.append(name)
+        except Exception as e:
+            self.log(f"[llm] 다른 모델 내리기 실패: {e}")
+        if out:
+            self.log(f"[llm] 다른 모델 내림: {', '.join(out)}")
+        return out
+
+    def _probe(self, timeout: float) -> bool:
+        """실제 판정 1회로 지연을 잰다. 성공하면 status=ok."""
+        t0 = time.perf_counter()
+        try:
+            res = self._call(*PROBE, timeout=timeout)
+        except Exception as e:
+            self._set("fail", f"판정 호출 실패({type(e).__name__})")
+            return False
+        ms = (time.perf_counter() - t0) * 1000
+        if res is None:
+            self._set("fail", "판정 출력 파싱 실패")
+            return False
+        dev = "-"
+        try:
+            dev = next((model_device(m) for m in self._ps() if (m.get("name") or m.get("model")) == self.model), "-")
+        except Exception:
+            pass
+        if dev == "CPU":
+            self._set("fail", "CPU로 밀려남(VRAM 부족)", device=dev, ms=ms)
+            return False
+        self.consec_timeouts = 0
+        self._set("ok", "" if res.get("pair") else "점검 문장을 '짝 아님'으로 판정(연결은 정상)", device=dev, ms=ms)
+        return True
+
+    def setup(self, warmup_timeout: Optional[float] = None) -> bool:
+        """설치된 모델 중 config 순서대로 첫 번째를 고르고, 다른 모델을 내리고, 판정 1회로 점검한다."""
         if not self.c.get("enabled", True):
-            self.log("[llm] 비활성(config)")
+            self.model = None
+            self._set("off", "비활성")
             return False
         try:
-            r = self.session.get(f"{self.url}/api/tags", timeout=2.0)
-            names = [m["name"] for m in r.json().get("models", [])]
+            names = self._tags()
         except Exception as e:
-            self.log(f"[llm] Ollama 연결 실패({self.url}) → LLM 없이 동작: {e}")
+            self.model = None
+            self._set("fail", f"Ollama 연결 실패({type(e).__name__})")
             return False
+        self.model = None
         for want in self.c["models"]:
-            hit = [n for n in names if n == want or n == f"{want}:latest" or n.split(":")[0] == want and ":" not in want]
+            hit = [n for n in names if n == want or n == f"{want}:latest"]
             if hit:
                 self.model = hit[0]
                 break
         if not self.model:
-            self.log(f"[llm] 설치된 모델 없음 (원하는 것: {self.c['models']}, 있는 것: {names}). "
-                     f"`ollama pull {self.c['models'][0]}` 필요")
+            self._set("fail", f"모델 없음 — ollama pull {self.c['models'][0]}")
             return False
-        t0 = time.perf_counter()
-        res = self._call([], "안녕하세요.", "네, 안녕하세요!", timeout=self.c.get("warmup_timeout_s", 60))
-        self.log(f"[llm] {self.model} 워밍업 {(time.perf_counter() - t0):.1f}s → {res}")
-        if res is None:
-            self.log("[llm] 워밍업 실패 → LLM 없이 동작")
-            self.model = None
-            return False
-        return True
+        self.unload_others()
+        return self._probe(warmup_timeout or self.c.get("warmup_timeout_s", 60))
 
+    def check(self) -> dict:
+        """주기 점검: 연결, 로드된 모델 이름(config와 같은지), GPU 여부, 연속 타임아웃. 끊겼으면 복구 시도."""
+        if not self.c.get("enabled", True):
+            return self.status
+        rt = self.c.get("recover_timeout_s", 8)
+        if self.model is None:
+            self.setup(warmup_timeout=rt)
+            return self.status
+        try:
+            loaded = self._ps()
+        except Exception:
+            self._set("fail", "Ollama 연결 끊김")
+            self.model = None   # 다시 켜지면 setup 부터
+            return self.status
+        others = [(m.get("name") or m.get("model")) for m in loaded
+                  if (m.get("name") or m.get("model")) != self.model]
+        mine = next((m for m in loaded if (m.get("name") or m.get("model")) == self.model), None)
+        if others:
+            self._set("fail", f"모델 불일치(로드됨: {', '.join(others)})")
+            self.unload_others()
+            self._probe(rt)
+            return self.status
+        if mine is None:              # keep_alive 만료 등으로 내려감 → 다시 올린다
+            self._probe(rt)
+            return self.status
+        dev = model_device(mine)
+        if dev == "CPU":
+            self._set("fail", "CPU로 밀려남(VRAM 부족)", device=dev)
+        elif self.consec_timeouts >= 2:
+            self._set("fail", f"타임아웃 {self.consec_timeouts}회 연속", device=dev)
+            self._probe(self.c["timeout_s"] * 2)
+        elif self.status["state"] != "ok":
+            self._probe(rt)
+        else:
+            recent = list(self.lat_ms)[-10:]
+            ms = sum(recent) / len(recent) if recent else self.status.get("ms")
+            self._set("ok", self.status.get("reason", ""), device=dev, ms=ms)
+        return self.status
+
+    def start_monitor(self, interval: float, on_change: Callable[[dict], None]) -> None:
+        """정상일 땐 interval(10초)마다, 실패 중엔 monitor_fail_interval_s(2초)마다 점검 → 켜지면 10초 안에 복구."""
+        fail_iv = self.c.get("monitor_fail_interval_s", 2)
+
+        def loop():
+            last = None
+            while not self._mon_stop.wait(interval if self.status["state"] in ("ok", "off") else fail_iv):
+                try:
+                    was_ok = self.status["state"] == "ok"
+                    st = self.check()
+                    if st["state"] == "ok" and not was_ok and (st.get("ms") or 0) > 1500:
+                        self._probe(self.c["timeout_s"] * 2)   # 콜드 로딩 시간 말고 실제 판정 지연을 표시
+                        st = self.status
+                except Exception as e:
+                    self._set("fail", f"점검 오류({type(e).__name__})")
+                    st = self.status
+                key = (st["state"], st["reason"], st.get("device"), st.get("model"))
+                if key != last:
+                    last = key
+                    on_change(dict(st))
+        threading.Thread(target=loop, name="llm-monitor", daemon=True).start()
+
+    def stop_monitor(self) -> None:
+        self._mon_stop.set()
+
+    # ------------------------------------------------------------ 호출
     def _messages(self, prev, a, b) -> list[dict]:
-        sys = SYSTEM_PROMPT
-        msgs = [{"role": "system", "content": sys}]
+        msgs = [{"role": "system", "content": SYSTEM_PROMPT}]
         for ex_in, ex_out in FEW_SHOT:
             msgs.append({"role": "user", "content": format_user(ex_in["prev"], ex_in["a"], ex_in["b"])})
             msgs.append({"role": "assistant", "content": json.dumps(ex_out, ensure_ascii=False)})
@@ -174,22 +330,29 @@ class LLMJudge:
         return out
 
     def judge(self, prev: list[tuple[str, str]], a: str, b: str) -> Optional[dict]:
-        """동기 호출. 타임아웃/파싱 실패 → None."""
+        """동기 호출. 타임아웃/파싱 실패 → None. 캐시 키 = (모델, 프롬프트 버전, 입력)."""
         if not self.available or not a or not b:
             return None
-        key = (tuple(prev), a, b)
-        with self.lock:
-            if key in self.cache:
-                self.cache.move_to_end(key)
-                return dict(self.cache[key], cached=True)
+        model = self.model
+        key = (model, PROMPT_VERSION, tuple(tuple(x) for x in prev), a, b)
+        if self.use_cache:
+            with self.lock:
+                if key in self.cache:
+                    self.cache.move_to_end(key)
+                    self.cache_hits += 1
+                    return dict(self.cache[key], cached=True)
         self.calls += 1
         t0 = time.perf_counter()
         try:
             res = self._call(prev, a, b, timeout=self.c["timeout_s"])
+            self.consec_timeouts = 0
         except Exception as e:
             name = type(e).__name__
             if "Timeout" in name:
                 self.timeouts += 1
+                self.consec_timeouts += 1
+                if self.consec_timeouts >= 2 and self.status["state"] == "ok":
+                    self._set("fail", f"타임아웃 {self.consec_timeouts}회 연속")
             else:
                 self.failures += 1
                 self.log(f"[llm] 호출 실패: {name}: {e}")
@@ -198,11 +361,12 @@ class LLMJudge:
         self.lat_ms.append(ms)
         if res is None:
             return None
-        res["latency_ms"] = round(ms, 1)
-        with self.lock:
-            self.cache[key] = res
-            while len(self.cache) > self.c.get("cache_size", 512):
-                self.cache.popitem(last=False)
+        res.update(latency_ms=round(ms, 1), model=model, prompt_version=PROMPT_VERSION)
+        if self.use_cache:
+            with self.lock:
+                self.cache[key] = res
+                while len(self.cache) > self.c.get("cache_size", 512):
+                    self.cache.popitem(last=False)
         return dict(res)
 
     def judge_async(self, prev, a, b, callback: Callable[[Optional[dict]], None]) -> None:

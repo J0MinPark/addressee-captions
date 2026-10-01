@@ -23,7 +23,18 @@ python -m venv .venv            # ⚠ OneDrive 폴더 안이면 venv와 모델�
 pip install -r requirements.txt # torch cu124 휠 포함(약 3GB). GPU 없는 노트북에서도 그대로 동작
 ```
 
-**Ollama** 설치: <https://ollama.com/download> (Windows: `winget install Ollama.Ollama`). 설치 후 트레이에서 실행 중이어야 한다.
+**Ollama** 설치: <https://ollama.com/download> (Windows: `winget install Ollama.Ollama`).
+시연 때는 **모델을 한 번에 하나만** 올리도록 띄운다(VRAM 8GB에서 Whisper·AST와 공존, 다른 모델이 VRAM을 잡아 판정이 멈추는 사고 방지):
+
+```bash
+scripts\start_ollama.bat      # Windows: 트레이 앱·고아 러너(llama-server.exe)까지 종료 후 OLLAMA_MAX_LOADED_MODELS=1 로 serve
+./scripts/start_ollama.sh     # Ubuntu (systemd 서비스면 Environment="OLLAMA_MAX_LOADED_MODELS=1")
+scriptsun_demo.bat          # Ollama(없으면 위 방식으로) → preflight → 서버, 한 번에
+```
+영구 설정: `setx OLLAMA_MAX_LOADED_MODELS 1` 후 트레이 앱 재시작.
+서버는 시작할 때 config 모델이 아닌 로드된 모델을 내리고(`keep_alive: 0`), 실제 판정 1회로 지연을 재서
+`llm=qwen3:4b ok 540ms (GPU)` 또는 `llm=FAIL <원인>` 을 크게 출력한다. 이후 10초마다(실패 중엔 2초마다) `/api/ps`로
+모델 이름·GPU 적재를 확인하고, 대시보드 상단 칩(`LLM: qwen3:4b · GPU · 0.5s`)과 빨간 배너("LLM 끊김 — 의미 판정 꺼짐")로 보여 준다.
 
 **모델 미리 받기 (행사장 네트워크를 믿지 않는다):**
 
@@ -140,6 +151,8 @@ python tools/evaluate.py                                 # results/ablation.md, 
 | ASR이 `small/cpu`로 떠 있음 | GPU 로딩 실패 시 자동 폴백. 터미널의 `[asr] ... 실패:` 메시지 확인 |
 | `[llm] Ollama 연결 실패` | Ollama 실행 확인(`ollama list`). 없으면 LLM 없이 동작(타이밍 2회 교대 규칙으로 등록) |
 | `설치된 모델 없음` | `ollama pull qwen3:4b` (cpu_light는 `qwen3:1.7b`) |
+| 대시보드에 빨간 "LLM 끊김" 배너 | 원인이 배너 괄호에 나온다. 연결 실패 → Ollama 실행. 모델 불일치/CPU로 밀려남 → `scripts\start_ollama.bat`로 재시작. Ollama는 켜는 데 이 PC에서 ~14초 걸린다(GPU 탐색) — 켜지면 서버가 2초 안에 감지해 자동 복구 |
+| Ollama를 껐다 켰더니 판정이 멈춤(GPU 100%) | `ollama.exe`만 종료하면 `llama-server.exe` 러너가 고아로 남아 VRAM을 쥔다 → 새 Ollama가 모델을 한 번 더 올려 VRAM이 넘치고 멈춤. `taskkill /IM llama-server.exe /F` (start_ollama.bat가 처리). **게임 등 GPU를 쓰는 프로그램은 시연 전 종료** |
 | 시작 로그에 `llm=None` | LLM 없이 도는 중(full 모드가 타이밍 규칙으로만 등록). 다른 Ollama 모델이 VRAM을 잡고 있으면 실패할 수 있다 → `ollama ps` 확인, `ollama stop qwen3:1.7b` 후 재시작. **발표 전 시작 로그에서 `llm=qwen3:4b` 확인 필수** |
 | LLM 타임아웃이 잦음 | 대시보드 "LLM 타임아웃" 증가 → `llm.timeout_s` 늘리거나 cpu_light 모델로. 첫 호출은 모델 로딩으로 느림(워밍업이 처리) |
 | 폰이 접속 안 됨 | 같은 핫스팟인지, 방화벽 개인 네트워크 허용, 주소가 `http://`(https 아님)인지. 터미널에 IP가 여러 개면 핫스팟 대역(예: 172.20.x / 192.168.43.x) 것을 쓴다 |
