@@ -1,0 +1,104 @@
+{
+ "demand": {
+  "path": "/home/i2slab4/jm/hearme_data/demand/PCAFETER/ch01.wav",
+  "zip_sha256": "89be7194b83cd583c4b12f4bf7c19e9cf0e612b95312e9f4aedc968cd811bcd5",
+  "source": "https://zenodo.org/records/1227121"
+ },
+ "_doc": "서버 환경 기록(tools/env_check.py --manifest). AMI 결과는 이전 PC, AI Hub 결과는 전부 이 서버.",
+ "created": "2026-10-02 12:08:43",
+ "host": "aicoss195",
+ "os": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+ "python": "3.11.17",
+ "torch": "2.7.1+cu128",
+ "torch_cuda": "12.8",
+ "cudnn": 90701,
+ "driver": "580.173.02",
+ "gpu": {
+  "index": 2,
+  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "pci_bus_id": "00000000:60:00.0",
+  "capability": "12.0"
+ },
+ "ollama": {
+  "version": "0.32.3",
+  "url": "http://127.0.0.1:11435",
+  "env": {
+   "OLLAMA_VULKAN": "0",
+   "OLLAMA_MAX_LOADED_MODELS": "1",
+   "OLLAMA_KEEP_ALIVE": "30m",
+   "OLLAMA_CONTEXT_LENGTH": "4096"
+  }
+ },
+ "packages": {
+  "faster-whisper": "1.2.1",
+  "ctranslate2": "4.8.2",
+  "speechbrain": "1.0.3",
+  "transformers": "4.57.6",
+  "silero-vad": "6.2.3",
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "fastapi": "0.142.2",
+  "websockets": "17.1"
+ },
+ "models": {
+  "ollama": {
+   "qwen3:1.7b": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+   "qwen3:4b": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7"
+  },
+  "hf": {
+   "models--MIT--ast-finetuned-audioset-10-10-0.4593": "f826b80d28226b62986cc218e5cec390b1096902",
+   "models--speechbrain--spkrec-ecapa-voxceleb": "0f99f2d0ebe89ac095bcc5903c4dd8f72b367286"
+  },
+  "whisper": {
+   "models--Systran--faster-whisper-small": "536b0662742c02347bc0e980a01041f333bce120",
+   "models--mobiuslabsgmbh--faster-whisper-large-v3-turbo": "0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf"
+  }
+ },
+ "env_check": [
+  {
+   "item": "GPU 고정(UUID)",
+   "result": "PASS",
+   "detail": "torch cuda:0 = GPU-de18b86c… / nvidia-smi GPU 2 = GPU-de18b86c… (00000000:60:00.0)"
+  },
+  {
+   "item": "CUDA(torch 커널)",
+   "result": "PASS",
+   "detail": "torch 2.7.1+cu128 CUDA 12.8 sm_120 행렬곱 OK"
+  },
+  {
+   "item": "Whisper",
+   "result": "PASS",
+   "detail": "large-v3-turbo/cuda/int8_float16 · 이 프로세스가 있는 GPU [2]"
+  },
+  {
+   "item": "AST",
+   "result": "PASS",
+   "detail": "ast/cuda · 이 프로세스가 있는 GPU [2]"
+  },
+  {
+   "item": "Ollama",
+   "result": "PASS",
+   "detail": "http://127.0.0.1:11435 v0.32.3 · llm=qwen3:4b ok 332ms (GPU) · 러너 pid [2863020] → GPU [2]"
+  },
+  {
+   "item": "logprobs(p_pair)",
+   "result": "PASS",
+   "detail": "P1 p_pair=0.993 logprob_ok=True"
+  },
+  {
+   "item": "모델 다이제스트",
+   "result": "PASS",
+   "detail": "ollama 2개 · hf 2개 · whisper 2개 (qwen3:4b 359d7dd4bcda)"
+  },
+  {
+   "item": "DEMAND PCAFETER",
+   "result": "PASS",
+   "detail": "/home/i2slab4/jm/hearme_data/demand/PCAFETER/ch01.wav · 16000Hz · 300s"
+  },
+  {
+   "item": "단위 테스트",
+   "result": "PASS",
+   "detail": "31 passed in 3.73s"
+  }
+ ]
+}

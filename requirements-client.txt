@@ -1,0 +1,5 @@
+# 원격 시연 클라이언트(Galaxy Book5 등, GPU 불필요): tools/client_capture.py, net_check.py, latency_bench.py
+#   python -m venv .venv-client && .venv-client\Scripts\activate && pip install -r requirements-client.txt
+numpy>=1.24
+sounddevice>=0.4.6
+websockets>=12.0

@@ -1,0 +1,17 @@
+[Unit]
+Description=hearme: 원격 시연 앱 서버(localhost 8000/8765, GPU 2)
+After=hearme-ollama.service
+Wants=hearme-ollama.service
+
+[Service]
+Type=simple
+WorkingDirectory=%h/jm/addressee-captions
+ExecStart=%h/jm/addressee-captions/scripts/run_server.sh run
+StandardOutput=append:%h/jm/addressee-captions/logs/server.log
+StandardError=inherit
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=20
+
+[Install]
+WantedBy=default.target

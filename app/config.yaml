@@ -1,6 +1,6 @@
 # 나에게 온 말만 보여주는 자막 — 모든 파라미터
 # 프로필(profiles.*)은 아래 기본값 위에 덮어쓴다(deep merge).
-# 실행: python -m app.server --profile gpu_4060 | cpu_light
+# 실행: python -m app.server --profile gpu_4060 | cpu_light   (리눅스 서버 원격 시연: scripts/run_server.sh, 프로필 server)
 
 wearer:
   name: "민수"
@@ -8,6 +8,7 @@ wearer:
   name_variants: ["민수", "민수야", "민수씨", "민수 씨", "민수님"]
 
 audio:
+  source: live             # live(마이크) | network(원격 클라이언트 tools/client_capture.py → WebSocket)
   sample_rate: 16000
   block_ms: 20
   ring_seconds: 30
@@ -109,7 +110,7 @@ namecall:
 
 llm:
   enabled: true
-  url: "http://127.0.0.1:11434"
+  url: "http://127.0.0.1:11434"   # 환경변수 OLLAMA_URL이 있으면 그 값(서버: http://127.0.0.1:11435)
   models: ["qwen3:4b", "qwen3:1.7b", "qwen2.5:3b"]   # 앞에서부터 설치된 첫 모델 사용
   timeout_s: 2.5
   warmup_timeout_s: 60
@@ -151,6 +152,14 @@ policy:
     no_medium: 0.2
     no_high: 0.05
 
+network:                   # audio.source: network 일 때 음성 수신(NetworkSource)
+  host: "127.0.0.1"        # localhost 전용. 클라이언트는 SSH 터널로 들어온다
+  port: 8765               # 사용 중이면 다음 빈 포트(시작 로그와 logs/run/ports.json에 기록)
+  jitter_ms: 100           # 지터 버퍼: 다음 블록을 이 시간까지 기다렸다가 무음으로 채운다
+  max_buffer_blocks: 250
+  rtt_warn_ms: 300         # 대시보드 배너 기준
+  missing_warn_pct: 1.0
+
 server:
   host: "0.0.0.0"
   port: 8000
@@ -171,6 +180,11 @@ profiles:
     asr: {model: "small", device: cpu, compute_type: int8, cpu_threads: 4}
     sound: {backend: auto, device: cpu, interval_s: 1.0}
     llm: {models: ["qwen3:1.7b", "qwen2.5:3b", "qwen3:4b"], timeout_s: 3.5}
+  server:                  # 리눅스 공용 서버(RTX PRO 6000 Blackwell, GPU 2 고정) 원격 시연. 처리는 전부 서버, 마이크는 클라이언트
+    asr: {model: "large-v3-turbo", device: cuda, compute_type: int8_float16}
+    sound: {backend: ast, device: cuda}
+    audio: {source: network}
+    server: {host: "127.0.0.1"}   # 대시보드도 localhost 전용(SSH 터널)
   ami:                     # AMI Meeting Corpus 평가(영어 회의, 헤드셋 + 원거리 마이크). GPU 4060 기준
     asr: {model: "large-v3-turbo", device: cuda, compute_type: int8_float16, language: en, hotwords: false,
           max_queue: 1000}

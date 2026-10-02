@@ -15,6 +15,72 @@
 
 ---
 
+## 0. 연구실 서버 + 원격 시연 (2026-10, 현재 기본 구성)
+
+이전 시연 PC(RTX 4060 노트북)는 더 이상 쓰지 않는다. **모든 처리는 연구실 리눅스 서버(RTX PRO 6000 Blackwell, 공용)**에서 하고,
+시연장의 **Galaxy Book5(Windows, NVIDIA GPU 없음)는 마이크 2개 입력과 대시보드 브라우저만** 맡는다.
+
+```
+Book5: tools/client_capture.py (마이크 A·B, 20ms 블록) ──┐  학교 VPN + SSH 터널
+       브라우저 http://localhost:8000/ ◀──────────────────┤  -L 8000:localhost:8000 -L 8765:localhost:8765
+서버:  127.0.0.1:8765 NetworkSource(지터 버퍼 100ms) → 기존 파이프라인 → 127.0.0.1:8000 대시보드
+       Ollama 127.0.0.1:11435 (우리 인스턴스, GPU 2) · Whisper·AST·ECAPA도 GPU 2
+```
+
+**공용 서버 규칙**: 우리 프로세스는 전부 GPU 2(`CUDA_DEVICE_ORDER=PCI_BUS_ID`, `CUDA_VISIBLE_DEVICES=2`)에서만 돈다.
+시스템 Ollama(11434, `ollama` 계정, GPU 1, 다른 사람의 모델)는 건드리지 않는다. 이름으로 프로세스를 죽이지 않고(pkill/killall 금지),
+우리가 띄운 프로세스는 `logs/run/*.pid`로만 관리한다. 대시보드·음성 포트는 **localhost에만** 연다.
+
+**서버 환경** (Ubuntu, Python 3.11 conda 환경 `.venv`):
+- `requirements.txt`는 노트북용(torch 2.6.0+cu124)으로 그대로 둔다. **서버는 torch 2.7.1+cu128이 필요하다**(Blackwell sm_120 커널은 cu124 빌드에 없다:
+  `no kernel image is available` → AST가 GPU에 못 올라간다). 실제 설치 목록: `requirements-server.lock.txt`(pip freeze).
+  ```bash
+  pip install -r requirements.txt && pip install torch==2.7.1 torchaudio==2.7.1 --index-url https://download.pytorch.org/whl/cu128
+  pip install nvidia-ml-py      # 대시보드 GPU 사용률
+  ```
+- `scripts/server_env.sh`: GPU 2 고정, `OLLAMA_URL=http://127.0.0.1:11435`, `HEARME_DATA=~/jm/hearme_data`(저장소 밖 데이터 루트). 서버 스크립트가 source 한다.
+  - `OLLAMA_URL`이 있으면 `config.yaml`의 `llm.url`(기본 11434, 노트북 호환)을 덮어쓴다.
+  - `HEARME_DATA`가 있으면 시나리오 폴더(`paths.data_dir`)가 `$HEARME_DATA/data`가 된다. AI Hub 원본·파생 파일, DEMAND 소음도 여기에 둔다.
+- `scripts/start_ollama.sh start|stop|status|restart|run [--port 11435] [--gpu 2]`: 우리 Ollama만 pid 파일로 관리한다.
+  Vulkan을 끈다(`OLLAMA_VULKAN=0`: 켜 두면 `CUDA_VISIBLE_DEVICES`와 무관하게 GPU 0·1을 잡는 것을 확인했다). 컨텍스트 4096(판정 프롬프트는 1k 토큰 미만,
+  기본값이면 4b 모델이 VRAM 41GB를 잡았다). Windows 노트북은 `scripts\start_ollama.bat` 그대로.
+- `scripts/run_server.sh start|stop|status|run [인자]`: 앱 서버(기본 `--profile server --network`). `server` 프로필 = GPU ASR·AST + 원격 음성 + localhost 바인딩.
+- **자동 재시작**: systemd 사용자 서비스(`scripts/install_services.sh`, linger 켬). `systemctl --user status|restart hearme-ollama hearme-server`.
+  로그: `logs/ollama_11435.log`, `logs/server.log`. 수동 실행과 동시에 켜지 않는다(포트가 겹치면 다음 빈 포트로 바뀐다).
+- **점검**: `source scripts/server_env.sh && python tools/env_check.py [--manifest]` → GPU 고정·CUDA·Whisper/AST/Ollama가 GPU 2에 있는지·모델 다이제스트·
+  logprobs·DEMAND·단위 테스트 PASS/FAIL 표. `--manifest`는 `results/env_manifest_server.json`과 `requirements-server.lock.txt`를 다시 쓴다.
+- **커밋 전 테스트**: `scripts/install_hooks.sh`(한 번) → pre-commit 훅이 전체 테스트 + 통합 테스트 5회 반복, 실패하면 커밋을 막는다.
+
+**시연 구성**: 시연 프로필(`server`, `gpu_4060`, `cpu_light`)은 `app/demo_config.yaml`(AI Hub dev 규칙으로 고른 구성, `tools/apply_selection.py`가 씀)을 쓴다.
+없으면 **v1 구성(P1c · 손 가중치, `--no-selected`와 같음)**이다. AMI dev 선택(`app/selected_config.yaml`, P1-qwen3:4b-learned)은 `ami` 프로필에만 적용된다(보고·재현용).
+
+**재현성**: AMI 결과(6-1, 6-2절)는 이전 PC에서 만들었고, AMI 데이터는 이 서버에 없다(이전 PC와의 수치 비교는 하지 않았다). AI Hub 결과는 dev·test 모두 이 서버에서 만든다.
+
+### 0-1. 원격 시연 접속 (Book5)
+
+```powershell
+# Book5 (Windows). 한 번만: 클라이언트 패키지만 설치(GPU 패키지 불필요)
+python -m venv .venv-client ; .venv-client\Scripts\activate ; pip install -r requirements-client.txt
+# 학교 VPN 연결 후 SSH 터널(창을 열어 둔다)
+ssh -L 8000:localhost:8000 -L 8765:localhost:8765 <사용자>@<서버>
+# 다른 창: 마이크 확인 → 음성 보내기
+python tools/client_capture.py --list
+python tools/client_capture.py --wearer "핀마이크 이름 일부" --ambient "주변 마이크 이름 일부"
+# 브라우저: http://localhost:8000/
+```
+- 서버 포트가 8000/8765가 아니면(사용 중이라 바뀐 경우) 서버 시작 로그·`logs/run/ports.json`의 포트로 터널을 맞춘다.
+- **폰 접속**: 터널을 `ssh -L 0.0.0.0:8000:localhost:8000 -L 8765:localhost:8765 <사용자>@<서버>`로 열면 같은 네트워크(핫스팟)의 폰이
+  `http://<Book5 IP>:8000/phone`으로 접속한다. Book5 IP는 `ipconfig`의 핫스팟 어댑터 IPv4. Windows 방화벽에서 8000 인바운드 허용:
+  관리자 PowerShell `New-NetFirewallRule -DisplayName hearme8000 -Direction Inbound -Protocol TCP -LocalPort 8000 -Action Allow -Profile Private,Public`
+  (또는 `netsh advfirewall firewall add rule name=hearme8000 dir=in action=allow protocol=TCP localport=8000`). 끝나면 규칙을 지운다.
+- 마이크 문제 시 백업: `python tools/client_capture.py --replay data\demo --loop`(녹음 파일을 마이크 대신 보냄).
+- 마이크가 하나면: 서버를 `--single-mic`으로(`systemctl --user stop hearme-server` 후 `scripts/run_server.sh start --single-mic`), 클라이언트도 `--single-mic`.
+- 끊기면 클라이언트가 2초마다 다시 연결하고, 끊긴 동안의 음성은 버린다. 대시보드에는 "음성 클라이언트 연결 끊김"(서버가 음성을 못 받음)과
+  "서버 연결 끊김"(브라우저↔서버 터널 끊김) 배너가 따로 뜬다. RTT 300ms 초과, 블록 누락 1% 초과(최근 30초), LLM 이상도 배너로 뜬다.
+- 대시보드 지표: 네트워크 RTT·지터·누락 블록·수신량, 서버 GPU 2 사용률·메모리, LLM 상태, 판정·LLM·ASR 지연.
+- 사전 점검(행사장): `python tools/net_check.py`(30초, RTT·지터·처리량 표, 자막에 영향 없음),
+  `python tools/latency_bench.py --remote --replay data\demo_trap`(녹음을 실시간으로 보내 자막 지연 평균·p95를 `results/latency_*.csv`로. **시작 시 대시보드를 초기화**하므로 시연 중에는 돌리지 말 것).
+
 ## 1. 설치 (Windows 11 / Ubuntu 22.04, Python 3.11)
 
 ```bash
@@ -237,7 +303,7 @@ python tools/final_test.py                                    # 시험 세트 �
 - **학습된 계수 읽기**: p_pair(+0.81)·의문문 직후(+0.74)·화자 유사도(+0.32)는 양(+)이다. 간격 g(−2.84)·구간 길이(−1.56)는 음(−)이다: 짧고 바로 붙은 응답일수록 나에게 한 말이다.
   T가 음수(−1.71)인 것은 g와 강하게 겹치는(공선성) 탓으로 보고, 둘을 함께 해석할 것.
   임계값이 0.2로 낮은 것은 양성(착용자 한 명에게 한 말)이 7%뿐이라 확률이 전반적으로 낮게 나오기 때문이다.
-- **시연 프로필에도 같은 구성**: `app/selected_config.yaml`(자동 생성)이 모든 프로필에 같은 판정기 변형·융합 가중치·플래그를 적용한다(`python tools/apply_selection.py --check`).
+- **시연 프로필에도 같은 구성** *(2026-10 변경: 지금은 `ami` 프로필에만 적용, 시연은 0절·6-3절 참고)*: `app/selected_config.yaml`(자동 생성)이 모든 프로필에 같은 판정기 변형·융합 가중치·플래그를 적용한다(`python tools/apply_selection.py --check`).
   시작 로그에 `[구성] P1-qwen3:4b-learned`가 찍힌다. 한국어 시연은 같은 P1의 한국어판 프롬프트를 쓴다.
   ⚠ 융합 가중치는 **영어 4인 회의에서 학습**됐다. 1:1 한국어 대화에서는 양성 비율이 훨씬 높아 임계값 0.2가 관대하게 작동할 수 있다.
   시연 전 `tools/judge_text_eval.py`와 대본 녹음으로 확인하고, 필요하면 `--mode timing_speaker`·수동 등록으로 대응한다.
@@ -270,6 +336,31 @@ python tools/final_test.py                                    # 시험 세트 �
 
 
 ## 7. 시연 런북 (90초)
+
+### 7-0. 원격 시연 런북 (발표 당일 · 서버 처리 + Book5) — 현재 기본
+
+**서버(발표 1시간 전, SSH로 접속해서)**
+1. [ ] `systemctl --user status hearme-ollama hearme-server` → 둘 다 `active (running)`. 아니면 `systemctl --user restart hearme-ollama hearme-server`
+2. [ ] `cd ~/jm/addressee-captions && source scripts/server_env.sh && python tools/env_check.py` → **모두 PASS**
+   (GPU 2 사용률이 다른 사람 작업으로 높으면 표의 GPU 행과 대시보드 GPU 지표를 보고, 지연이 크면 아래 4번 결과로 판단)
+3. [ ] `grep "\[구성\]\|llm=" logs/server.log | tail -2` → 구성 이름(`P1c-qwen3:4b-hand` = v1, 또는 `demo_config.yaml`의 구성)과 `llm=qwen3:4b ok … (GPU)` 확인
+
+**Book5(발표 30분 전, 시연 자리에서)**
+4. [ ] 학교 VPN 연결 → 터널 창: `ssh -L 8000:localhost:8000 -L 8765:localhost:8765 <사용자>@<서버>` (폰도 쓰면 `-L 0.0.0.0:8000:...`, 0-1절 방화벽)
+5. [ ] `python tools/net_check.py` → **모두 통과**(RTT p95 ≤ 300ms, 처리량 ≥ 필요량 95%). FAIL이면 핫스팟/유선으로 바꾸고 다시
+6. [ ] `python tools/latency_bench.py --remote --replay data\demo_trap` → 자막 지연 p95를 적어 둔다(2초 이하여야 함, 시연 구성 선택의 제약 2).
+   **client_capture를 켜기 전에** 돌린다(새 음성 연결이 기존 연결을 끊는다). 결과 CSV(`results/latency_demo_trap_remote_*.csv`)를 서버 담당에게 전달
+7. [ ] `python tools/client_capture.py --list` → `python tools/client_capture.py --wearer "<핀마이크>" --ambient "<주변 마이크>"` (창을 열어 둔다)
+8. [ ] 브라우저 `http://localhost:8000/` → 상단 칩 초록(`LLM: qwen3:4b · GPU`), 배너 없음, 오른쪽 지표 "음성 클라이언트 연결됨", RTT 수십 ms
+9. [ ] 착용자·상대가 한 마디씩 → 자막이 뜨는지, 착용자 말이 오른쪽 작은 글씨인지(아니면 마이크 위치·`own_margin_db`, 5절)
+10. [ ] 대시보드 **초기화** → 모드 **전체 융합** → 프로젝터(필요하면 폰 QR 대신 `http://<Book5 IP>:8000/phone`)
+11. [ ] 백업 준비: 다른 창에 `python tools/client_capture.py --replay data\demo --loop` (마이크가 안 되면 7번 창을 닫고 이것을 실행)
+
+**라이브가 이상하면**: "음성 클라이언트 연결 끊김" → 7번 창 확인(자동 재연결). "서버 연결 끊김" → 4번 터널 창 확인 후 새로고침.
+지연 배너(RTT 300ms 초과) → 핫스팟 전환. LLM 배너 → 서버에서 `systemctl --user restart hearme-ollama`(10초 안에 자동 복구). 화자가 꼬이면 화자를 클릭해 수동 등록/해제.
+시연 시나리오(아래 표)는 같다. 시연 구성이 timing으로 정해지면(6-3절 규칙) 함정 장면(0:35–1:00)은 뺀다.
+
+### 7-1. (이전) 노트북 단독 시연 체크리스트
 
 **발표 전 체크리스트** (순서대로, 발표 15분 전)
 
@@ -372,3 +463,27 @@ tests/               policy (a)~(f), namecall, ownvoice, asr 필터, 합성 재�
 22. **기존 LLM 캐시**: 디스크에 따로 저장되던 LLM 캐시 파일은 없었다(프로세스 메모리 캐시). 재생 결과(`results/*.segments.jsonl`)에 들어 있던 LLM 결과가 모델·프롬프트 버전 기록이 없는 캐시라서, 이것을 `cache/legacy/`로 옮기고 다시 생성했다.
 23. **함정 구간**: 착용자 발화 직후(LLM 호출 창 −0.3~1.5초 안)에 시작했는데 라벨이 n인 구간이다. 표 2의 오표시율은 그중 큰 자막으로 표시된 비율이다.
 24. **분할 미지정 이름**: `_take1`/`_take2` 표시가 없는 시나리오는 평가 기본 집합에서 빠진다. 이름을 직접 지정하면 경고와 함께 평가한다. 보정에는 `--allow-untagged`가 있어야 쓰이고, 쓰인 뒤에는 기록돼서 평가에서 거부된다.
+25. **원격 음성 블록**: 클라이언트는 20ms(320샘플) 2채널 int16 블록에 seq와 클라이언트 단조 시간을 붙여 WebSocket으로 보낸다(약 520kbps).
+    서버 지터 버퍼는 다음 seq가 없을 때 그 뒤 블록이 도착한 지 100ms까지 기다렸다가 무음으로 채우고 누락으로 센다(재정렬은 이 100ms 안에서만).
+    WebSocket은 TCP라 실제 재정렬·손실은 드물고, 누락은 주로 클라이언트 쪽 장치 오류나 재연결에서 생긴다.
+26. **재연결**: 새 음성 연결이 기존 연결을 대체한다(마지막 연결이 이긴다). 재연결하면 새 세션이고 끊긴 동안의 음성은 버린다. 서버 스트림 시간은 끊김 없이 이어진다
+    (정책 시간에는 끊긴 시간이 없는 셈이라 끊김 직전·직후 발화가 붙어 보일 수 있다. 짧은 끊김만 가정).
+27. **원격 지연 정의**: `latency_bench.py`의 지연 = 대시보드 이벤트를 받은 클라이언트 시각 − 그 구간 마지막 음성 블록을 보낸 클라이언트 시각(같은 시계).
+    "처음 표시"는 caption 이벤트, "최종"은 LLM 판정이 반영된 caption_update. 마이크 버퍼링(~20ms)은 포함하지 않는다. 시연 구성 제약 2(p95 ≤ 2초)에는 "최종"을 쓴다.
+28. **누락률 배너**: 누적이 아니라 최근 30초 기준으로 1%를 넘으면 띄운다(초반 한 번의 끊김이 계속 배너로 남지 않게). 누적값은 지표 표에 같이 보인다.
+29. **최대 속도 재생의 순서 보장**: 재생(평가)에서는 ASR에 넣은 구간의 결과를 제어 스레드가 처리할 때까지 다음 오디오를 넣지 않는다(최대 30초).
+    이전에는 제어 스레드가 밀리면 뒤 구간이 앞 구간의 LLM 결과(등록)보다 먼저 판정되는 경쟁이 있었다(부하에서 통합 테스트 약 0.5% 실패, 이 서버에서 재현·수정).
+    AMI 결과는 수정 전 코드로 이전 PC에서 만든 것이고 다시 돌리지 않았다. 실시간 경로는 바뀌지 않는다.
+30. **리눅스 합성 음성**: `make_test_scenario.py`는 리눅스에서 edge-tts(온라인, 한국어 뉴럴 음성 InJoon·SunHi·Hyunsu, D는 SunHi 음높이 +25Hz)를 쓴다.
+    Windows SAPI 한 목소리를 음높이로 바꾼 이전 합성보다 화자 구분이 쉽다. 같은 대본이다. `[SYNTHETIC]` 규칙은 같다.
+31. **calibration_used.json**: gitignore 대상이라 이전 PC에만 있었다. 커밋된 `results/ami_calibration.json`의 `from` 목록(TS3005b 착용자 4명 take1)으로 이 서버에서 다시 만들었다.
+
+### 편차 기록 (사전 계획·이전 PC 대비)
+
+| # | 내용 | 영향 |
+|---|---|---|
+| D1 | AMI 결과(dev·test)는 이전 PC(RTX 4060, Windows, torch 2.6.0+cu124)에서 만들었고, AMI 데이터가 이 서버에 없어 서버에서 재현·비교하지 않았다 | AMI 수치는 그대로 보고. 서버와의 수치 동일성은 확인 안 됨 |
+| D2 | 서버 torch는 2.7.1+cu128(Blackwell 필수). `requirements.txt`(노트북)와 다르다 | AI Hub 결과는 전부 서버 환경(`results/env_manifest_server.json`) |
+| D3 | 이전 PC에서 하려던 정리(잠금 파일 커밋 확인, 경로 정리, 환경·데이터 매니페스트)는 이 서버에서 했다. 잠금 파일 `results/final_test.lock`은 이미 커밋돼 있었다(42e2d23) | 없음 |
+| D4 | 최대 속도 재생의 순서 경쟁 수정(가정 29). AMI 결과는 수정 전 코드 | AI Hub 재생만 수정 후 코드 |
+| D5 | 시연 프로필에서 AMI 선택 구성을 뗐다(시연 기본 = v1). AMI 선택은 `ami` 프로필에만 | 6-2절의 "시연 프로필에도 같은 구성" 문장은 더 이상 유효하지 않음 |

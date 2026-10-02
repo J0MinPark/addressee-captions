@@ -1,0 +1,13 @@
+[Unit]
+Description=hearme: Ollama (127.0.0.1:11435, GPU 2) — 우리 인스턴스만
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/jm/addressee-captions
+ExecStart=%h/jm/addressee-captions/scripts/start_ollama.sh run
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

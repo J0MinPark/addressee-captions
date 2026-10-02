@@ -147,10 +147,34 @@ def _put_nowait_drop(q: asyncio.Queue, data: str):
     q.put_nowait(data)
 
 
+def port_free(host: str, port: int) -> bool:
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        s.bind((host, port))
+        return True
+    except OSError:
+        return False
+    finally:
+        s.close()
+
+
+def pick_port(host: str, want: int, avoid: tuple = (), tries: int = 50) -> int:
+    """want가 사용 중이면 다음 빈 포트. 바뀌면 크게 알린다."""
+    for p in range(want, want + tries):
+        if p not in avoid and port_free(host, p):
+            if p != want:
+                print(f"[server] ⚠ 포트 {want} 사용 중 → {p} 사용 (SSH 터널 포트도 {p}로 맞출 것)")
+            return p
+    raise SystemExit(f"[server] {host}:{want}~{want + tries} 모두 사용 중")
+
+
 def make_source(cfg, replay: str | None, realtime: bool, loop: bool = False):
     from app.audio_source import LiveSource, ReplaySource
     if replay:
         return ReplaySource(replay, cfg, realtime=realtime, loop=loop)
+    if cfg["audio"].get("source", "live") == "network":   # 원격 클라이언트(tools/client_capture.py)
+        from app.net_source import NetworkSource
+        return NetworkSource(cfg)
     return LiveSource(cfg)
 
 
@@ -162,15 +186,25 @@ def serve(cfg, source, models=None, mode=None, port=None, on_finished=None, run_
         models = load_models(cfg)
     pipe = Pipeline(cfg, source, models, mode=mode, record_segments=record_segments, run_name=run_name)
     app = build_app(pipe)
-    port = port or cfg["server"]["port"]
-    ips = lan_addresses()
+    host = cfg["server"]["host"]
+    net_port = getattr(source, "bound_port", None)
+    port = pick_port(host, port or cfg["server"]["port"], avoid=(net_port,) if net_port else ())
     print("\n" + "=" * 60)
-    for ip in ips:
-        print(f"  대시보드:  http://{ip}:{port}/")
-        print(f"  폰:        http://{ip}:{port}/phone")
-    print("=" * 60)
-    print_qr(f"http://{ips[0]}:{port}/phone")
-    print("폰이 접속 안 되면: 노트북과 폰을 같은 휴대폰 핫스팟에 연결하세요(README 참고).")
+    if host in ("127.0.0.1", "localhost"):
+        # 원격 시연 서버: localhost에만 연다. 클라이언트는 SSH 터널로 접속(README '원격 시연')
+        print(f"  대시보드:  http://127.0.0.1:{port}/   (localhost 전용 — SSH 터널로 접속)")
+        if net_port:
+            print(f"  음성 수신: ws://127.0.0.1:{net_port}")
+            print(f"  터널:      ssh -L {port}:localhost:{port} -L {net_port}:localhost:{net_port} <사용자>@<서버>")
+        _write_ports(port, net_port)
+    else:
+        ips = lan_addresses()
+        for ip in ips:
+            print(f"  대시보드:  http://{ip}:{port}/")
+            print(f"  폰:        http://{ip}:{port}/phone")
+        print("=" * 60)
+        print_qr(f"http://{ips[0]}:{port}/phone")
+        print("폰이 접속 안 되면: 노트북과 폰을 같은 휴대폰 핫스팟에 연결하세요(README 참고).")
     print(f"이벤트 로그: {pipe.log_path}")
     if models.judge is not None:
         from app.pipeline import log_llm_banner
@@ -184,9 +218,21 @@ def serve(cfg, source, models=None, mode=None, port=None, on_finished=None, run_
             pipe.wait_finished()
             on_finished(pipe)
         threading.Thread(target=watcher, daemon=True).start()
-    uvicorn.run(app, host=cfg["server"]["host"], port=port, log_level="warning")
+    uvicorn.run(app, host=host, port=port, log_level="warning")
     pipe.close()
     return pipe
+
+
+def _write_ports(port: int, net_port) -> None:
+    """실제로 쓴 포트(scripts/run_server.sh status·README 런북이 읽는다)."""
+    from app.config import resolve_path
+    try:
+        p = resolve_path({"paths": {"logs_dir": "logs"}}, "logs_dir") / "run" / "ports.json"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps({"dashboard": port, "audio": net_port, "ts": time.strftime("%Y-%m-%d %H:%M:%S")}),
+                     encoding="utf-8")
+    except Exception:
+        pass
 
 
 def main(argv=None):
@@ -199,6 +245,8 @@ def main(argv=None):
     ap.add_argument("--loop", action="store_true", help="재생을 무한 반복(부스 시연·장시간 안정성 시험)")
     ap.add_argument("--mode", default=None, help="all|timing|timing_speaker|full|semantic")
     ap.add_argument("--port", type=int, default=None)
+    ap.add_argument("--network", action="store_true", help="마이크 대신 원격 클라이언트 음성(WebSocket) 수신")
+    ap.add_argument("--net-port", type=int, default=None, help="음성 수신 포트(기본 config network.port=8765)")
     ap.add_argument("--single-mic", action="store_true")
     ap.add_argument("--no-llm", action="store_true")
     ap.add_argument("--no-llm-cache", action="store_true", help="LLM 판정 캐시 끄기(매번 새로 호출)")
@@ -215,10 +263,19 @@ def main(argv=None):
     if args.no_selected:
         import os
         os.environ["HEARME_NO_SELECTED"] = "1"
+    if args.network:
+        over.setdefault("audio", {})["source"] = "network"
     cfg = load_config(args.profile, args.config, over)
     print(f"[server] 프로필: {cfg['_profile']}")
+    if cfg["audio"].get("source") == "network" and not args.replay:
+        net = cfg.setdefault("network", {})
+        net["port"] = pick_port(net.get("host", "127.0.0.1"), args.net_port or net.get("port", 8765),
+                                avoid=(args.port or cfg["server"]["port"],))
     try:
         source = make_source(cfg, args.replay, args.realtime or not args.replay, args.loop)
+        if hasattr(source, "bound_port"):
+            source.start()   # 수신 포트를 먼저 연다(포트·터널 안내 출력용). 파이프라인 start에서 다시 부르지 않게 표시
+            source.start = lambda: None
     except Exception as e:
         print(f"[server] 오디오 소스 열기 실패: {e}")
         print("  → `python -m app.devices`로 장치 이름을 확인하고 config.yaml audio.device_* 를 고치세요.")

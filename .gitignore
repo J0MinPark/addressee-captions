@@ -13,3 +13,12 @@ results/calibration_used.json
 results/cache/
 results/*.labelstats.json
 results/llm_v2/
+# AI Hub 데이터(라이선스): 원본과 파생 파일(wav·라벨·시나리오·캐시·특징)은 $HEARME_DATA(저장소 밖)에만 둔다
+hearme_data/
+data/aihub*/
+results/aihub_cache/
+results/*.aihub.*
+*.aihub.jsonl
+*.aihub.npz
+# 서버 실행 상태
+logs/run/

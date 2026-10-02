@@ -2,6 +2,7 @@
 
 Windows 내장 한국어 음성(SAPI, Microsoft Heami)으로 대사를 만들고, 리샘플링으로 음높이/음색을 바꿔
 서로 다른 '화자'를 흉내 낸다. 제품 기능이 아니라 테스트 데이터 도구다(시스템은 음성을 출력하지 않는다).
+리눅스(서버)에서는 edge-tts(온라인, 한국어 뉴럴 음성 3개 + 음높이 변경)를 쓴다: pip install edge-tts
 
     python tools/make_test_scenario.py --name demo_trap
       → data/demo_trap_A.wav, data/demo_trap_B.wav, data/demo_trap.json, data/demo_trap.truth.json
@@ -73,6 +74,36 @@ def sapi(lines: list[tuple[str, int]], outdir: Path) -> list[Path]:
     return paths
 
 
+# edge-tts: 화자별 (음성, 음높이). 리샘플 비율은 쓰지 않는다(서로 다른 실제 음성)
+EDGE_VOICE = {"W": ("ko-KR-InJoonNeural", "+0Hz"), "P": ("ko-KR-SunHiNeural", "+0Hz"),
+              "C": ("ko-KR-HyunsuMultilingualNeural", "-10Hz"), "D": ("ko-KR-SunHiNeural", "+25Hz")}
+
+
+def edge(lines: list[tuple[str, str]], outdir: Path) -> list[np.ndarray]:
+    """[(화자, 대사)] → 16kHz 클립. 인터넷 필요(개발용)."""
+    import asyncio
+    import io
+
+    import edge_tts
+    import soundfile as sf
+    from scipy.signal import resample_poly
+
+    async def one(who, text):
+        voice, pitch = EDGE_VOICE[who]
+        buf = b""
+        async for ch in edge_tts.Communicate(text, voice, pitch=pitch).stream():
+            if ch["type"] == "audio":
+                buf += ch["data"]
+        x, fs = sf.read(io.BytesIO(buf), dtype="float32")
+        if x.ndim > 1:
+            x = x.mean(axis=1)
+        return resample_poly(x, 2, 3).astype(np.float32) if fs == 24000 else resample_poly(x, SR, fs).astype(np.float32)
+
+    async def all_():
+        return [await one(w, t) for w, t in lines]
+    return asyncio.run(all_())
+
+
 def shift(x: np.ndarray, ratio: float) -> np.ndarray:
     """ratio>1: 음높이·포먼트 상승(짧아짐)."""
     if ratio == 1.0:
@@ -108,22 +139,29 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--name", default="demo_trap")
     ap.add_argument("--noise-db", type=float, default=-38.0, help="카페 잡음 크기")
+    ap.add_argument("--tts", choices=("auto", "sapi", "edge"), default="auto", help="auto: Windows=sapi, 그 외 edge")
+    ap.add_argument("--out", default=None, help="출력 폴더(기본 config paths.data_dir — 서버는 $HEARME_DATA/data)")
     args = ap.parse_args()
-    if os.name != "nt":
-        raise SystemExit("Windows SAPI 음성이 필요합니다(개발용 도구).")
-    data = ROOT / "data"
-    data.mkdir(exist_ok=True)
+    tts = args.tts if args.tts != "auto" else ("sapi" if os.name == "nt" else "edge")
+    if tts == "sapi" and os.name != "nt":
+        raise SystemExit("Windows SAPI 음성이 필요합니다(리눅스는 --tts edge).")
+    from app.config import load_config, resolve_path
+    data = Path(args.out) if args.out else resolve_path(load_config(), "data_dir")
+    data.mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(7)
-    speech = [(VOICE[w][1], txt) for w, txt, _, _ in SCRIPT if w != "SIREN"]
-    with tempfile.TemporaryDirectory() as td:
-        paths = sapi([(t, r) for r, t in speech], Path(td))
-        clips = [trim(read_wav(p)) for p in paths]
+    if tts == "sapi":
+        speech = [(VOICE[w][1], txt) for w, txt, _, _ in SCRIPT if w != "SIREN"]
+        with tempfile.TemporaryDirectory() as td:
+            paths = sapi([(t, r) for r, t in speech], Path(td))
+            clips = [trim(read_wav(p)) for p in paths]
+    else:
+        clips = [trim(x) for x in edge([(w, txt) for w, txt, _, _ in SCRIPT if w != "SIREN"], data)]
     items, k = [], 0
     for who, txt, gap, lab in SCRIPT:
         if who == "SIREN":
             items.append((who, txt, gap, lab, siren(3.0)))
         else:
-            x = shift(clips[k], VOICE[who][0])
+            x = shift(clips[k], VOICE[who][0]) if tts == "sapi" else clips[k]
             x = x / (np.abs(x).max() + 1e-6) * 0.5
             items.append((who, txt, gap, lab, x))
             k += 1
@@ -153,10 +191,11 @@ def main():
     write_wav(data / f"{args.name}_B.wav", b)
     (data / f"{args.name}.json").write_text(json.dumps(
         {"scenario": args.name, "synthetic": True, "duration_s": round(total, 2),
-         "devices": ["synthetic (Windows SAPI ko-KR, pitch-shifted speakers)"]}, ensure_ascii=False, indent=1),
+         "devices": ["synthetic (Windows SAPI ko-KR, pitch-shifted speakers)" if tts == "sapi" else
+                     "synthetic (edge-tts ko-KR InJoon/SunHi/Hyunsu, 4 speakers)"]}, ensure_ascii=False, indent=1),
         encoding="utf-8")
     (data / f"{args.name}.truth.json").write_text(json.dumps(truth, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(f"생성: data/{args.name}_A.wav, _B.wav ({total:.1f}s), truth {len(truth)}개 발화")
+    print(f"생성: {data / args.name}_A.wav, _B.wav ({total:.1f}s), truth {len(truth)}개 발화")
 
 
 if __name__ == "__main__":

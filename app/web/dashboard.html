@@ -12,7 +12,7 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
     font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; }
-  body { display: grid; grid-template-rows: auto auto 1fr; overflow: hidden; }
+  body { display: grid; grid-template-rows: auto auto auto auto 1fr; overflow: hidden; }
   header { display: flex; align-items: center; gap: 16px; padding: 10px 20px; border-bottom: 1px solid var(--line); }
   header h1 { font-size: 22px; margin: 0; font-weight: 700; }
   #conn { width: 12px; height: 12px; border-radius: 50%; background: var(--red); }
@@ -25,6 +25,10 @@
   #llmdown { display: none; background: var(--red); color: #fff; font-size: 24px; font-weight: 800; text-align: center;
     padding: 8px 16px; }
   #llmdown.on { display: block; animation: pulse 1.6s infinite; }
+  .warnbar { display: none; color: #111; background: var(--warn); font-size: 22px; font-weight: 800; text-align: center; padding: 6px 16px; }
+  .warnbar.on { display: block; }
+  #srvdown { background: var(--red); color: #fff; }
+  #srvdown.on { animation: pulse 1.6s infinite; }
   #banner { position: fixed; top: 0; left: 0; right: 0; z-index: 20; padding: 18px 24px; font-size: 34px;
     font-weight: 800; text-align: center; transform: translateY(-120%); transition: transform .2s; }
   #banner.show { transform: translateY(0); }
@@ -89,6 +93,8 @@
   <div id="llmchip" title="LLM 의미 판정 상태">LLM: …</div>
 </header>
 <div id="llmdown">LLM 끊김 — 의미 판정 꺼짐</div>
+<div id="srvdown" class="warnbar">서버 연결 끊김 — 다시 연결 중…</div>
+<div id="netdown" class="warnbar"></div>
 <main>
   <section id="stream"></section>
   <aside>
@@ -114,11 +120,14 @@ const stream = $("#stream");
 
 function connect() {
   ws = new WebSocket((location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws");
-  ws.onopen = () => $("#conn").classList.add("on");
-  ws.onclose = () => { $("#conn").classList.remove("on"); setTimeout(connect, 2000); };
+  ws.onopen = () => { $("#conn").classList.add("on"); $("#srvdown").classList.remove("on"); lastMsg = Date.now(); };
+  ws.onclose = () => { $("#conn").classList.remove("on"); $("#srvdown").classList.add("on"); setTimeout(connect, 2000); };
   ws.onerror = () => ws.close();
-  ws.onmessage = m => { try { handle(JSON.parse(m.data)); } catch (e) { console.error(e); } };
+  ws.onmessage = m => { lastMsg = Date.now(); try { handle(JSON.parse(m.data)); } catch (e) { console.error(e); } };
 }
+// metrics는 1초마다 온다. 5초 넘게 아무것도 안 오면(터널 멈춤 등) 끊긴 것으로 보고 다시 연결
+let lastMsg = Date.now();
+setInterval(() => { if (ws && ws.readyState === 1 && Date.now() - lastMsg > 5000) { $("#srvdown").classList.add("on"); ws.close(); } }, 1000);
 function send(o) { if (ws && ws.readyState === 1) ws.send(JSON.stringify(o)); }
 setInterval(() => send({cmd: "ping"}), 15000);
 
@@ -229,9 +238,32 @@ function llmStatus(st) {
     down.className = st.state === "init" ? "" : "on";
   }
 }
+function netWarn(n) {
+  const bar = $("#netdown");
+  if (!n) { bar.classList.remove("on"); return; }
+  const msgs = [];
+  if (!n.connected) msgs.push(`음성 클라이언트 연결 끊김${n.disconnected_s != null ? ` (${Math.round(n.disconnected_s)}초)` : ""} — Book5의 client_capture 확인`);
+  else {
+    if (n.rtt_ms != null && n.rtt_ms > n.rtt_warn_ms) msgs.push(`네트워크 지연 높음 RTT ${Math.round(n.rtt_ms)}ms`);
+    if (n.missing_pct_30s > n.missing_warn_pct) msgs.push(`음성 블록 누락 ${n.missing_pct_30s.toFixed(1)}% (최근 30초)`);
+  }
+  bar.textContent = msgs.join(" · ");
+  bar.classList.toggle("on", msgs.length > 0);
+}
 function renderMetrics(m) {
   const f = (v, u = "ms") => v == null ? "–" : `${Math.round(v)} ${u}`;
-  $("#metrics").innerHTML = [
+  netWarn(m.net);
+  const n = m.net, g = m.gpu;
+  const netRows = n ? [
+    ["음성 클라이언트", n.connected ? `연결됨 · ${n.client || ""}` : "끊김"],
+    ["네트워크 RTT / p95", `${f(n.rtt_ms)} / ${f(n.rtt_p95_ms)}`], ["지터", f(n.jitter_ms)],
+    ["누락 블록 (30초 / 누적)", `${n.missing_pct_30s.toFixed(1)}% / ${n.missing} (${n.missing_pct.toFixed(2)}%)`],
+    ["수신", `${Math.round(n.kbps)} kbps · 버퍼 ${n.buffered}`],
+  ] : [];
+  const gpuRows = g ? [["서버 GPU " + g.index + " 사용률", `${g.util_pct}% · ${(g.mem_used_mb / 1024).toFixed(1)}/${(g.mem_total_mb / 1024).toFixed(0)} GB`]] : [];
+  const st = m.llm_status || {};
+  const llmRow = [["LLM 상태", st.state === "ok" ? `정상 · ${st.model} · ${st.device}` : `${st.state || "–"} ${st.reason || ""}`]];
+  $("#metrics").innerHTML = [...netRows, ...gpuRows, ...llmRow,
     ["판정 지연 평균", f(m.latency_mean_ms)], ["판정 지연 p95", f(m.latency_p95_ms)],
     ["LLM 지연 평균 / p95", `${f(m.llm_mean_ms)} / ${f(m.llm_p95_ms)}`], ["LLM 호출 / 캐시 / 타임아웃", `${m.llm_calls ?? 0} / ${m.llm_cache_hits ?? 0} / ${m.llm_timeouts}`],
     ["ASR 큐 / 버림", `${m.asr_queue} / ${m.asr_dropped}`], ["ASR 처리 평균", f(m.asr_mean_ms)],

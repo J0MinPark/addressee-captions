@@ -202,6 +202,10 @@ class Pipeline:
             self.log_file = open(p, "a", encoding="utf-8")
             self.log_path = p
         self.always_llm = bool(cfg["llm"].get("always_call")) or record_segments
+        self.gpumon = None
+        if getattr(source, "realtime", True):   # 대시보드용(평가 재생에서는 읽지 않는다)
+            from app.gpumon import GPUMonitor
+            self.gpumon = GPUMonitor()
 
     # ------------------------------------------------------------ 이벤트
     def add_listener(self, fn: Callable[[dict], None]) -> None:
@@ -374,8 +378,14 @@ class Pipeline:
         """최대 속도 재생: 버리지 말고 기다린다(평가가 결정적이도록). 실시간에서는 쓰지 않는다."""
         # 대기 중인 LLM 판정도 기다린다: 실시간에서는 판정(~0.3초)이 다음 발화보다 먼저 끝나므로, 재생에서도
         # 판정 결과(등록)가 뒤 구간보다 늦게 처리되지 않게 한다(이 순서가 바뀌면 결과가 실행마다 달라진다).
-        while self.running and (self.asr.qsize() >= 2 or self.ctl.qsize() > 20 or self.llm_deadline
+        # ASR에 넣은 구간(seg_info)도 제어 스레드가 결과를 처리할 때까지 기다린다: 제어 스레드가 밀리면 뒤 구간의
+        # 판정이 앞 구간의 LLM 결과(등록)보다 먼저 처리되는 경쟁이 있었다(부하가 있을 때 통합 테스트가 드물게 실패).
+        deadline = time.monotonic() + 30.0
+        while self.running and (self.asr.qsize() >= 2 or self.ctl.qsize() > 20 or self.llm_deadline or self.seg_info
                                 or (self.sound is not None and not self.sound.idle())):
+            if time.monotonic() > deadline:   # 결과가 영영 안 오는 경우(작업 스레드 오류) 멈추지 않게
+                self.log("[replay] 30초 넘게 대기 — 진행(순서 보장 해제)")
+                break
             time.sleep(0.002)
 
     def _process_block(self, blk: Block) -> None:
@@ -480,6 +490,8 @@ class Pipeline:
             "sound_skipped": self.sound.skipped if self.sound else 0,
             "rss_mb": rss,
             "stream_t": round(self.t_stream, 1),
+            "net": self.src.stats() if hasattr(self.src, "stats") else None,   # 원격 음성(NetworkSource)
+            "gpu": self.gpumon.read() if self.gpumon is not None else None,
         }
 
     def _trim(self) -> None:

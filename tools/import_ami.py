@@ -12,7 +12,7 @@
 - 소음: DEMAND PCAFETER(카페테리아)를 B 채널에 SNR 10/5 dB로 섞은 버전. 소음 파일이 없고 받을 수도 없으면 경고 후 건너뜀.
 - 출력: <data>/ami_<ID>_w<L>_<clean|snr10|snr5>_<take1|take2>_{A,B}.wav + .json, 회의별 <data>/ami_<ID>.das.json(대화행위)
   회의 하나는 보정용(take1), 나머지는 평가용(take2). 한 회의는 한쪽에만 속한다.
-원본 다운로드는 --raw(기본 ~/hearme_data/ami), 시나리오는 config paths.data_dir(HEARME_DATA_DIR로 변경 가능).
+원본 다운로드는 --raw(기본 $HEARME_DATA/ami, 없으면 ~/hearme_data/ami), 시나리오는 config paths.data_dir(HEARME_DATA_DIR로 변경 가능).
 """
 from __future__ import annotations
 
@@ -229,7 +229,8 @@ def main():
     ap.add_argument("--calib", default=None, help="보정용(take1) 회의 ID(기본: 선택한 회의 중 주석 비율이 가장 낮은 것)")
     ap.add_argument("--minutes", type=float, default=15.0, help="회의 앞 몇 분을 쓸지")
     ap.add_argument("--conds", default="clean,snr10,snr5")
-    ap.add_argument("--raw", default=str(Path.home() / "hearme_data" / "ami"), help="원본 다운로드 위치")
+    ap.add_argument("--raw", default=str(Path(os.environ.get("HEARME_DATA") or Path.home() / "hearme_data") / "ami"),
+                    help="원본 다운로드 위치")
     args = ap.parse_args()
 
     cfg = load_config("ami")
