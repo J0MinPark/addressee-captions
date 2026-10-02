@@ -80,4 +80,4 @@ if __name__ == "__main__":
     # 그룹이 겹치지 않는지 자체 검사
     gs = {k: {group_of(m) for m in SPLITS[k]} for k in ("calib", "dev", "test")}
     assert not (gs["dev"] & gs["test"]) and not (gs["calib"] & (gs["dev"] | gs["test"])), gs
-    print("그룹 겹침 없음 ✓")
+    print("그룹 겹침 없음 OK")
