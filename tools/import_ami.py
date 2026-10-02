@@ -24,6 +24,8 @@ import time
 import urllib.request
 import xml.etree.ElementTree as ET
 import zipfile
+import os
+import shutil
 import zlib
 from pathlib import Path
 
@@ -302,7 +304,16 @@ def main():
             for c in conds:
                 name = f"ami_{mid}_w{L}_{c}_{take}"
                 write_wav(data / f"{name}_A.wav", a)
-                write_wav(data / f"{name}_B.wav", bs[c][:len(a)])
+                # B 채널은 착용자 4명이 똑같다 → 한 번만 쓰고 하드링크(디스크 절약, 실패하면 복사)
+                shared = data / f"ami_{mid}_{c}_Bshared.wav"
+                if not shared.exists():
+                    write_wav(shared, bs[c][:len(a)])
+                dst = data / f"{name}_B.wav"
+                dst.unlink(missing_ok=True)
+                try:
+                    os.link(shared, dst)
+                except OSError:
+                    shutil.copyfile(shared, dst)
                 (data / f"{name}.json").write_text(json.dumps({
                     "scenario": name, "source": "AMI Meeting Corpus", "synthetic": False, "meeting": mid,
                     "wearer": L, "wearer_global": info["global"][L], "headset_channel": info["channels"][L],
@@ -312,7 +323,7 @@ def main():
                     "devices": [f"AMI {mid} Headset-{info['channels'][L]}", f"AMI {mid} Array1-01"]},
                     ensure_ascii=False, indent=1), encoding="utf-8")
             print(f"  ✓ 착용자 {L} (Headset-{info['channels'][L]}): {', '.join(conds)} → ami_{mid}_w{L}_*_{take}")
-    out = data / "ami_import.json"
+    out = data / f"ami_import_{time.strftime('%Y%m%d_%H%M%S')}.json"
     out.write_text(json.dumps(log, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"\n완료. 시나리오 {len(sel) * 4 * len(conds)}개 · 기록: {out}\n다음: python tools/run_ami.py")
 

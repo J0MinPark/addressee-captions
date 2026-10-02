@@ -68,6 +68,8 @@ def simulate(cfg: dict, segs: list[dict], mode: str) -> dict:
 
     def handle(events, t):
         for e in events:
+            if e["type"] == "caption_update" and e.get("id") in roles:   # --candidate-rejudge 의 나중 확정/접기
+                roles[e["id"]], probs[e["id"]] = e["role"], e["prob"]
             if e["type"] == "speaker_state" and e["state"] == "partner" and e["speaker_id"] not in reg:
                 reg[e["speaker_id"]] = t
 

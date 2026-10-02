@@ -86,11 +86,128 @@ PROBES = {"ko": ([], "이거 얼마예요?", "만 이천 원입니다."),       
           "en": ([], "How much does this cost?", "It's twelve euros.")}
 
 
-def _prompt_version(lang: str = "ko") -> str:
-    """프롬프트·few-shot·스키마·언어가 바뀌면 바뀌는 8자리 해시. 캐시 키와 결과 기록에 들어간다."""
-    sys_p, shots = PROMPTS[lang]
-    blob = json.dumps([lang, sys_p, shots, SCHEMA], ensure_ascii=False, sort_keys=True)
+# ---------------------------------------------------------------- v2: 연속 점수(p_pair) 판정기
+# 변형: P1c = v1(위 프롬프트, confidence 매핑) · P1 = 인접쌍 정의 · P2 = 반응 정의 확장 · P3 = P2 + 화자 표시 최근 4턴
+# P1/P2/P3 는 {"pair": bool} 만 출력하게 하고, Ollama logprobs 에서 true/false 토큰 확률로 p_pair 를 계산한다.
+SCHEMA_PAIR = {"type": "object", "properties": {"pair": {"type": "boolean"}}, "required": ["pair"]}
+VARIANTS = ("P1c", "P1", "P2", "P3")
+
+_P1_KO = ("너는 대화 분석기다. A가 방금 말했고, 그 직후 B가 말했다. B의 말이 A의 말에 대한 응답으로서 인접쌍(질문→대답, "
+          "인사→인사, 요청→수락/거절, 제안→응답, 평가→반응)을 이루는지 판단하라. B가 A가 아닌 다른 사람에게 말하거나 "
+          "A의 말과 무관한 주제를 말하면 pair는 false다. JSON {\"pair\": true|false}만 출력하라.")
+_P1_EN = ("You are a conversation analyzer. A has just spoken, and B spoke right after. Decide whether B's utterance forms "
+          "an adjacency pair as a response to A's utterance (question→answer, greeting→greeting, request→accept/decline, "
+          "proposal→response, assessment→reaction). If B is talking to someone other than A, or about a topic unrelated "
+          "to what A said, pair is false. Output only JSON {\"pair\": true|false}.")
+_P2_KO = ("너는 대화 분석기다. A가 방금 말했고, 그 직후 B가 말했다. B의 말이 A의 말에 대한 반응(대답, 동의·반대, 이어받기, "
+          "맞장구, 되묻기)인가, 아니면 다른 사람이나 다른 화제를 향한 말인가? A의 말에 대한 반응이면 pair는 true, "
+          "다른 사람이나 다른 화제를 향한 말이면 false다. JSON {\"pair\": true|false}만 출력하라.")
+_P2_EN = ("You are a conversation analyzer. A has just spoken, and B spoke right after. Is B's utterance a reaction to A's "
+          "utterance (an answer, agreement or disagreement, taking up the point, a backchannel, or a clarification "
+          "question), or is it directed at someone else or at a different topic? If it is a reaction to A, pair is true; "
+          "if it is directed at someone else or a different topic, pair is false. Output only JSON {\"pair\": true|false}.")
+_P3_KO_ADD = (" 이전 대화의 각 줄 앞에는 화자가 표시된다: A = 방금 말한 사람(착용자), B = 판정 대상 화자, "
+              "X1·X2… = 그 밖의 사람. 이전 대화를 참고해 B가 누구에게, 무엇에 대해 말하는지 판단하라.")
+_P3_EN_ADD = (" Each line of the previous conversation is labelled with its speaker: A = the person who just spoke "
+              "(the wearer), B = the speaker being judged, X1, X2… = other people. Use the previous conversation to "
+              "decide whom B is addressing and about what.")
+
+_T, _F = {"pair": True}, {"pair": False}
+_SHOT_P1_KO = [(ex_in, {"pair": ex_out["pair"]}) for ex_in, ex_out in FEW_SHOT]
+_SHOT_P1_EN = [(ex_in, {"pair": ex_out["pair"]}) for ex_in, ex_out in FEW_SHOT_EN]
+# P2/P3: 짝 3(대답·맞장구·되묻기) + 짝 아님 3(질문 직후 제3자에게 하는 다른 질문, 다른 화제, 다른 사람에게)
+_SHOT_P2_KO = [
+    ({"prev": [], "a": "이 디자인 너무 복잡하지 않아요?", "b": "음, 좀 그런 것 같아요."}, _T),
+    ({"prev": [], "a": "그래서 버튼을 두 개로 줄이면 될 것 같아요.", "b": "두 개요? 어떤 거 두 개요?"}, _T),
+    ({"prev": [], "a": "배터리는 충전식으로 하죠.", "b": "그건 단가가 너무 올라가서 반대예요."}, _T),
+    ({"prev": [], "a": "회의 몇 시에 끝나요?", "b": "지수 씨, 혹시 펜 하나 있어요?"}, _F),
+    ({"prev": [], "a": "색은 노란색이 좋겠어요.", "b": "아 맞다, 프로젝터 꺼야 되나?"}, _F),
+    ({"prev": [], "a": "이 부분은 제가 정리할게요.", "b": "엄마, 나 회의 중이라 이따 전화할게."}, _F),
+]
+_SHOT_P2_EN = [
+    ({"prev": [], "a": "Isn't this design a bit too complicated?", "b": "Mm, yeah, I think so."}, _T),
+    ({"prev": [], "a": "So we could cut it down to two buttons.", "b": "Two? Which two do you mean?"}, _T),
+    ({"prev": [], "a": "Let's make the battery rechargeable.", "b": "I'm against that, it pushes the unit cost up too much."}, _T),
+    ({"prev": [], "a": "What time does the meeting end?", "b": "Sarah, do you have a spare pen?"}, _F),
+    ({"prev": [], "a": "I think yellow would be the best colour.", "b": "Oh right, should I switch off the projector?"}, _F),
+    ({"prev": [], "a": "I'll put this part together.", "b": "Mum, I'm in a meeting, I'll call you later."}, _F),
+]
+_SHOT_P3_KO = [
+    ({"prev": [("X1", "자 다음은 버튼 얘기죠."), ("A", "네.")], "a": "이 디자인 너무 복잡하지 않아요?", "b": "음, 좀 그런 것 같아요."}, _T),
+    ({"prev": [("B", "버튼 수를 줄여야 해요.")], "a": "그래서 버튼을 두 개로 줄이면 될 것 같아요.", "b": "두 개요? 어떤 거 두 개요?"}, _T),
+    ({"prev": [("X1", "충전 방식 정해야죠.")], "a": "배터리는 충전식으로 하죠.", "b": "그건 단가가 너무 올라가서 반대예요."}, _T),
+    ({"prev": [("X1", "펜이 안 나오네.")], "a": "회의 몇 시에 끝나요?", "b": "지수 씨, 혹시 펜 하나 있어요?"}, _F),
+    ({"prev": [("B", "화면이 좀 어둡네요.")], "a": "색은 노란색이 좋겠어요.", "b": "아 맞다, 프로젝터 꺼야 되나?"}, _F),
+    ({"prev": [], "a": "이 부분은 제가 정리할게요.", "b": "엄마, 나 회의 중이라 이따 전화할게."}, _F),
+]
+_SHOT_P3_EN = [
+    ({"prev": [("X1", "Right, next up is the buttons."), ("A", "Yeah.")], "a": "Isn't this design a bit too complicated?",
+      "b": "Mm, yeah, I think so."}, _T),
+    ({"prev": [("B", "We need fewer buttons.")], "a": "So we could cut it down to two buttons.",
+      "b": "Two? Which two do you mean?"}, _T),
+    ({"prev": [("X1", "We still have to decide on the power.")], "a": "Let's make the battery rechargeable.",
+      "b": "I'm against that, it pushes the unit cost up too much."}, _T),
+    ({"prev": [("X1", "My pen's run out.")], "a": "What time does the meeting end?", "b": "Sarah, do you have a spare pen?"}, _F),
+    ({"prev": [("B", "The screen's a bit dark.")], "a": "I think yellow would be the best colour.",
+      "b": "Oh right, should I switch off the projector?"}, _F),
+    ({"prev": [], "a": "I'll put this part together.", "b": "Mum, I'm in a meeting, I'll call you later."}, _F),
+]
+PROMPTS_V2 = {
+    ("ko", "P1"): (_P1_KO, _SHOT_P1_KO), ("en", "P1"): (_P1_EN, _SHOT_P1_EN),
+    ("ko", "P2"): (_P2_KO, _SHOT_P2_KO), ("en", "P2"): (_P2_EN, _SHOT_P2_EN),
+    ("ko", "P3"): (_P2_KO + _P3_KO_ADD, _SHOT_P3_KO), ("en", "P3"): (_P2_EN + _P3_EN_ADD, _SHOT_P3_EN),
+}
+
+
+def prompt_for(lang: str, variant: str) -> tuple[str, list, dict]:
+    if variant == "P1c":
+        sys_p, shots = PROMPTS[lang]
+        return sys_p, shots, SCHEMA
+    sys_p, shots = PROMPTS_V2[(lang, variant)]
+    return sys_p, shots, SCHEMA_PAIR
+
+
+def _prompt_version(lang: str = "ko", variant: str = "P1c") -> str:
+    """프롬프트·few-shot·스키마·언어·변형이 바뀌면 바뀌는 8자리 해시. 캐시 키와 결과 기록에 들어간다."""
+    sys_p, shots, schema = prompt_for(lang, variant)
+    parts = [lang, sys_p, shots, schema] + ([variant] if variant != "P1c" else [])
+    blob = json.dumps(parts, ensure_ascii=False, sort_keys=True)
     return hashlib.sha1(blob.encode("utf-8")).hexdigest()[:8]
+
+
+def p_pair_from_logprobs(logprobs: list) -> Optional[float]:
+    """{"pair": <bool>} 의 bool 위치 토큰 상위 후보에서 P(true) / (P(true)+P(false))."""
+    import math
+    for tk in logprobs or []:
+        if tk.get("token", "").strip() in ("true", "false"):
+            lt = max([x["logprob"] for x in tk.get("top_logprobs", []) if x["token"].strip() == "true"] or [-30.0])
+            lf = max([x["logprob"] for x in tk.get("top_logprobs", []) if x["token"].strip() == "false"] or [-30.0])
+            return 1.0 / (1.0 + math.exp(lf - lt))
+    return None
+
+
+def recent_turns(recs: list[dict], cand: dict, n: int = 4, merge_gap: float = 1.5) -> tuple[Optional[str], list]:
+    """P3 문맥: 후보 구간 직전의 화자 표시 대화. recs = 구간 기록(파이프라인 records/segments.jsonl 동일 형식).
+    반환 (A 텍스트 = 후보 직전의 연속 착용자 발화, 그 이전 n턴 [(A|B|X<id>, 텍스트)])."""
+    t0 = cand["t_start"]
+    sid = cand.get("speaker_id")
+    turns = []
+    for r in sorted(recs, key=lambda r: r["t_start"]):
+        if r is cand or r.get("seg_id") == cand.get("seg_id") or r.get("skip") or not r.get("text"):
+            continue
+        if r["t_start"] >= t0:
+            continue
+        who = "A" if r.get("is_wearer") else ("B" if sid is not None and r.get("speaker_id") == sid
+                                              else f"X{r.get('speaker_id') if r.get('speaker_id') is not None else '?'}")
+        if turns and turns[-1][0] == who and r["t_start"] - turns[-1][2] <= merge_gap:
+            turns[-1] = (who, turns[-1][1] + " " + r["text"], r["t_end"])
+        else:
+            turns.append((who, r["text"], r["t_end"]))
+    if not turns or turns[-1][0] != "A":
+        return None, []
+    a_text = turns[-1][1]
+    prev = [(w, t if len(t) <= 80 else "…" + t[-80:]) for w, t, _ in turns[:-1][-n:]]
+    return a_text, prev
 
 
 PROMPT_VERSION = _prompt_version("ko")
@@ -169,7 +286,9 @@ class LLMJudge:
         self.model: Optional[str] = None
         self.use_cache = bool(self.c.get("cache", True))
         self.lang = self.c.get("prompt_lang", "ko") if self.c.get("prompt_lang", "ko") in PROMPTS else "ko"
-        self.prompt_version = _prompt_version(self.lang)
+        self.variant = self.c.get("variant", "P1c") if self.c.get("variant", "P1c") in VARIANTS else "P1c"
+        self.prompt_version = _prompt_version(self.lang, self.variant)
+        self.logprob_ok: Optional[bool] = None   # Ollama가 logprobs를 돌려주는지(첫 호출에서 확인)
         self.think_supported = True
         self.cache: OrderedDict = OrderedDict()
         self.lock = threading.Lock()
@@ -344,7 +463,7 @@ class LLMJudge:
 
     # ------------------------------------------------------------ 호출
     def _messages(self, prev, a, b) -> list[dict]:
-        sys_p, shots = PROMPTS[self.lang]
+        sys_p, shots, _ = prompt_for(self.lang, self.variant)
         msgs = [{"role": "system", "content": sys_p}]
         for ex_in, ex_out in shots:
             msgs.append({"role": "user", "content": format_user(ex_in["prev"], ex_in["a"], ex_in["b"], self.lang)})
@@ -357,10 +476,14 @@ class LLMJudge:
 
     def _call(self, prev, a, b, timeout: float) -> Optional[dict]:
         body = {
-            "model": self.model, "stream": False, "format": SCHEMA, "keep_alive": self.c["keep_alive"],
+            "model": self.model, "stream": False, "format": prompt_for(self.lang, self.variant)[2],
+            "keep_alive": self.c["keep_alive"],
             "options": {"temperature": self.c["temperature"], "num_predict": self.c["num_predict"]},
             "messages": self._messages(prev, a, b),
         }
+        if self.variant != "P1c":
+            body["logprobs"] = True
+            body["top_logprobs"] = 10
         if self.think_supported:
             body["think"] = False
         r = self.session.post(f"{self.url}/api/chat", json=body, timeout=timeout)
@@ -369,9 +492,23 @@ class LLMJudge:
             self.log("[llm] 이 Ollama는 think 옵션 미지원 → /no_think 프롬프트 사용")
             return self._call(prev, a, b, timeout)
         r.raise_for_status()
-        out = parse_output(r.json().get("message", {}).get("content", ""))
-        if out is not None:
+        js = r.json()
+        out = parse_output(js.get("message", {}).get("content", ""))
+        if out is None:
+            return None
+        if self.variant == "P1c":
             out["prob"] = to_prob(out["pair"], out["confidence"], self.table)
+            return out
+        p = p_pair_from_logprobs(js.get("logprobs"))
+        if p is None:   # logprobs 미지원 → 기존 confidence 매핑으로 대체(보고됨)
+            if self.logprob_ok is None:
+                self.log("[llm] 이 Ollama는 logprobs를 돌려주지 않음 → p_pair 대신 confidence 매핑 사용")
+            self.logprob_ok = False
+            p = 0.9 if out["pair"] else 0.1
+        else:
+            self.logprob_ok = True
+        out.update(pair=p >= 0.5, prob=float(p), p_pair=float(p), type="반응" if p >= 0.5 else "없음",
+                   confidence="high" if abs(p - 0.5) > 0.4 else "medium" if abs(p - 0.5) > 0.2 else "low")
         return out
 
     def judge(self, prev: list[tuple[str, str]], a: str, b: str) -> Optional[dict]:

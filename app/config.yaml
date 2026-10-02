@@ -116,6 +116,7 @@ llm:
   recover_timeout_s: 8     # 주기 점검에서 복구할 때 판정 1회 타임아웃
   monitor_interval_s: 10   # Ollama 상태 점검 주기(/api/ps)
   monitor_fail_interval_s: 2   # 실패 중일 때 복구 시도 주기
+  variant: P1c             # 판정기 변형: P1c(v1, confidence 매핑) | P1 | P2 | P3 (연속 p_pair, logprobs)
   prompt_lang: ko          # ko | en (판정 프롬프트·few-shot 언어)
   cache: true              # 같은 입력 캐시(--no-llm-cache 로 끔). 키 = 모델 + 프롬프트 버전 + 입력
   keep_alive: "30m"

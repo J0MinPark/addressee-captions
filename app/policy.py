@@ -41,6 +41,41 @@ def sigmoid(z: float) -> float:
     return e / (1.0 + e)
 
 
+_Q_EN = {"what", "how", "why", "when", "where", "who", "which", "do", "does", "did", "is", "are", "was", "were",
+         "can", "could", "would", "will", "should", "shall", "have", "has", "any", "anything", "right"}
+
+
+def syllable_count(text: str) -> int:
+    """한글은 글자 수, 라틴 문자는 단어별 모음 묶음 수(최소 1)."""
+    import re
+    n = sum(1 for c in text if "\uac00" <= c <= "\ud7a3")
+    for w in re.findall(r"[A-Za-z']+", text):
+        n += max(1, len(re.findall(r"[aeiouy]+", w.lower())))
+    return n
+
+
+def is_question(text: Optional[str]) -> bool:
+    if not text:
+        return False
+    t = text.strip()
+    if t.endswith("?"):
+        return True
+    words = t.lower().split()
+    return bool(words) and words[0].strip(",.") in _Q_EN
+
+
+FUSION_FEATURES = ("T", "gap", "sim", "partner", "p_pair", "has_L", "dur", "wq")
+
+
+def fusion_features(T: float, gap: Optional[float], sim: float, partner: bool, L: Optional[float],
+                    dur: float, wq: bool) -> dict:
+    """학습된 융합의 입력 특징. 오프라인 학습(tools/tune_dev.py)과 실시간 정책이 같은 함수를 쓴다."""
+    g = 1.0 if gap is None else min(max(gap, -0.3), 3.0) / 3.0
+    return {"T": T, "gap": g, "sim": float(sim or 0.0), "partner": 1.0 if partner else 0.0,
+            "p_pair": 0.5 if L is None else float(L), "has_L": 0.0 if L is None else 1.0,
+            "dur": min(dur, 8.0) / 8.0, "wq": 1.0 if wq else 0.0}
+
+
 @dataclass
 class SegFeat:
     seg_id: str
@@ -91,6 +126,8 @@ class _Pending:
     prob: float = 0.0
     role: str = "other"
     final: bool = False
+    partner: bool = False      # 판정 시점에 이 화자가 이미 partner 였나
+    held: bool = False         # --candidate-rejudge: 판정 보류 중
 
 
 class PolicyEngine:
@@ -108,6 +145,10 @@ class PolicyEngine:
         self.mode = mode or p.get("default_mode", "full")
         assert self.mode in MODES, self.mode
         self.llm_available = llm_available
+        self.fusion = p.get("fusion") or {"type": "hand"}
+        self.candidate_rejudge = bool(p.get("candidate_rejudge", False))
+        self.short_skip_llm = bool(p.get("short_skip_llm", False))
+        self.short_syllables = int(p.get("short_syllables", 2))
         self.reset()
 
     # ------------------------------------------------------------------ 상태
@@ -118,6 +159,7 @@ class PolicyEngine:
         self.pending: dict[str, _Pending] = {}
         self.prev_seg: Optional[tuple[Optional[int], float, float]] = None  # (spk, t_end, sim)
         self.partner_count = 0
+        self.held: dict[int, tuple[str, Optional[int], float]] = {}   # 화자 → (보류 구간, 착용자 turn, 시각)
 
     def set_mode(self, mode: str) -> list[dict]:
         if mode not in MODES:
@@ -260,8 +302,28 @@ class PolicyEngine:
         z = b + wt * T + ws * S + (wl * (2 * L - 1) if L is not None else 0.0)
         return sigmoid(z)
 
+    def learned(self) -> bool:
+        return self.mode == "full" and self.fusion.get("type") == "logistic"
+
+    def show_threshold(self) -> float:
+        return float(self.fusion["threshold"]) if self.learned() else self.p["show_threshold"]
+
+    def register_threshold(self) -> float:
+        return float(self.fusion["threshold"]) if self.learned() else self.p["register_threshold"]
+
+    def _features(self, pd: "_Pending", L: Optional[float]) -> dict:
+        wt = self.turns[pd.turn_id].text if pd.turn_id is not None and 0 <= pd.turn_id < len(self.turns) else None
+        return fusion_features(pd.T, pd.gap, pd.feat.sim, pd.partner, L, pd.feat.duration, is_question(wt))
+
+    def _prob(self, pd: "_Pending", L: Optional[float]) -> float:
+        if self.learned():
+            x = self._features(pd, L)
+            z = float(self.fusion["intercept"]) + sum(float(self.fusion["coef"][k]) * x[k] for k in FUSION_FEATURES)
+            return sigmoid(z)
+        return self.score(pd.T, pd.S, L)
+
     def _role(self, prob: float, sid: Optional[int]) -> str:
-        if prob >= self.p["show_threshold"]:
+        if prob >= self.show_threshold():
             return "partner"
         return "unknown" if sid is None else "other"
 
@@ -269,7 +331,9 @@ class PolicyEngine:
         parts = []
         if pd.gap is not None and pd.T > 0:
             parts.append(f"응답 {max(pd.gap, 0):.1f}초" if pd.gap >= 0 else f"겹침 {-pd.gap:.1f}초")
-        if pd.L is not None:
+        if pd.held:
+            parts.append("보류(다음 교대에서 재판정)")
+        elif pd.L is not None:
             parts.append(PAIR_LABELS.get(pd.pair_type, pd.pair_type) if pd.pair else "짝 아님")
         elif pd.llm_expected and not pd.final:
             parts.append("판정 중")
@@ -310,7 +374,15 @@ class PolicyEngine:
         S = 1.0 if (spk is not None and spk.state == "partner" and feat.sim >= self.spk_threshold) else 0.0
         eligible = gap is not None and self.p["timing_early_s"] <= gap <= self.call_window
         llm_expected = eligible and self.mode_uses_llm() and self.llm_available
-        pd = _Pending(feat=feat, T=T, S=S, gap=gap, turn_id=turn_id, llm_expected=llm_expected)
+        if llm_expected and self.short_skip_llm and syllable_count(feat.text) <= self.short_syllables:
+            llm_expected = False   # --short-skip-llm: '네/응'류는 의미 판정 없이 타이밍·화자로만
+        pd = _Pending(feat=feat, T=T, S=S, gap=gap, turn_id=turn_id, llm_expected=llm_expected,
+                      partner=spk is not None and spk.state == "partner")
+        # --candidate-rejudge: 보류 중인 다른 화자의 구간은, 새 착용자 발화에 다른 사람이 응답하면 접는다
+        if T >= 0.5 and turn_id is not None:
+            for hs, (hid, hturn, _) in list(self.held.items()):
+                if hs != sid and hturn is not None and turn_id > hturn:
+                    events += self._resolve_held(hs, False, now)
 
         if spk is not None and T >= 0.5 and spk.state in ("unknown", "expired"):
             events += self._set_state(spk, "candidate", now)
@@ -320,7 +392,7 @@ class PolicyEngine:
             if spk is not None and spk.state != "partner":
                 events += self._set_state(spk, "partner", now)
         else:
-            pd.prob = self.score(T, S, None)
+            pd.prob = self._prob(pd, None)
             pd.role = self._role(pd.prob, sid)
             if not llm_expected:
                 events += self._finalize(pd, now)
@@ -346,8 +418,18 @@ class PolicyEngine:
             pd.L = float(result["prob"])
             pd.pair = bool(result.get("pair"))
             pd.pair_type = result.get("type")
-            pd.prob = self.score(pd.T, pd.S, pd.L)
+            pd.prob = self._prob(pd, pd.L)
             pd.role = self._role(pd.prob, pd.feat.speaker_id)
+            sid = pd.feat.speaker_id
+            if (self.candidate_rejudge and pd.T >= 1.0 and not pd.pair and sid is not None
+                    and sid in self.speakers and self.speakers[sid].state != "partner" and sid not in self.held):
+                # T=1인데 LLM이 '짝 아님': 바로 접지 않고(음향 점수로 표시 유지) 후보로 두고 다음 교대에서 재판정
+                pd.held, pd.final = True, True
+                pd.prob = self._prob(pd, None)
+                pd.role = self._role(pd.prob, sid)
+                self.held[sid] = (pd.feat.seg_id, pd.turn_id, now)
+                d = self._decision(pd)
+                return {k: d[k] for k in ("id", "role", "prob", "evidence", "chip", "pending_llm", "speaker_id")}, []
         events = self._finalize(pd, now)
         if pd.role == "partner" and pd.feat.text:
             self._hist_add("other", (pd.feat.text, pd.feat.t_start, pd.feat.t_end), pd.feat.t_start)
@@ -362,6 +444,16 @@ class PolicyEngine:
         if sid is None or sid not in self.speakers:
             return []
         spk = self.speakers[sid]
+        if sid in self.held and self.held[sid][0] != pd.feat.seg_id:
+            hturn = self.held[sid][1]
+            if pd.T >= 0.5 and pd.turn_id is not None and hturn is not None and pd.turn_id > hturn:
+                ok = pd.L is None or bool(pd.pair)
+                ev = self._resolve_held(sid, ok, now)
+                if ok:
+                    ev += self._set_state(spk, "partner", now)
+                return ev
+            if pd.T < 0.5:
+                return self._resolve_held(sid, False, now)
         if spk.state == "partner":
             if pd.T >= 0.5 and (pd.L is None or pd.pair):
                 spk.last_exchange = max(spk.last_exchange, now)
@@ -379,7 +471,7 @@ class PolicyEngine:
             return events
         if pd.L is not None and not pd.pair:
             spk.timing_turns = 0
-        if pd.T >= 0.5 and pd.prob >= self.p["register_threshold"]:
+        if pd.T >= 0.5 and pd.prob >= self.register_threshold():
             events += self._set_state(spk, "partner", now)
         elif pd.T >= 0.5 and not pd.llm_expected and pd.L is None and self.mode != "semantic":
             # LLM을 쓰지 않는 모드에서 점수가 모자란 응답(T=0.5): 연속 교대 규칙
@@ -389,6 +481,24 @@ class PolicyEngine:
                 if spk.timing_turns >= self.p["timing_only_turns"]:
                     events += self._set_state(spk, "partner", now)
         return events
+
+    def _resolve_held(self, sid: int, confirm: bool, now: float) -> list[dict]:
+        """보류 구간 확정(표시 유지) 또는 접기. caption_update 이벤트로 알린다."""
+        hid, _, _ = self.held.pop(sid)
+        pd = self.pending.get(hid)
+        if pd is None:
+            return []
+        pd.held = False
+        if confirm:
+            pd.role = "partner"
+            pd.prob = max(pd.prob, self.show_threshold())
+        else:
+            pd.role = self._role(min(pd.prob, self._prob(pd, pd.L)), pd.feat.speaker_id)
+            if pd.role == "partner":
+                pd.role = "other"
+        d = self._decision(pd)
+        return [dict({k: d[k] for k in ("id", "role", "prob", "evidence", "chip", "pending_llm", "speaker_id")},
+                     type="caption_update", rejudged=True)]
 
     # ------------------------------------------------------------- 기타
     def on_name_call(self, speaker_id: Optional[int], label: str, score: float, now: float) -> list[dict]:
@@ -416,6 +526,9 @@ class PolicyEngine:
     def tick(self, now: float) -> list[dict]:
         """만료 처리. 주기적으로(예: 1초마다) 호출."""
         events = []
+        for hs, (_, _, ht) in list(self.held.items()):
+            if now - ht > 30.0:   # 30초 안에 다음 교대가 없으면 접는다
+                events += self._resolve_held(hs, False, now)
         for s in self.speakers.values():
             if s.state == "partner" and not s.manual and now - s.last_exchange > self.p["partner_expire_s"]:
                 events += self._set_state(s, "expired", now)
