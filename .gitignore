@@ -12,3 +12,4 @@ results/*.emb.npz
 results/calibration_used.json
 results/cache/
 results/*.labelstats.json
+results/llm_v2/
