@@ -372,7 +372,9 @@ class Pipeline:
 
     def _backpressure(self) -> None:
         """최대 속도 재생: 버리지 말고 기다린다(평가가 결정적이도록). 실시간에서는 쓰지 않는다."""
-        while self.running and (self.asr.qsize() >= 2 or self.ctl.qsize() > 20
+        # 대기 중인 LLM 판정도 기다린다: 실시간에서는 판정(~0.3초)이 다음 발화보다 먼저 끝나므로, 재생에서도
+        # 판정 결과(등록)가 뒤 구간보다 늦게 처리되지 않게 한다(이 순서가 바뀌면 결과가 실행마다 달라진다).
+        while self.running and (self.asr.qsize() >= 2 or self.ctl.qsize() > 20 or self.llm_deadline
                                 or (self.sound is not None and not self.sound.idle())):
             time.sleep(0.002)
 

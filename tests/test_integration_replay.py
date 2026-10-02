@@ -127,7 +127,7 @@ def test_replay_event_order(tmp_path, cfg):
     # 독백: T=0, S=1 → partner, LLM 호출 없음
     mono = [c for c in caps if c["text"] == "세 시 반이요"][-1]
     assert mono["id"] != partner_first["id"]
-    assert mono["role"] == "partner" and mono["evidence"]["T"] == 0 and mono["evidence"]["S"] == 1.0
+    assert mono["role"] == "partner" and mono["evidence"]["T"] == 0 and mono["evidence"]["S"] == 1.0, (mono, [e for e in events if e["type"] in ("speaker_state", "partner_added")])
     assert mono["pending_llm"] is False
     assert len(models.judge.calls) == 2
     partners = [e["speaker_id"] for e in events if e["type"] == "partner_added"]
