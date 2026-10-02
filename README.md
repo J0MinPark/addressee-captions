@@ -134,6 +134,51 @@ python tools/diff_modes.py --a full --b timing_speaker   # 판정이 갈린 구�
 | 전체 융합 | 89% | 89% | 0.89 | 17% |
 | 의미만 | 75% | 33% | 0.46 | 35% |
 
+## 6-1. 평가 데이터: AMI Meeting Corpus (사람 라벨링 없이)
+
+공개 회의 코퍼스 [AMI](https://groups.inf.ed.ac.uk/ami/corpus/)의 **수동 대화행위 주석에 있는 addressee(수신자) 속성**을 정답으로 쓴다.
+녹음·라벨링 없이 소거 표가 나온다.
+
+```bash
+set HEARME_DATA_DIR=C:\hearme_data\data              # 시나리오 WAV ~2GB — OneDrive 밖에 두기(선택)
+python tools/import_ami.py --list                    # addressee 주석이 있는 회의 22개(그중 실제 주석 비율 50%+ 18개)
+python tools/import_ami.py                           # 기본: 회의 3개 · 앞 15분 · clean/snr10/snr5 (다운로드 ~1.2GB + DEMAND 107MB)
+python tools/run_ami.py --meeting ES2008b --wearer A --conds clean   # 빠른 확인(약 1분)
+python tools/run_ami.py --yes                        # 전체(평가 24개, RTX 4060 약 20분) → results/ami_ablation.md/.csv
+python tools/evaluate.py --ami --to-me-definition single+group       # 캐시만으로 재평가(모델 호출 없음)
+```
+
+- **시나리오 구성**: 회의마다 참가자 4명이 차례로 "착용자"가 된다. 채널 A는 그 사람의 개별 헤드셋, 채널 B는 원거리 마이크 Array1-01이고, 16kHz로 앞 15분만 쓴다.
+  참가자 문자(A–D)와 헤드셋 채널의 대응은 `corpusResources/meetings.xml`의 `speaker@channel`에서 읽어 로그에 남긴다. 선택된 3개 회의는 모두 A→0, B→1, C→2, D→3이었다.
+  두 채널 모두 정답 발화 구간의 RMS를 −26 dBFS로 맞춘다. 장비마다 다른 녹음 이득을 없애기 위해서다.
+- **소음 조건**: B 채널에 DEMAND `PCAFETER`(카페테리아) 소음을 SNR 10 dB, 5 dB로 섞는다. SNR은 정답 발화 구간의 신호 전력을 기준으로 계산한다.
+- **분할**: 주석 비율이 높은 회의부터 고르되, 같은 그룹(같은 참가자, 예: IS1008a/b)은 하나만 고른다. 그중 주석 비율이 가장 낮은 회의를 **보정용(take1)**, 나머지를 **평가용(take2)**으로 둔다.
+  `run_ami.py`는 take1의 clean 녹음으로만 `own_margin_db`를 측정해 평가에 쓰고, 그 녹음을 `results/calibration_used.json`에 기록한다. 기록된 녹음은 평가에서 거부된다.
+- **정답 라벨**(`tools/ami_labels.py`, `label.py`와 같은 CSV 형식):
+  - 같은 화자의 연속 대화행위 중 addressee가 같고 사이 간격이 0.5초 이하인 것은 한 발화로 합친다.
+  - 시스템이 만든 각 구간은 시간 겹침이 가장 큰 발화에 연결한다. 겹침이 구간 길이의 50% 미만이면 unmatched(`s`)로 두고 평가에서 뺀다.
+  - 라벨 값은 아래 네 가지다.
+    - `w`: 착용자 본인 발화
+    - `y`: addressee가 착용자 한 명
+    - `g`: addressee에 착용자를 포함해 2명 이상(그룹)
+    - `n`: 다른 사람에게 한 말이거나 addressee 없음
+- **'나에게 한 말' 정의**(`--to-me-definition`): `single`은 `y`만 양성이다. `single+group`은 `g`도 양성이다. 보고서에는 두 정의 표가 모두 나온다.
+- **자연 함정**: 타이밍 증거가 성립하는데(T ≥ 0.5, 착용자 발화 직후 −0.3~1.5초 안에 시작) 라벨이 `n`인 구간이다. 대본 녹음의 trap 시나리오를 대신한다.
+  보고서에는 모드별 **오표시율**과, 그런 구간을 만든 (진짜 대화 상대가 아닌) 화자의 **오등록률**이 나온다.
+- **실행 시간**: 같은 회의·같은 조건의 B 채널 결과(VAD 확률, ASR, 화자 임베딩)는 착용자 4명이 공유한다(`results/cache/`). 두 번째 착용자부터는 15분 오디오가 약 12초에 처리된다.
+- **LLM**: 영어 프롬프트와 영어 few-shot 6개를 쓴다(`llm.prompt_lang: en`, 프롬프트 버전이 바뀌어 캐시 키도 바뀐다). ASR은 영어이고, hotwords와 호명 감지는 끈다(`--profile ami`).
+
+**해석할 때 주의할 점**
+1. **영어 회의다.** ASR, LLM 프롬프트, 대화 관습이 모두 한국어 시연 환경과 다르다. 수치는 "방법의 상대 비교"로만 보고, 한국어 시연 성능으로 옮겨 말하지 말 것.
+2. **4인 회의라 대부분이 그룹 발화다.** 착용자 관점 정답 발화 중 `g`가 26%, 착용자 한 명에게 한 `y`는 5% 안팎이다.
+   `single` 정의에서는 양성이 극히 적어 정밀도가 낮게 나오기 쉽고 분산이 크다. `single+group` 정의에서는 '전부 표시'가 이미 높은 정밀도를 갖는다.
+   1:1 대화를 가정한 이 시스템의 목표 상황(카페에서 한 사람과 대화 + 주변 잡음 대화)과는 다르다.
+3. **"주변의 다른 대화"가 없다.** 회의 참가자는 모두 같은 대화 안에 있다. 시스템이 걸러야 할 '옆 테이블 대화'는 소음 조건(카페 소음, 내용 없는 웅성거림)으로만 흉내 냈다.
+4. **원거리 마이크 구간은 여러 화자 발화를 묶는다.** 짧은 `n`(맞장구 등)이 긴 그룹 발화 구간에 흡수되어, 구간 단위 `n`이 발화 단위 `n`보다 훨씬 적다.
+5. **본인 발화 마진은 보정값이 하한(2.0 dB)에 걸렸다.** 헤드셋 대 원거리 마이크의 dB 차이 분포가 두 봉우리로 깔끔하게 갈리지 않았다는 뜻이다. 착용자 구간 판정 오류가 일부 섞인다(`labelstats.json`의 `wearer_seg:g` 등).
+7. **등록 지연이 음수**로 나올 수 있다: 그 화자의 첫 `y` 라벨 발화보다 먼저 partner로 등록된 경우다(특히 `all` 모드, 그룹 발화로 등록). AMI에서는 '등록 지연'보다 '미등록 n/m'과 자연 함정 지표를 볼 것.
+8. 회의 2개, 착용자 8명, 15분 분량이다. 표본이 작으니 모드 간 차이가 몇 %p 이내면 같은 수준으로 볼 것.
+
 ## 7. 시연 런북 (90초)
 
 **발표 전 체크리스트** (순서대로, 발표 15분 전)
@@ -202,7 +247,8 @@ app/policy.py        정책 엔진(순수 로직, 시간은 인자) — 단위 �
 app/pipeline.py      스레드 연결: audio → control(정책은 한 스레드에서 순서대로) / asr / sound / llm
 app/server.py        FastAPI + WebSocket 방송, LAN 주소·QR
 app/preflight.py     발표 전 사전 점검(PASS/WARN/FAIL 표)
-tools/               record, replay, label, evaluate, diff_modes, calibrate, datasplit(분할 규칙), make_test_scenario(개발용)
+tools/               record, replay, label, evaluate, diff_modes, calibrate, datasplit(분할 규칙), make_test_scenario(개발용),
+                     import_ami · ami_labels · run_ami · ami_report (AMI 평가)
 scripts/             download_models, start_ollama(.bat/.sh), run_demo.bat
 assets/              preflight용 3초 음성·사이렌 샘플
 tests/               policy (a)~(f), namecall, ownvoice, asr 필터, 합성 재생 통합 테스트
