@@ -5,6 +5,7 @@
     python tools/client_capture.py --wearer "Lavalier" --ambient "USB Audio"
     python tools/client_capture.py --single-mic --wearer "마이크"        # 마이크 하나(서버도 --single-mic)
     python tools/client_capture.py --replay data/demo                   # 마이크 대신 녹음 파일(백업)
+    python tools/client_capture.py --wearer ... --ambient ... --record rec/reh01   # 보낸 음성을 rec/reh01_A.wav, _B.wav 로 저장
 
 기본 서버 주소는 ws://localhost:8765 (SSH 터널: ssh -L 8000:localhost:8000 -L 8765:localhost:8765 사용자@서버).
 연결이 끊기면 2초마다 다시 연결한다. 끊긴 동안의 오디오는 버린다(밀린 음성을 나중에 보내지 않는다).
@@ -296,19 +297,55 @@ class ReplayCapture:
         pass
 
 
+class Recorder:
+    """보낸 블록을 그대로 wav(16kHz 16비트)로 저장한다: PREFIX_A.wav, PREFIX_B.wav(--replay 로 다시 보낼 수 있는 형식).
+    연결이 끊겨 버린 음성은 저장되지 않는다(서버가 받은 것과 같다)."""
+
+    def __init__(self, prefix: str, two_channels: bool):
+        p = Path(prefix)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        self.paths = [Path(f"{p}_A.wav")] + ([Path(f"{p}_B.wav")] if two_channels else [])
+        for q in self.paths:
+            if q.exists():
+                raise SystemExit(f"{q} 이미 있음 — 다른 이름으로(--record)")
+        self.ws = []
+        for q in self.paths:
+            w = wave.open(str(q), "wb")
+            w.setnchannels(1)
+            w.setsampwidth(2)
+            w.setframerate(SR)
+            self.ws.append(w)
+        self.n = 0
+
+    def write(self, a: np.ndarray, b: Optional[np.ndarray]) -> None:
+        for w, x in zip(self.ws, (a, b)):
+            if x is not None:
+                w.writeframes((np.clip(x, -1, 1) * 32767).astype("<i2").tobytes())
+        self.n += len(a)
+
+    def close(self) -> None:
+        for w in self.ws:
+            try:
+                w.close()
+            except Exception:
+                pass
+        print(f"[client] 녹음 저장: {', '.join(str(p) for p in self.paths)} ({self.n / SR:.0f}s)")
+
+
 # ------------------------------------------------------------------ 전송
 class Streamer:
     """캡처 → WebSocket. 재연결, 서버 ping 응답(pong), 상태 출력.
     on_sent(seq, t_mono, pos_samples): 블록을 보낸 직후 콜백(latency_bench가 쓴다)."""
 
     def __init__(self, cap, url: str, client_name: str = "client", on_sent: Optional[Callable] = None,
-                 quiet: bool = False, on_connect: Optional[Callable] = None):
+                 quiet: bool = False, on_connect: Optional[Callable] = None, recorder: Optional[Recorder] = None):
         self.cap = cap
         self.url = url
         self.name = client_name
         self.on_sent = on_sent
         self.on_connect = on_connect   # on_connect(welcome, 다음 seq): 서버 스트림 시간 ↔ seq 대응(latency_bench)
         self.welcome: dict = {}
+        self.recorder = recorder
         self.quiet = quiet
         self.seq = 0
         self.connected = False
@@ -354,6 +391,8 @@ class Streamer:
                                 a, b = self.cap.take()
                                 t = time.monotonic()
                                 await ws.send(pack_block(self.seq, t, a, b))
+                                if self.recorder is not None:
+                                    self.recorder.write(a, b)
                                 if self.on_sent:
                                     self.on_sent(self.seq, t, getattr(self.cap, "pos", None))
                                 self.seq += 1
@@ -407,6 +446,7 @@ def main(argv=None):
     ap.add_argument("--replay", default=None, help="마이크 대신 녹음 접두사(예: data/demo → demo_A.wav, demo_B.wav)")
     ap.add_argument("--loop", action="store_true", help="--replay 반복")
     ap.add_argument("--name", default=None, help="대시보드에 보일 클라이언트 이름")
+    ap.add_argument("--record", default=None, help="보낸 음성을 PREFIX_A.wav, PREFIX_B.wav 로 저장(리허설 백업용)")
     args = ap.parse_args(argv)
     if args.list:
         list_devices()
@@ -417,11 +457,20 @@ def main(argv=None):
         print(f"[client] 재생: {cap.names[0]} ({cap.duration:.0f}s{', 반복' if args.loop else ''})")
     else:
         cap = MicCapture(args.wearer, args.ambient, args.single_mic)
-    st = Streamer(cap, args.server, args.name or socket.gethostname())
+    rec = Recorder(args.record, not cap.single) if args.record else None
+    import signal
+    try:   # 종료 신호(SIGTERM)에도 녹음 파일을 정상적으로 닫는다(Ctrl+C 와 같게)
+        signal.signal(signal.SIGTERM, lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))
+    except Exception:
+        pass
+    st = Streamer(cap, args.server, args.name or socket.gethostname(), recorder=rec)
     try:
         asyncio.run(st.run())
     except KeyboardInterrupt:
         pass
+    finally:
+        if rec is not None:
+            rec.close()
     print(f"[client] 종료: 보낸 블록 {st.sent}, 재연결 {st.reconnects}회")
 
 

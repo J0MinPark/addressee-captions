@@ -104,7 +104,7 @@ def load_models(cfg: dict, log=print, skip: tuple = ()) -> Models:
     log("[load] 사용 모델: " + ", ".join(f"{k}={v}" for k, v in m.describe().items()))
     if m.judge is not None:
         log_llm_banner(m.judge, log)
-    log(f"[구성] {config_name(cfg)}")
+    log(config_line(cfg))
     return m
 
 
@@ -116,6 +116,23 @@ def config_name(cfg: dict) -> str:
     fusion = "learned" if (p.get("fusion") or {}).get("type") == "logistic" else "hand"
     flags = "".join(f"+{n}" for n, k in (("rejudge", "candidate_rejudge"), ("shortskip", "short_skip_llm")) if p.get(k))
     return f"{l.get('variant', 'P1c')}-{l['models'][0]}-{fusion}{flags}"
+
+
+def config_line(cfg: dict) -> str:
+    """시작 로그: 구성 이름 + 판정기 변형·모델·융합·출처(시연 구성 확인용)."""
+    import os
+    from pathlib import Path
+    p, l = cfg["policy"], cfg["llm"]
+    fusion = "learned" if (p.get("fusion") or {}).get("type") == "logistic" else "hand"
+    demo = Path(__file__).resolve().parent / "demo_config.yaml"
+    if os.environ.get("HEARME_NO_SELECTED") == "1":
+        src = "v1 강제(--no-selected)"
+    elif cfg.get("_profile") == "ami":
+        src = "AMI 선택(selected_config.yaml)"
+    else:
+        src = "demo_config.yaml" if demo.exists() else "v1 기본값"
+    return (f"[구성] {config_name(cfg)} · 판정기 {l.get('variant', 'P1c')} · 모델 {l['models'][0]} · 융합 {fusion} · "
+            f"모드 {p.get('default_mode')} · 출처 {src}")
 
 
 def log_llm_banner(judge, log=print) -> None:

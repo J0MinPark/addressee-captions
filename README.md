@@ -51,7 +51,7 @@ Book5: tools/client_capture.py (마이크 A·B, 20ms 블록) ──┐  학교 V
   logprobs·DEMAND·단위 테스트 PASS/FAIL 표. `--manifest`는 `results/env_manifest_server.json`과 `requirements-server.lock.txt`를 다시 쓴다.
 - **커밋 전 테스트**: `scripts/install_hooks.sh`(한 번) → pre-commit 훅이 전체 테스트 + 통합 테스트 5회 반복, 실패하면 커밋을 막는다.
 
-**시연 구성**: 시연 프로필(`server`, `gpu_4060`, `cpu_light`)은 `app/demo_config.yaml`(AI Hub dev 규칙으로 고른 구성, `tools/apply_selection.py`가 씀)을 쓴다.
+**시연 구성: v1(P1c · 손 가중치)로 확정**(사전 등록 개정 2, D7). 시연 프로필(`server`, `gpu_4060`, `cpu_light`)은 `app/demo_config.yaml`이 있을 때만 그 구성을 쓰는데, AI Hub 평가가 취소되어 이 파일은 만들지 않았다. 그래서 시연 프로필은 v1이다(`--no-selected`와 같음).
 없으면 **v1 구성(P1c · 손 가중치, `--no-selected`와 같음)**이다. AMI dev 선택(`app/selected_config.yaml`, P1-qwen3:4b-learned)은 `ami` 프로필에만 적용된다(보고·재현용).
 
 **재현성**: AMI 결과(6-1, 6-2절)는 이전 PC에서 만들었고, AMI 데이터는 이 서버에 없다(이전 PC와의 수치 비교는 하지 않았다). AI Hub 결과는 dev·test 모두 이 서버에서 만든다.
@@ -303,7 +303,7 @@ python tools/final_test.py                                    # 시험 세트 �
 - **학습된 계수 읽기**: p_pair(+0.81)·의문문 직후(+0.74)·화자 유사도(+0.32)는 양(+)이다. 간격 g(−2.84)·구간 길이(−1.56)는 음(−)이다: 짧고 바로 붙은 응답일수록 나에게 한 말이다.
   T가 음수(−1.71)인 것은 g와 강하게 겹치는(공선성) 탓으로 보고, 둘을 함께 해석할 것.
   임계값이 0.2로 낮은 것은 양성(착용자 한 명에게 한 말)이 7%뿐이라 확률이 전반적으로 낮게 나오기 때문이다.
-- **시연 프로필에도 같은 구성** *(2026-10 변경: 지금은 `ami` 프로필에만 적용, 시연은 0절·6-3절 참고)*: `app/selected_config.yaml`(자동 생성)이 모든 프로필에 같은 판정기 변형·융합 가중치·플래그를 적용한다(`python tools/apply_selection.py --check`).
+- **시연 프로필에도 같은 구성** *(2026-10 변경: 지금은 `ami` 프로필에만 적용, 보고용. 시연은 v1 — 0절)*: `app/selected_config.yaml`(자동 생성)이 모든 프로필에 같은 판정기 변형·융합 가중치·플래그를 적용한다(`python tools/apply_selection.py --check`).
   시작 로그에 `[구성] P1-qwen3:4b-learned`가 찍힌다. 한국어 시연은 같은 P1의 한국어판 프롬프트를 쓴다.
   ⚠ 융합 가중치는 **영어 4인 회의에서 학습**됐다. 1:1 한국어 대화에서는 양성 비율이 훨씬 높아 임계값 0.2가 관대하게 작동할 수 있다.
   시연 전 `tools/judge_text_eval.py`와 대본 녹음으로 확인하고, 필요하면 `--mode timing_speaker`·수동 등록으로 대응한다.
@@ -335,8 +335,25 @@ python tools/final_test.py                                    # 시험 세트 �
 - 권장: 사람이 `data/judge_pairs_ko.csv`를 30쌍 이상 채워 `tools/judge_text_eval.py`로 P1/P1c/P2를 비교한 뒤 시연 구성을 정할 것.
 - **2026-10 수정(버그)**: 원인은 한국어 P1의 few-shot이었다(영어 P1과 1:1 대응이 아닌 v1 한국어 예시를 재사용, 짝 점수가 전반적으로 눌림).
   번역·logprob 추출은 원인이 아니었다. 한국어 P1을 few-shot 없이 쓰도록 고쳤다(점검 48쌍 정확도 0.79→1.00, 위 쌍 0.18→0.95, 프롬프트 해시 243b6e2a→437056c3).
-  영어 프롬프트는 그대로다. 자세한 내용: `results/ko_prompt_fix.md`. 시연 구성은 AI Hub dev 규칙으로 다시 고른다(6-3절).
+  영어 프롬프트는 그대로다. 자세한 내용: `results/ko_prompt_fix.md`. 시연 구성은 v1로 확정했다(AI Hub 평가 취소, D7).
 
+
+### AI Hub 관련 도구 (미실행)
+
+`tools/aihub_download.py`(이어받기·진행률·디스크 검사), `aihub_select.py`(라벨 구조 확인·전사 정제·세션 필터·분할),
+`aihub_sim.py`(라벨 기반 대화 시뮬레이션), `aihub_tune.py`(dev 선택), `final_test_aihub_sim.py`(잠금 1회 시험),
+`apply_selection.py`(→ `app/demo_config.yaml`)는 남겨 둔다. **AI Hub 데이터 이용 승인을 받지 못해 실제 데이터로 실행된 적이 없다**
+(사전 등록 개정 2). 흐름은 설명서 구조를 따른 가짜 json으로만 점검했다. 실제 데이터의 json 구조·전사 표기는 확인하지 못했으므로,
+쓰기 전에 `aihub_select.py --inspect`로 키와 정제 규칙부터 확인할 것.
+
+### 향후 과제: AI Hub 한국어 회의 데이터 평가
+
+AMI는 영어 4인 회의이고 "옆 대화"가 없어, 한국어 1:1 대화 + 주변 잡담이라는 목표 상황과 다르다. AI Hub "주요 영역별 회의 음성인식"
+(데이터셋 464)의 3–4인 한국어 회의를 써서 **반합성 시나리오**를 만드는 것이 다음 단계다. 한 세션의 10분 구간에서 착용자 1명을 정해
+그 참가자들의 말을 "내 대화"(x)로, 다른 세션의 10분 구간을 −6/−10 dB로 섞어 "옆 대화"(y)로 두고, DEMAND 카페 소음(SNR 10/5 dB)을 더한다.
+정답은 구성상 확정되므로(w/x/y) 사람 라벨링이 필요 없고, 옆 대화 화자의 오등록률과 착용자 직후에 끼어든 옆 대화(자연 함정)의
+오표시율을 직접 잴 수 있다. 원천 음성(묶음당 41–90GB)이 부담되면 먼저 라벨만으로 판정 계층을 시뮬레이션하고(`tools/aihub_sim.py`),
+세션 단위 dev/test 분할·사전 등록·잠금 1회 시험 규칙(`results/preregistration.md`)을 그대로 따른다. 데이터 이용 승인이 먼저 필요하다.
 
 ## 7. 시연 런북 (90초)
 
@@ -346,7 +363,7 @@ python tools/final_test.py                                    # 시험 세트 �
 1. [ ] `systemctl --user status hearme-ollama hearme-server` → 둘 다 `active (running)`. 아니면 `systemctl --user restart hearme-ollama hearme-server`
 2. [ ] `cd ~/jm/addressee-captions && source scripts/server_env.sh && python tools/env_check.py` → **모두 PASS**
    (GPU 2 사용률이 다른 사람 작업으로 높으면 표의 GPU 행과 대시보드 GPU 지표를 보고, 지연이 크면 아래 4번 결과로 판단)
-3. [ ] `grep "\[구성\]\|llm=" logs/server.log | tail -2` → 구성 이름(`P1c-qwen3:4b-hand` = v1, 또는 `demo_config.yaml`의 구성)과 `llm=qwen3:4b ok … (GPU)` 확인
+3. [ ] `grep "\[구성\]\|llm=" logs/server.log | tail -2` → 구성 `P1c-qwen3:4b-hand · 판정기 P1c … 출처 v1 기본값`(= v1)과 `llm=qwen3:4b ok … (GPU)` 확인
 
 **Book5(발표 30분 전, 시연 자리에서)**
 4. [ ] 학교 VPN 연결 → 터널 창: `ssh -L 8000:localhost:8000 -L 8765:localhost:8765 <사용자>@<서버>` (폰도 쓰면 `-L 0.0.0.0:8000:...`, 0-1절 방화벽)
@@ -359,9 +376,20 @@ python tools/final_test.py                                    # 시험 세트 �
 10. [ ] 대시보드 **초기화** → 모드 **전체 융합** → 프로젝터(필요하면 폰 QR 대신 `http://<Book5 IP>:8000/phone`)
 11. [ ] 백업 준비: 다른 창에 `python tools/client_capture.py --replay data\demo --loop` (마이크가 안 되면 7번 창을 닫고 이것을 실행)
 
+**동선 주의(함정 장면)**: 옆 사람(B)은 **착용자의 말이 끝나고 약 0.5초 쉰 뒤에** 말을 시작한다. 착용자 말 끝에 바로 붙거나 겹치면
+주변 마이크 구간 분할이 두 사람의 말을 한 구간으로 합칠 수 있고(알려진 한계, 11절), 그러면 함정 문장이 상대의 대답과 섞여 판정이 흔들린다.
+상대(A)도 대답 전에 반 박자 쉬는 편이 안정적이다.
+
+**리허설(시연 전 10회 권장)**
+1. Book5: `python tools/client_capture.py --wearer "<핀마이크>" --ambient "<주변 마이크>" --record rec\reh01` (회차마다 이름을 바꾼다. 보낸 두 채널이 `rec\reh01_A.wav`, `_B.wav`로 저장됨)
+2. 서버(SSH): `cd ~/jm/addressee-captions && python tools/rehearsal_log.py` → 시작할 때 Enter → 90초 시나리오 → 끝나면 Enter
+   → 서버 이벤트 로그 단서(등록·사이렌·호명·근거 칩 수)를 보고 단계별 y/n/s 입력 → `results/rehearsal.md`에 누적 성공률
+3. 대시보드 **초기화** 후 다음 회차. 클라이언트는 회차마다 Ctrl+C로 끄고 새 `--record` 이름으로 다시 켠다
+4. 모든 단계가 성공한 회차의 녹음을 백업으로 쓴다: 라이브가 안 되면 `python tools/client_capture.py --replay rec\reh07 --loop`
+
 **라이브가 이상하면**: "음성 클라이언트 연결 끊김" → 7번 창 확인(자동 재연결). "서버 연결 끊김" → 4번 터널 창 확인 후 새로고침.
 지연 배너(RTT 300ms 초과) → 핫스팟 전환. LLM 배너 → 서버에서 `systemctl --user restart hearme-ollama`(10초 안에 자동 복구). 화자가 꼬이면 화자를 클릭해 수동 등록/해제.
-시연 시나리오(아래 표)는 같다. 시연 구성이 timing으로 정해지면(6-3절 규칙) 함정 장면(0:35–1:00)은 뺀다.
+시연 시나리오(아래 표)는 같다(구성 v1).
 
 ### 7-1. (이전) 노트북 단독 시연 체크리스트
 
@@ -492,3 +520,14 @@ tests/               policy (a)~(f), namecall, ownvoice, asr 필터, 합성 재�
 | D4 | 최대 속도 재생의 순서 경쟁 수정(가정 29). AMI 결과는 수정 전 코드 | AI Hub 재생만 수정 후 코드 |
 | D5 | 시연 프로필에서 AMI 선택 구성을 뗐다(시연 기본 = v1). AMI 선택은 `ami` 프로필에만 | 6-2절의 "시연 프로필에도 같은 구성" 문장은 더 이상 유효하지 않음 |
 | D6 | 사전 등록 개정 1: AI Hub 원천 음성 대신 라벨 기반 대화 시뮬레이션(정답 분할·전사·화자 ID)으로 P2/P3를 대체(일정) | 판정 계층만 평가. ASR·화자 임베딩·분할·소음 영향 미포함 |
+| D7 | 사전 등록 개정 2: AI Hub 데이터 이용 승인 불가로 P2·P3(AI Hub 평가·시연 구성 선택·최종 시험) 전체 취소. 시연 구성은 v1 확정 | AI Hub 수치 없음. AMI 선택 구성은 보고용(ami 프로필)만. AI Hub 도구는 남겼으나 실제 데이터로 실행된 적 없음 |
+
+## 11. 알려진 한계
+
+- **붙어서 시작한 두 사람의 말이 한 구간으로 합쳐질 수 있다.** 주변 마이크 VAD는 침묵(0.4초)으로 구간을 나눈다. 착용자 말 직후 B가 바로 말하고
+  이어서 다른 사람이 쉬지 않고 받으면, 두 사람의 말이 한 구간·한 화자로 묶인다. 그러면 화자 판정과 의미 판정이 섞인 문장을 보게 된다
+  (서버 합성 시나리오 `demo_trap`에서 "근데 우리 몇 시에 나가야 돼? 한 시간쯤 뒤에"가 한 구간이 되어 오표시·오등록). 시연 동선에서 0.5초 쉬기로 피한다(7-0절).
+- **시연 구성(v1)은 한국어 회의 데이터로 검증하지 못했다.** AI Hub 평가가 취소됐고(D7), 한국어 근거는 합성 시나리오와 점검 문장 48쌍뿐이다.
+  AMI 수치(6-1, 6-2절)는 영어 4인 회의의 상대 비교다.
+- **단일 마이크 모드는 정확도가 낮다**(ECAPA 유사도로 본인 발화를 가림). 가능하면 마이크 2개.
+- **원격 경로는 네트워크에 좌우된다.** RTT가 300ms를 넘으면 배너가 뜨고 자막이 늦어진다. 사전 점검은 `net_check.py`.
