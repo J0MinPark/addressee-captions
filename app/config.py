@@ -29,6 +29,11 @@ def load_config(profile: Optional[str] = None, path: Optional[str] = None,
         raw = yaml.safe_load(f) or {}
     profiles = raw.pop("profiles", {}) or {}
     cfg = raw
+    # 개발 세트에서 고른 최종 구성(tools/apply_selection.py가 씀). 모든 프로필(한국어 시연·AMI 평가)에 같이 적용된다.
+    sel = Path(__file__).resolve().parent / "selected_config.yaml"
+    if sel.exists() and os.environ.get("HEARME_NO_SELECTED") != "1":
+        with open(sel, "r", encoding="utf-8") as f:
+            cfg = deep_merge(cfg, yaml.safe_load(f) or {})
     profile = profile or os.environ.get("HEARME_PROFILE")
     if profile:
         if profile not in profiles:
