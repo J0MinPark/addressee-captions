@@ -333,6 +333,9 @@ python tools/final_test.py                                    # 시험 세트 �
 - 선택은 dev 원칙대로 유지했다(5쌍·합성 데이터로 바꾸면 그 자체가 새 선택이 된다). 대신 시연용 즉시 대체 경로를 만들었다:
   **`python -m app.server --profile gpu_4060 --no-selected`** → v1 구성(P1c · 손 가중치). 합성 한국어 시연에서 정상 동작한다(F1 0.89, 대화 상대 등록 정상).
 - 권장: 사람이 `data/judge_pairs_ko.csv`를 30쌍 이상 채워 `tools/judge_text_eval.py`로 P1/P1c/P2를 비교한 뒤 시연 구성을 정할 것.
+- **2026-10 수정(버그)**: 원인은 한국어 P1의 few-shot이었다(영어 P1과 1:1 대응이 아닌 v1 한국어 예시를 재사용, 짝 점수가 전반적으로 눌림).
+  번역·logprob 추출은 원인이 아니었다. 한국어 P1을 few-shot 없이 쓰도록 고쳤다(점검 48쌍 정확도 0.79→1.00, 위 쌍 0.18→0.95, 프롬프트 해시 243b6e2a→437056c3).
+  영어 프롬프트는 그대로다. 자세한 내용: `results/ko_prompt_fix.md`. 시연 구성은 AI Hub dev 규칙으로 다시 고른다(6-3절).
 
 
 ## 7. 시연 런북 (90초)
@@ -476,6 +479,7 @@ tests/               policy (a)~(f), namecall, ownvoice, asr 필터, 합성 재�
     AMI 결과는 수정 전 코드로 이전 PC에서 만든 것이고 다시 돌리지 않았다. 실시간 경로는 바뀌지 않는다.
 30. **리눅스 합성 음성**: `make_test_scenario.py`는 리눅스에서 edge-tts(온라인, 한국어 뉴럴 음성 InJoon·SunHi·Hyunsu, D는 SunHi 음높이 +25Hz)를 쓴다.
     Windows SAPI 한 목소리를 음높이로 바꾼 이전 합성보다 화자 구분이 쉽다. 같은 대본이다. `[SYNTHETIC]` 규칙은 같다.
+32. **한국어 P1 수정 기준**: "한국어판은 영어판의 번역"이라는 원칙으로, 영어 P1이 역번역 문장에 내는 점수와 가장 가까운(MAD 최소) 후보를 골랐다. 라벨 정확도로 고르지 않았다(점검 세트에 맞춘 튜닝을 피하기 위해). 점검 쌍은 AI Hub가 아닌 직접 작성 문장이다.
 31. **calibration_used.json**: gitignore 대상이라 이전 PC에만 있었다. 커밋된 `results/ami_calibration.json`의 `from` 목록(TS3005b 착용자 4명 take1)으로 이 서버에서 다시 만들었다.
 
 ### 편차 기록 (사전 계획·이전 PC 대비)

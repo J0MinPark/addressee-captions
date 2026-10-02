@@ -113,7 +113,13 @@ _P3_EN_ADD = (" Each line of the previous conversation is labelled with its spea
               "decide whom B is addressing and about what.")
 
 _T, _F = {"pair": True}, {"pair": False}
-_SHOT_P1_KO = [(ex_in, {"pair": ex_out["pair"]}) for ex_in, ex_out in FEW_SHOT]
+# 한국어 P1은 few-shot 없이 쓴다(2026-10 버그 수정, results/ko_prompt_fix.md).
+# 이전에는 v1 한국어 few-shot(FEW_SHOT)을 그대로 썼는데, 영어 P1 few-shot과 1:1 대응이 아니었고(다른 문장·다른 행위 구성,
+# 짝 아님 예시에 시연의 '자리' 질문과 같은 "여기 앉아도 돼요?"), 이것이 짝 점수를 전반적으로 눌렀다
+# (점검 48쌍: 짝 평균 0.58 vs 영어판 0.97, "자리 있어요?→아니요, 비어 있어요" 0.18).
+# 사전 기준(영어 P1이 역번역 문장에 내는 점수와의 평균 절대 차이 최소)으로 4개 후보 중 few-shot 없음을 골랐다(MAD 0.207→0.050).
+_SHOT_P1_KO_OLD = [(ex_in, {"pair": ex_out["pair"]}) for ex_in, ex_out in FEW_SHOT]   # 기록용(쓰지 않음)
+_SHOT_P1_KO: list = []
 _SHOT_P1_EN = [(ex_in, {"pair": ex_out["pair"]}) for ex_in, ex_out in FEW_SHOT_EN]
 # P2/P3: 짝 3(대답·맞장구·되묻기) + 짝 아님 3(질문 직후 제3자에게 하는 다른 질문, 다른 화제, 다른 사람에게)
 _SHOT_P2_KO = [

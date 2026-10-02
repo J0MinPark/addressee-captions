@@ -1,0 +1,49 @@
+a,b,label,category,a_en,b_en
+혹시 여기 자리 있어요?,"아니요, 비어 있어요.",1,질문-대답(아니요),Is this seat taken?,"No, it's free."
+혹시 여기 자리 있어요?,"네, 친구 올 거예요.",1,질문-대답(네),Is this seat taken?,"Yes, my friend is coming."
+지금 몇 시예요?,세 시 반이요.,1,질문-대답,What time is it now?,Half past three.
+이 버스 시청 가요?,"아니요, 반대편에서 타셔야 돼요.",1,질문-대답(아니요),Does this bus go to City Hall?,"No, you need to take it from the other side."
+커피는 어떤 게 맛있어요?,여기는 라떼가 제일 괜찮아요.,1,질문-대답,Which coffee is good here?,The latte is the best here.
+혹시 와이파이 비밀번호 아세요?,카운터 옆에 적혀 있던데요.,1,질문-대답,Do you know the wifi password?,It's written next to the counter.
+혹시 와이파이 비밀번호 아세요?,"아뇨, 저도 모르겠어요.",1,질문-대답(아니요),Do you know the wifi password?,"No, I don't know either."
+"안녕하세요, 오랜만이에요.","어머, 안녕하세요! 잘 지내셨어요?",1,인사-인사,"Hello, long time no see.","Oh, hi! How have you been?"
+처음 뵙겠습니다.,"네, 반갑습니다.",1,인사-인사,Nice to meet you.,"Yes, nice to meet you too."
+창문 좀 닫아 주실 수 있어요?,"네, 닫아 드릴게요.",1,요청-수락,Could you close the window?,"Sure, I'll close it."
+펜 좀 빌려주실 수 있어요?,"죄송해요, 저도 하나밖에 없어요.",1,요청-거절,Could you lend me a pen?,"Sorry, I only have one."
+이따 같이 점심 먹을래요?,"좋아요, 몇 시에 볼까요?",1,제안-응답,Shall we have lunch together later?,"Sounds good, what time shall we meet?"
+주말에 영화 보러 갈래요?,이번 주는 좀 바빠서 안 될 것 같아요.,1,제안-거절,Do you want to see a movie this weekend?,"I'm a bit busy this week, so I don't think I can."
+오늘 날씨 진짜 좋네요.,"그러게요, 산책하기 딱 좋아요.",1,평가-반응,The weather is really nice today.,"Right, it's perfect for a walk."
+여기 음악 좀 시끄럽지 않아요?,저는 괜찮은데요.,1,질문-대답,Isn't the music a bit loud here?,It's fine for me.
+이 케이크 맛있네요.,그쵸? 여기 디저트가 유명해요.,1,평가-반응,This cake is good.,Right? The desserts here are famous.
+화장실이 어디예요?,저쪽 복도 끝에 있어요.,1,질문-대답,Where is the restroom?,It's at the end of that hallway.
+혹시 학생이세요?,"아니요, 회사 다녀요.",1,질문-대답(아니요),Are you a student?,"No, I work at a company."
+이거 얼마예요?,만 이천 원입니다.,1,질문-대답,How much is this?,It's twelve thousand won.
+혹시 충전기 있으세요?,"아니요, 없어요.",1,질문-대답(아니요),Do you have a charger?,"No, I don't."
+여기 자주 오세요?,"네, 회사가 근처라서요.",1,질문-대답(네),Do you come here often?,"Yes, my office is nearby."
+사진 좀 찍어 주실래요?,"네, 여기 누르면 되죠?",1,요청-수락,Could you take a photo for us?,"Sure, I just press here, right?"
+오늘 사람 진짜 많네요.,"그러게요, 주말이라 그런가 봐요.",1,평가-반응,There are so many people today.,"Yeah, it must be because it's the weekend."
+이 자리 앉아도 될까요?,"아, 네, 앉으세요.",1,요청-수락,May I sit here?,"Oh, yes, please sit."
+혹시 여기 자리 있어요?,"야 지훈아, 너 어제 그 경기 봤어?",0,다른 사람에게,Is this seat taken?,"Hey Jihoon, did you see the game yesterday?"
+혹시 와이파이 비밀번호 아세요?,"엄마, 나 오늘 좀 늦을 것 같아.",0,다른 사람에게(통화),Do you know the wifi password?,"Mom, I think I'll be a bit late today."
+지금 몇 시예요?,"민지야, 우리 몇 시에 나가야 돼?",0,다른 사람에게(같은 화제어),What time is it now?,"Minji, what time do we have to leave?"
+커피는 어떤 게 맛있어요?,"아 맞다, 나 주차비 정산 안 했네.",0,다른 화제,Which coffee is good here?,"Oh right, I didn't pay for parking."
+이 버스 시청 가요?,"여보세요? 응, 지금 가는 중이야.",0,다른 사람에게(통화),Does this bus go to City Hall?,"Hello? Yeah, I'm on my way."
+"안녕하세요, 오랜만이에요.","수진아, 이거 네 가방이야?",0,다른 사람에게,"Hello, long time no see.","Sujin, is this your bag?"
+창문 좀 닫아 주실 수 있어요?,근데 너 시험 언제야?,0,다른 화제,Could you close the window?,"By the way, when is your exam?"
+이따 같이 점심 먹을래요?,"야, 저기 봐봐, 강아지 귀엽다.",0,다른 사람에게,Shall we have lunch together later?,"Hey, look over there, the puppy is cute."
+오늘 날씨 진짜 좋네요.,팀장님이 보고서 오늘까지 내래.,0,다른 화제,The weather is really nice today.,The manager said the report is due today.
+여기 음악 좀 시끄럽지 않아요?,너 그 드라마 마지막 회 봤어?,0,다른 화제,Isn't the music a bit loud here?,Did you see the last episode of that drama?
+화장실이 어디예요?,아 이거 배터리 또 나갔네.,0,다른 화제,Where is the restroom?,"Oh, this battery died again."
+혹시 학생이세요?,"준호야, 너 내일 수업 몇 시야?",0,다른 사람에게(같은 화제어),Are you a student?,"Junho, what time is your class tomorrow?"
+이거 얼마예요?,저번에 갔던 그 식당 이름 뭐였지?,0,다른 화제,How much is this?,What was the name of that restaurant we went to last time?
+혹시 충전기 있으세요?,우리 다음 주에 제주도 가는 거 맞지?,0,다른 화제,Do you have a charger?,"We're going to Jeju next week, right?"
+여기 자주 오세요?,"여보, 애들 학원 끝났대.",0,다른 사람에게,Do you come here often?,"Honey, the kids' academy is over."
+사진 좀 찍어 주실래요?,"야, 내 폰 어디 있는지 알아?",0,다른 사람에게,Could you take a photo for us?,"Hey, do you know where my phone is?"
+오늘 사람 진짜 많네요.,"언니, 이 옷 어때?",0,다른 사람에게,There are so many people today.,"Sis, how about this outfit?"
+이 자리 앉아도 될까요?,아 진짜? 걔가 그렇게 말했어?,0,다른 화제,May I sit here?,Really? He said that?
+이 케이크 맛있네요.,다음 정류장에서 내리면 돼.,0,다른 화제,This cake is good.,We get off at the next stop.
+주말에 영화 보러 갈래요?,"선배, 과제 제출 언제까지예요?",0,다른 사람에게,Do you want to see a movie this weekend?,"Sunbae, when is the assignment due?"
+펜 좀 빌려주실 수 있어요?,"응 엄마, 저녁은 먹고 들어갈게.",0,다른 사람에게(통화),Could you lend me a pen?,"Yes mom, I'll have dinner before I come home."
+처음 뵙겠습니다.,"야, 너 오늘 머리 잘랐어?",0,다른 사람에게,Nice to meet you.,"Hey, did you get a haircut today?"
+혹시 와이파이 비밀번호 아세요?,그 영화 결말 너무 허무하지 않았어?,0,다른 화제,Do you know the wifi password?,Wasn't the ending of that movie so disappointing?
+지금 몇 시예요?,"아, 회의 자료 출력하는 거 깜빡했다.",0,다른 화제,What time is it now?,"Ah, I forgot to print the meeting materials."
