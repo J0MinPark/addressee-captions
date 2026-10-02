@@ -22,3 +22,9 @@ mkdir -p "$HEARME_DATA"
 export HEARME_PY="${HEARME_PY:-$HEARME_ROOT/.venv/bin/python}"
 export HEARME_RUN="$HEARME_ROOT/logs/run"
 mkdir -p "$HEARME_RUN"
+
+# AI Hub API 키(값은 어디에도 출력하지 않는다): 있으면 개인 파일에서 읽는다. aihubshell은 AIHUB_APIKEY 이름을 쓴다.
+if [ -z "${AIHUB_API_KEY:-}" ] && [ -f "$HOME/.config/hearme/aihub.env" ]; then
+  # shellcheck disable=SC1091
+  source "$HOME/.config/hearme/aihub.env"
+fi
