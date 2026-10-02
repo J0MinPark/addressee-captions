@@ -1,0 +1,218 @@
+﻿seg_id,label,t_start,t_end,speaker_id,is_wearer,text
+s00001,s,0.256,4.864,1,0,"Oh, you can just save as and save it in my documents."
+s00002,s,6.336,8.352,2,0,"Just file, yeah, do save notes."
+s00003,s,8.896,16.896,1,0,"and go to my documents. Yeah, it saves it in a different place by default for some reason. So just, that's the best thing, just to save it."
+s00004,s,16.896,18.016,3,0,Thank you.
+w00001,w,50.4,51.02,,1,See you all again.
+w00002,w,52.44,53.58,,1,See if that comes up.
+w00003,w,58.26,60.22,,1,This is our functional design meeting.
+w00004,w,61.1,61.98,,1,um
+w00005,w,63.44,64.6,,1,while my PowerPoint comes up.
+w00006,s,66.8,67.7,,1,Et voilà.
+w00007,w,71.76,75.1,,1,"Okay, we put the fashion in electronics."
+w00008,w,76.02,76.3,,1,Start.
+w00009,w,77.36,79.04,,1,"Okay, our agenda today..."
+w00010,w,79.6,80.84,,1,Just check the time.
+w00011,w,81.2,82.18,,1,13.
+w00012,w,83.22,84.06,,1,um
+w00013,w,85.36,86.78,,1,I'm going to do an opening and talk about...
+w00014,w,87.12,91.2,,1,Did you all get the minutes? I emailed them to you. I'm also putting them in the shared folder.
+w00015,w,91.7,92.04,,1,So.
+w00016,w,92.72,94.68,,1,Then we'll talk about our general objectives.
+w00017,w,95.2,96.7,,1,and have your three presentations.
+w00018,w,97.68,100.3,,1,I'll talk about the new project requirements I've just received.
+w00019,w,100.98,103.98,,1,And then we have to make a decision on remote control functions.
+w00020,w,104.34,105.6,,1,"Finally, we'll just close."
+w00021,w,106.06,109.9,,1,We're starting this meeting at approximately 12.13 and we have 40 minutes.
+w00022,w,111.92,113.98,,1,"First of all, the functional design objectives."
+w00023,w,114.58,119.96,,1,"We need to keep in mind the user requirements specification, what needs and desires are to be fulfilled."
+w00024,w,120.98,123.94,,1,The textual functions design what effect the apparatus should have.
+w00025,w,124.76,128.84,,1,"and the working design, how the apparatus actually works to fulfill its function."
+w00026,w,130.86,132.72,,1,"Okay, three presentations."
+w00027,w,133.1,135.5,,1,You can go in any order you choose.
+s00005,y,135.84,137.76,4,0,Should we go in the order that you just did?
+w00028,w,138.2,139.06,,1,"Sure, please do."
+s00006,y,139.2,139.776,,0,I don't know.
+s00007,y,143.072,143.872,,0,Alright.
+s00008,y,144.576,145.344,,0,Bye.
+s00009,n,147.168,149.728,5,0,I think you might have to
+w00029,w,189.72,189.96,,1,I think.
+w00030,w,194.2,195.4,,1,"Blue one, FN."
+s00010,g,207.52,207.904,,0,I'm sick.
+w00031,w,209.24,210.9,,1,Is it plugged in all the way?
+w00032,w,211.4,211.86,,1,screwed it in.
+s00011,s,212.896,214.336,6,0,"Oh wait, it's rude."
+s00012,n,215.328,217.12,7,0,I think you've started to push it in really hard.
+w00033,w,223.7,224.84,,1,Just tighten it a little bit.
+s00013,g,225.44,225.824,,0,I'm alright.
+s00014,g,226.432,227.808,8,0,attached to anything.
+w00034,s,230.06,230.62,,1,There you go.
+s00015,g,234.24,241.056,9,0,You guys are able to get access to the report that was online or if I'm the only one who is.
+s00016,g,241.568,243.968,10,0,but i don't even know how to play this
+s00017,n,246.24,246.976,,0,Thank you.
+w00035,w,247.9,250.14,,1,Press the little presentation.
+w00036,w,250.84,252.96,,1,It looks like a Y kind of over there above draw.
+w00037,w,254.4,255.48,,1,"There, that one."
+w00038,w,256.0,256.34,,1,There you go.
+s00018,n,256.448,256.928,,0,All right.
+w00039,w,257.5,257.72,,1,you
+s00019,g,257.824,263.008,9,0,I'm just going to talk a little bit about functional requirements that people specify when they were asked.
+s00020,g,263.552,271.552,9,0,I guess Real Reaction did some market research. They had 100 subjects into their usability lab and they watched
+s00021,g,271.552,277.312,9,0,them watch TV and recorded the frequency that they use particular buttons.
+s00022,g,277.824,279.488,9,0,and the relevance of those buttons.
+s00024,g,285.376,289.056,9,0,What they found was they analyzed people's desires and needs.
+s00025,g,289.504,293.6,9,0,focusing on their desires. People specifically said that
+s00026,g,294.048,295.136,11,0,They thought the modes were ugly.
+s00027,g,295.392,298.24,9,0,75% of the 100 subjects.
+s00028,s,298.784,300.256,9,0,noted that and that they more
+s00029,g,300.416,303.904,9,0,"More importantly though, 80% said that they would be willing to pay more."
+s00030,g,304.512,306.88,9,0,for a fancier looking remote. I don't know.
+s00031,g,307.072,309.664,9,0,anything beyond what fancy means but
+s00032,g,310.176,312.864,9,0,"That's particularly of use to us, I think."
+s00033,g,313.44,321.216,9,0,"Also, they did some questions on voice recognition and found that the desire for voice recognition was in"
+s00034,g,321.44,324.16,9,0,related to age so younger people were
+s00035,g,324.416,325.696,9,0,more inclined to
+s00036,g,326.112,326.816,,0,want something
+s00037,g,327.008,332.288,9,0,voice recognition whereas the older people in the 60 and above segment or so
+s00038,g,333.056,336.48,9,0,did that really think that they would pay more money for voice recognition?
+s00039,g,337.76,340.768,9,0,People also had certain frustrations.
+w00040,w,340.78,341.0,,1,Thank you.
+s00040,g,341.12,343.712,9,0,that I think that we could try to take into consideration.
+s00041,g,344.256,344.608,,0,Well.
+s00042,g,345.568,346.368,,0,our design.
+s00043,g,346.592,348.0,9,0,that being people
+s00044,g,348.704,350.88,9,0,frustrated with losing their remotes.
+s00045,g,351.712,354.688,9,0,I think over 50% of the people mentioned that that
+s00046,g,354.88,359.36,9,0,was their biggest frustration. People were also frustrated with the difficulty it is.
+s00047,g,360.384,361.792,12,0,learn how to use a remote.
+s00048,n,362.272,363.072,9,0,And I think that ties.
+w00041,w,363.1,363.4,,1,Thank you.
+s00049,n,363.52,366.048,9,0,"what you were saying before, just that there's too many."
+w00042,w,366.06,366.32,,1,Bye.
+s00050,n,366.432,368.192,9,0,It just needs to be easy to use.
+s00051,g,368.736,372.0,9,0,It also mentioned something called RSI and I was hoping someone might...
+s00052,g,372.256,374.4,9,0,to inform me as to what RSI is.
+s00053,n,374.816,376.256,13,0,I don't know.
+s00054,n,376.992,377.792,,0,Bye.
+s00056,g,379.616,382.4,9,0,There we go. Wow. People did not like that.
+s00057,g,382.816,387.68,9,0,"So I guess sort of the carpal tunnel type thing. People do not like that, the repetitive use, I guess."
+s00058,g,388.32,389.248,9,0,cause the strain.
+s00059,g,389.76,391.648,9,0,Looking at the needs people
+s00060,g,392.064,392.896,9,0,specified
+s00061,g,393.376,399.552,9,0,The problem right now is that people's remotes are not matching their operating behavior. People are only...
+s00062,g,400.192,402.592,9,0,using 10% of the buttons.
+s00063,g,403.424,405.44,9,0,that they have offered to them on their remote.
+w00043,w,405.46,405.68,,1,you
+s00064,g,406.08,408.16,9,0,and what people do most often
+w00044,w,408.16,408.4,,1,Thank you.
+s00065,g,408.512,411.2,9,0,changing the channel and changing the volume.
+s00066,g,411.616,414.304,9,0,"People also zap, like change the channel."
+s00067,g,414.784,416.704,9,0,about 65 percent.
+s00068,g,417.568,419.008,9,0,during an hour of youth.
+s00069,g,419.616,422.72,9,0,So we really just need to focus in on those volumes.
+w00045,w,422.74,423.0,,1,Thank you.
+s00070,g,423.168,425.504,9,0,and channel changers rather than
+s00071,g,425.792,431.392,9,0,things like the audio settings and screen settings and the channel settings because they're used much more frequently and probably
+s00072,g,431.584,432.544,9,0,complicated
+s00073,g,433.12,434.112,,0,what's going on.
+s00074,g,435.328,436.736,9,0,So I think that some things that we want to do is
+s00075,g,436.864,437.824,,0,might want to think about.
+s00076,g,438.24,439.008,,0,The idea of an L
+s00077,g,439.168,442.656,9,0,screen was brought up although they didn't have any details on
+s00078,g,443.84,445.76,9,0,what people's preferences on that were.
+s00079,g,445.888,448.512,9,0,if that's coming to me later or something like that but something else
+w00046,w,448.54,448.78,,1,Thank you.
+s00080,g,448.896,451.072,9,0,that are also just the phenomenon that
+w00047,w,451.1,451.34,,1,Bye.
+s00081,g,451.456,453.344,9,0,it's more when it comes to the butt
+s00082,g,453.6,456.32,9,0,on the remote or what we want to make easiest to use.
+s00083,g,456.48,458.848,9,0,make sure that you know something
+w00048,w,458.86,459.16,,1,Bye.
+s00084,g,459.84,461.024,9,0,an audio setting
+s00085,g,461.44,463.584,9,0,isn't given as much importance.
+s00086,g,463.904,465.536,9,0,on the remote.
+s00087,g,465.728,468.064,9,0,the channel changing that's used a lot more often.
+s00088,g,468.576,471.104,9,0,and basically in order for us to win over to the
+s00089,g,471.36,476.8,9,0,We just need to focus on what it looks like that it has a fancy appeal and that it's not ugly
+s00090,g,476.96,481.504,9,0,and that it feels like the way they're going to use it so it doesn't give them any
+s00091,g,482.56,483.808,15,0,or
+w00049,w,489.66,491.2,,1,Thank you very much. That was great.
+w00050,w,492.12,493.02,,1,um
+w00051,w,493.42,495.44,,1,Let's move on to the next presentation.
+w00052,w,496.38,498.4,,1,on effects.
+w00053,w,499.12,499.36,,1,Thank you.
+s00092,w,500.0,500.384,,0,Thanks.
+w00054,s,501.62,502.0,,1,you
+s00093,g,502.112,502.784,,0,Thank you.
+w00055,w,508.94,510.32,,1,user interface right
+s00094,g,525.504,528.224,9,0,and share if i did it right if anyone wants to work
+w00056,w,528.24,529.18,,1,Thank you.
+w00057,w,564.0,564.5,,1,Okay.
+s00095,g,570.208,576.288,16,0,So I'm going to talk about the technical functions design of the remote control.
+s00096,g,578.176,582.176,16,0,You need to start by considering what a remote control actually is.
+s00097,g,582.816,585.696,16,0,device that allows us to
+s00098,g,586.112,594.112,16,0,produce certain effects on our television. So it's basically a communication device. We tell the remote control.
+s00099,g,594.112,599.328,16,0,"what we want to do, it sends a message to a television saying change the tunnel, change the volume."
+s00100,n,599.872,600.288,,0,Amen.
+s00101,g,600.896,602.976,16,0,"adjust these settings, adjust the buttons."
+s00102,g,605.12,609.12,16,0,How do we actually go about designing a new television remote control?
+s00103,g,610.112,618.112,16,0,First thing to do is to come up with the design specifications. We need to know what our final product is going to be like.
+s00104,g,618.112,619.008,,0,That's clever.
+s00105,g,619.456,620.992,16,0,exactly what this product does.
+s00106,g,621.44,626.208,16,0,how it works and what the end user is going to want from this product.
+s00107,n,627.52,628.128,,0,um
+s00108,g,629.216,632.576,16,0,A way I'd suggest that we could go about this is by...
+s00109,g,632.992,638.112,16,0,designing several different prototypes of user interfaces for this product.
+s00110,g,638.56,646.56,16,0,and then I tried to get some feedback about how well these particular predators are doing.
+s00111,g,646.56,647.232,,0,types work.
+s00112,g,647.648,650.208,16,0,find out what people think of them.
+s00113,g,650.688,655.072,16,0,Using a remote control is quite a subjective experience.
+s00114,w,655.488,656.16,,0,um
+s00115,g,657.344,660.128,16,0,and different people prefer different things.
+s00116,g,661.216,662.912,16,0,um we should remember but
+s00117,g,663.68,671.68,16,0,"Remote controls are a fairly standard piece of equipment. When a user is using a remote control, he or she expects the buttons to be inserted."
+s00118,g,671.68,678.272,16,0,So in some sense we're going to have to aim for a device which is fairly conventional in design.
+s00119,g,678.752,680.352,17,0,so that we're not
+s00120,g,680.768,682.016,16,0,completely shocking people.
+s00121,g,682.432,682.848,,0,but
+s00122,g,683.328,687.552,16,0,I think within that there is also room for us to introduce novel ideas.
+s00123,g,687.968,691.808,16,0,"and to make something that's perhaps a little bit different, something that stands out."
+s00124,g,693.472,698.208,16,0,Also in designing views of interfaces we need to consider practicalities.
+s00125,g,698.624,706.624,16,0,The first of these is technological. What can we do with the current state of technology as it is? The second is economic.
+s00126,g,706.624,714.624,16,0,"we need to find the balance between features and vice. As you mentioned, things like voice recognition would add to the vice."
+s00127,g,714.688,717.984,16,0,but it would also improve the design of the product.
+s00128,g,720.128,728.128,16,0,So I had a look on the web to see if I could find a few examples of existing television remote controls.
+s00129,g,728.256,736.256,16,0,in analyzing these we can consider what what things what's good about them uh what things do they get right what's bad about them what's wrong with them
+s00130,g,736.768,742.304,16,0,how we can improve on the designs that I've found.
+s00131,g,743.04,747.808,16,0,What can we do to make our products stand out from the large majority of the node controls?
+s00132,g,749.504,757.504,16,0,Here's two examples probably at the extreme ends of the spectrum. On the left here we've got...
+s00133,g,758.304,765.312,16,0,an engineering based design for remote control so it's one that's got lots of buttons it's fully featured
+s00134,g,765.792,773.024,16,0,"Everything you might possibly want to do is there, you know, it's got forward, backwards, up, down, channel numbers, volume, freeze frame."
+s00135,g,773.6,781.6,16,0,It's fully featured and it might take a while to get to learn to use it but once you've learned it you can do whatever you want with your TV.
+s00136,g,782.624,788.928,16,0,"The one on the right is a lot more basic, it's just got the essential functions of the TV, changing the channel, play, stop, volume."
+s00137,g,789.44,796.64,16,0,it would be a lot quicker to learn to use it but again it swings and roundabouts the disadvantage is you can't lose it
+s00138,g,797.056,805.056,16,0,say to freeze the television picture there's a lot of features that are missing from that remote control so we've got to to find out
+s00139,g,805.056,807.84,16,0,find a way of striking the balance between the two
+s00140,g,809.984,817.984,16,0,"As I said before, remote controls are subjective. Different people want different things."
+s00141,g,817.984,825.984,16,0,"but what I want from my remote control is a device that's simple, it's easy to use, it's got big buttons for doing the thing."
+s00142,g,825.984,828.608,16,0,"things I do most often, changing the volume, changing the channel."
+s00143,g,829.152,837.152,16,0,"It does everything that I need it to. As I said before, I'm quite lazy. I don't want to walk across the room just to adjust my television."
+s00144,s,837.248,843.168,16,0,"I also want something that looks cool and that feels good, that's ergonomically designed."
+w00058,w,848.18,849.78,,1,"Okay, thank you very much."
+w00059,w,850.3,850.9,,1,Very useful.
+w00060,w,851.52,852.36,,1,funny day
+w00061,w,852.76,855.66,,1,see the drastic difference between those two remotes.
+w00062,w,856.48,857.34,,1,um
+w00063,w,858.14,860.08,,1,"And neither of them were very pretty, you know?"
+s00145,y,860.192,863.072,18,0,I think that could be our selling point.
+w00064,w,863.16,863.62,,1,Mm-hmm.
+s00146,g,863.744,869.184,19,0,There's certainly a market for technology that looks cool.
+s00147,g,869.504,871.36,16,0,I think that's what companies are.
+s00149,g,872.416,874.048,19,0,that could make a lot of progress.
+s00150,g,875.2,877.44,20,0,"I really can't see what I'm doing, so it doesn't matter."
+w00065,s,878.14,879.34,,1,There it is.
+s00151,s,879.552,880.224,,0,you
+s00152,g,891.2,891.808,,0,So.
+w00066,w,892.18,892.72,,1,Lovely.
+s00153,n,892.832,898.976,21,0,Did it let you go on the internet or was that just what you saw? That was just on the company website.
+w00067,w,899.38,899.66,,1,Mm-hmm.

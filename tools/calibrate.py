@@ -149,6 +149,7 @@ def ownvoice_calibration(cfg, prefix: str):
     print(f"  현재 own_margin_db={cfg['ownvoice']['own_margin_db']}  → 제안: ownvoice.own_margin_db: {margin:.1f}")
     if len(other) < 0.05 * len(diffs):
         print("  (주의: 타인 발화가 거의 없는 녹음입니다. 상대가 말하는 부분이 있는 녹음으로 다시 재세요.)")
+    return margin
 
 
 def main():

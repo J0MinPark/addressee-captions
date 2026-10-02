@@ -9,3 +9,5 @@ results/*.segments.jsonl
 cache/
 results/*.emb.npz
 results/calibration_used.json
+results/cache/
+results/*.labelstats.json

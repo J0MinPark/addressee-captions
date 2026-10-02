@@ -46,9 +46,16 @@ def load_segments(path: Path) -> tuple[dict, list[dict]]:
     return meta, sorted(out, key=lambda r: (r["t_end"], r["seg_id"]))
 
 
-def load_labels(path: Path) -> dict[str, str]:
+TO_ME = ("single", "single+group")
+
+
+def load_labels(path: Path, to_me: str = "single") -> dict[str, str]:
+    """라벨 g(그룹 전체에게, AMI)는 정의에 따라 y 또는 n 으로 바꾼다.
+    single: 착용자 한 명에게 한 말만 y / single+group: 그룹 전체에게 한 말도 y."""
     with open(path, encoding="utf-8-sig", newline="") as f:
-        return {r["seg_id"]: r["label"] for r in csv.DictReader(f)}
+        raw = {r["seg_id"]: r["label"] for r in csv.DictReader(f)}
+    g = "y" if to_me == "single+group" else "n"
+    return {k: (g if v == "g" else v) for k, v in raw.items()}
 
 
 def simulate(cfg: dict, segs: list[dict], mode: str) -> dict:
@@ -109,6 +116,8 @@ def metrics(segs: list[dict], labels: dict[str, str], sim: dict) -> dict:
     tp = fp = fn = tn = 0
     shown_chars = bad_chars = 0
     trap_n = trap_shown = 0
+    trap_spk = set()
+    elig = defaultdict(int)   # 착용자 직후(T>=0.5) 구간: (라벨, 표시 여부)
     spk_labels = defaultdict(list)
     first_y = {}
     for s, y in labeled(segs, labels):
@@ -124,6 +133,10 @@ def metrics(segs: list[dict], labels: dict[str, str], sim: dict) -> dict:
         if not y and s.get("llm_eligible"):     # 함정 구간: 착용자 직후인데 착용자에게 한 말이 아님
             trap_n += 1
             trap_shown += pos
+            if s.get("speaker_id") is not None:
+                trap_spk.add(s["speaker_id"])
+        if s.get("llm_eligible"):
+            elig[("y" if y else "n", "shown" if pos else "folded")] += 1
         sid = s.get("speaker_id")
         if sid is not None:
             spk_labels[sid].append(y)
@@ -136,7 +149,9 @@ def metrics(segs: list[dict], labels: dict[str, str], sim: dict) -> dict:
     return {"tp": tp, "fp": fp, "fn": fn, "tn": tn, "shown_chars": shown_chars, "bad_chars": bad_chars,
             "n_nonpartner": len(non_partners), "misreg": len(registered & non_partners),
             "n_partner": len(true_partners), "unregistered": len(true_partners - registered),
-            "delays": delays, "trap_n": trap_n, "trap_shown": trap_shown}
+            "delays": delays, "trap_n": trap_n, "trap_shown": trap_shown,
+            "trapspk_n": len(trap_spk - true_partners), "trapspk_reg": len((trap_spk - true_partners) & registered),
+            **{f"elig_{a}_{b}": v for (a, b), v in elig.items()}}
 
 
 def llm_confusion(segs: list[dict], labels: dict[str, str]) -> dict:
@@ -171,6 +186,9 @@ def summarize(ms: list[dict]) -> dict:
         "misreg": f"{int(agg['misreg'])}/{int(agg['n_nonpartner'])}",
         "trap_shown_rate": agg["trap_shown"] / agg["trap_n"] if agg["trap_n"] else None,
         "trap_shown": f"{int(agg['trap_shown'])}/{int(agg['trap_n'])}",
+        "trapspk_rate": agg["trapspk_reg"] / agg["trapspk_n"] if agg["trapspk_n"] else None,
+        "trapspk": f"{int(agg['trapspk_reg'])}/{int(agg['trapspk_n'])}",
+        "elig": {k[5:]: int(v) for k, v in agg.items() if k.startswith("elig_")},
         "reg_delay_s": sum(delays) / len(delays) if delays else None,
         "unregistered": int(agg["unregistered"]), "n_partner": int(agg["n_partner"]),
         "n_pos": int(tp + fn), "n_neg": int(agg["fp"] + agg["tn"]),
@@ -279,7 +297,7 @@ def report(cfg, data: dict, synthetic: bool, warnings: list[str], results: Path)
     return results / f"{stem}.md"
 
 
-def collect(names: list[str], results: Path) -> dict:
+def collect(names: list[str], results: Path, to_me: str = "single") -> dict:
     data = {}
     for n in names:
         sp, lp = results / f"{n}.segments.jsonl", results / f"{n}.labels.csv"
@@ -287,7 +305,7 @@ def collect(names: list[str], results: Path) -> dict:
             print(f"[evaluate] 건너뜀 {n}: {sp.name if not sp.exists() else lp.name} 없음")
             continue
         meta, segs = load_segments(sp)
-        data[n] = (meta, segs, load_labels(lp))
+        data[n] = (meta, segs, load_labels(lp, to_me))
     return data
 
 
@@ -295,9 +313,20 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("scenarios", nargs="*")
     ap.add_argument("--profile", default=None)
+    ap.add_argument("--to-me-definition", default=None, choices=list(TO_ME) + ["both"],
+                    help="AMI 그룹 발화(g)를 '나에게 한 말'로 볼지: single | single+group | both")
+    ap.add_argument("--ami", action="store_true", help="AMI 보고서(results/ami_ablation.md): 조건별·정의별 표")
     args = ap.parse_args()
-    cfg = load_config(args.profile)
+    cfg = load_config(args.profile or ("ami" if args.ami else None))
     results = resolve_path(cfg, "results_dir")
+    if args.ami:
+        from ami_report import ami_report
+        names = [scenario_name(n) for n in args.scenarios] if args.scenarios else sorted(
+            scenario_name(p.name) for p in results.glob("ami_*.labels.csv") if role(scenario_name(p.name)) == "eval")
+        d = args.to_me_definition or "both"
+        ami_report(cfg, names, results, list(TO_ME) if d == "both" else [d])
+        return
+    args.to_me_definition = args.to_me_definition or "single"
     if args.scenarios:
         names = [scenario_name(n) for n in args.scenarios]
     else:
@@ -306,7 +335,9 @@ def main():
         if not names:
             raise SystemExit("평가용(_take2) 시나리오가 없습니다. 이름을 직접 지정하거나 NAME_take2 로 녹음하세요.")
     warnings = check_eval_inputs(names)
-    data = collect(names, results)
+    if args.to_me_definition == "both":
+        raise SystemExit("--to-me-definition both 는 --ami 보고서에서만 씁니다.")
+    data = collect(names, results, args.to_me_definition)
     if not data:
         raise SystemExit("평가할 시나리오가 없습니다. replay → label 을 먼저 하세요.")
     real = {n: v for n, v in data.items() if not (v[0].get("synthetic") or is_synthetic(n))}

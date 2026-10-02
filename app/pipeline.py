@@ -122,7 +122,8 @@ def log_llm_banner(judge, log=print) -> None:
 # ----------------------------------------------------------------- 파이프라인
 class Pipeline:
     def __init__(self, cfg: dict, source: AudioSource, models: Models, mode: Optional[str] = None,
-                 log=print, log_events: bool = True, record_segments: bool = False, run_name: str = ""):
+                 log=print, log_events: bool = True, record_segments: bool = False, run_name: str = "",
+                 feature_cache=None, cache_key: Optional[str] = None):
         self.cfg = cfg
         self.src = source
         self.m = models
@@ -132,8 +133,20 @@ class Pipeline:
         ring_s = cfg["audio"]["ring_seconds"]
         self.ring_a = RingBuffer(ring_s, self.sr)
         self.ring_b = RingBuffer(ring_s, self.sr)
+        for v in (models.vad_a, models.vad_b):   # 재생을 연달아 돌릴 때 이전 스트림의 VAD 상태가 남지 않게
+            try:
+                v.reset()
+            except Exception:
+                pass
         self.svad_a = StreamingVAD(models.vad_a, self.sr) if models.vad_a else None
-        self.svad_b = StreamingVAD(models.vad_b, self.sr)
+        self.fcache = feature_cache
+        asr_engine, self.embedder, vad_b = models.asr, models.embedder, models.vad_b
+        if feature_cache is not None and cache_key:   # 같은 B 채널을 공유하는 재생(AMI 착용자 4명)
+            from app.featcache import CachedASR, CachedEmbedder, CachedVAD
+            vad_b = CachedVAD(models.vad_b, feature_cache, cache_key)
+            asr_engine = CachedASR(models.asr, feature_cache) if models.asr else None
+            self.embedder = CachedEmbedder(models.embedder, feature_cache) if models.embedder else None
+        self.svad_b = StreamingVAD(vad_b, self.sr)
         self.own = OwnVoiceDetector(cfg)
         self.b_hist: deque = deque(maxlen=48)   # 최근 B VAD 청크 (~1.5초)
         self.tail_guard = cfg["ownvoice"].get("tail_guard_s", 0.1)
@@ -147,9 +160,9 @@ class Pipeline:
                                          nc.get("short_max_edit_distance", nc["max_edit_distance"]),
                                          nc.get("short_jamo_len", 0)) if nc.get("enabled", True) else None
         self.debouncer = AlertDebouncer(cfg)
-        if self.namecall is not None and hasattr(models.asr, "name_check"):
-            models.asr.name_check = lambda text: self.namecall.detect(text) is not None
-        self.asr = ASRWorker(models.asr or _NullASR(), cfg["asr"]["max_queue"], log)
+        if self.namecall is not None and hasattr(asr_engine, "name_check"):
+            asr_engine.name_check = lambda text: self.namecall.detect(text) is not None
+        self.asr = ASRWorker(asr_engine or _NullASR(), cfg["asr"]["max_queue"], log)
         self.sound = SoundWorker(models.sound, self._on_sound, log) if models.sound else None
         self.ctl: "queue.Queue[tuple]" = queue.Queue()
         self.listeners: list[Callable[[dict], None]] = []
@@ -497,9 +510,9 @@ class Pipeline:
             return
         audio = seg.audio if seg.audio is not None else self.ring_b.get(seg.t_start - self.pad, seg.t_end + self.pad)
         emb = None
-        if self.m.embedder is not None and self.registry.needs_embedding(seg.duration):
+        if self.embedder is not None and self.registry.needs_embedding(seg.duration):
             try:
-                emb = self.m.embedder(audio)
+                emb = self.embedder(audio)
             except Exception as e:
                 self.log(f"[speaker] 임베딩 오류: {e}")
         if self.single_mic and emb is not None and self.registry.wearer is not None:
