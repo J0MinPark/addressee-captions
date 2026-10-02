@@ -1,0 +1,88 @@
+﻿seg_id,label,t_start,t_end,speaker_id,is_wearer,text
+s00001,s,26.88,28.256,1,0,Hello.
+s00002,g,30.208,31.776,2,0,So we are here for a...
+s00004,n,40.896,43.968,4,0,So we are here for the functional design meeting.
+s00005,g,44.96,45.632,,0,So...
+s00006,g,46.048,48.576,4,0,First I will show the agenda.
+s00007,g,49.728,53.696,4,0,we will uh i will take notes during this meeting so
+s00008,w,55.072,56.288,4,0,try to summarize it
+s00009,g,56.928,57.44,,0,and food.
+s00010,g,57.856,61.888,4,0,that summary in the shared folder if you want to look at it afterwards
+s00011,g,63.264,64.832,5,0,So then...
+s00012,g,65.248,68.544,4,0,Each of you will lead a presentation on the task.
+s00013,n,69.024,76.512,4,0,"that has been required last time. So user requirements, specification, technical function design, and working design."
+s00014,g,78.368,83.392,4,0,then i will present you some new project requirements i received
+s00015,g,84.416,87.68,4,0,from the management board
+s00016,g,89.024,95.008,4,0,then we will take the decision on the remote control indeed functions.
+s00017,g,96.8,99.36,4,0,and then i will assign you
+s00018,g,99.872,101.408,6,0,to task for the next.
+s00019,g,102.016,102.496,,0,But
+s00020,g,103.52,104.288,,0,of the meeting.
+s00021,g,105.568,107.2,7,0,of the process.
+s00022,g,109.184,112.48,4,0,so we want to start the
+s00023,g,113.152,115.584,4,0,the presentation of what they did.
+s00024,y,119.232,120.192,,0,Do you want to stop?
+w00001,w,120.44,121.3,,1,I can start.
+s00025,w,122.048,123.232,8,0,You can start.
+w00002,w,123.26,123.5,,1,Uh-uh.
+s00026,w,123.616,124.288,,0,Thank you.
+w00003,w,124.98,125.78,,1,Cable Camera
+w00004,w,130.48,130.9,,1,should be
+w00005,w,131.5,132.52,,1,in the folder
+s00028,w,134.016,135.104,10,0,I am maybe there.
+w00006,w,135.42,135.62,,1,up
+s00029,y,135.744,136.352,,0,Thank you.
+s00030,y,137.376,138.304,,0,Who are you?
+w00007,w,138.32,139.14,,1,"I'm a three, I think."
+s00031,n,147.424,147.968,,0,coach.
+s00032,n,152.736,153.056,,0,Okay.
+s00033,g,153.504,155.552,11,0,technical problem.
+w00008,w,157.84,160.28,,1,Do you think we set it in the wrong folder maybe?
+w00009,w,161.94,162.56,,1,It's possible.
+s00034,n,162.688,164.352,4,0,You put it on me
+w00010,w,164.72,169.14,,1,"It was somewhere in something like this, I don't remember the name actually, something like Messenger Army or something."
+s00035,g,169.856,171.104,12,0,What do you have in shortcook?
+w00011,w,171.34,171.6,,1,Go up.
+s00036,g,172.256,173.12,,0,That's just been too.
+w00012,w,173.84,174.22,,1,"Yeah, go up."
+s00037,y,175.584,175.904,,0,Yeah.
+w00013,w,176.62,177.2,,1,again
+w00014,w,179.5,179.74,,1,We'll back.
+s00038,n,180.96,182.048,13,0,They have no...
+w00015,w,182.06,183.28,,1,Maybe Messenger Ami.
+w00016,w,185.2,185.64,,1,Messenger.
+s00039,y,186.816,187.264,,0,Over.
+s00040,y,188.128,188.672,,0,Thank you.
+w00017,w,190.16,190.9,,1,"No, there's nothing."
+s00041,n,195.296,196.384,14,0,There's no...
+s00042,g,197.6,197.952,,0,We have it.
+w00018,w,198.14,198.54,,1,Let's go and check.
+s00043,w,198.656,202.048,15,0,"Otherwise, could you just describe?"
+s00044,y,203.104,204.512,16,0,My hand.
+s00045,y,204.704,206.208,17,0,With the white on.
+w00019,w,206.48,206.72,,1,Yeah.
+s00046,y,206.88,208.16,18,0,"If you remember, yeah."
+w00020,w,208.24,208.46,,1,Yeah.
+w00021,w,209.22,210.9,,1,So basically...
+w00022,w,211.74,213.28,,1,What we want here is the remote control.
+s00047,w,213.408,214.464,19,0,right? Yeah.
+w00023,w,214.82,215.66,,1,So...
+w00024,w,215.96,218.08,,1,The question was first of all what to control so...
+w00025,w,218.62,219.34,,1,most people want
+w00026,w,219.7,223.2,,1,to have a remote for the hi-fi and TV and stuff like that.
+s00048,w,223.552,224.064,,0,Mm-hmm.
+w00027,w,224.24,229.24,,1,and but other people want ulcery modes for controlling
+w00028,w,229.62,230.04,,1,And...
+w00029,w,230.48,232.18,,1,toys like robotic pets and
+w00030,w,232.58,233.48,,1,robots and stuff.
+w00031,w,234.3,236.1,,1,and other people also won't have remote
+w00032,w,236.6,237.34,,1,for controlling
+w00033,w,238.34,239.32,,1,the whole house
+s00049,s,239.424,240.576,20,0,Mm-hmm.
+w00034,w,240.6,244.1,,1,"Yeah, so there's a project I think called X House or something like that."
+w00035,w,244.52,244.86,,1,Does that.
+w00036,w,245.66,248.42,,1,You can integrate your remote with the computers and stuff
+s00050,w,248.544,249.44,,0,Mm-hmm.
+w00037,w,249.44,250.04,,1,So...
+w00038,w,251.0,252.62,,1,That's one thing. The other thing is...
+w00039,w,253.18,253.48,,1,that

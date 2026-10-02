@@ -44,6 +44,7 @@ DEMAND_URL = "https://zenodo.org/records/1227121/files/PCAFETER_16k.zip?download
 NITE = "{http://nite.sourceforge.net/}"
 SR = 16000
 LETTERS = "ABCD"
+FAR_FIELD_ORDER = ("Array1-01", "Array2-01", "Array2-02", "Array1-02")
 
 
 # ---------------------------------------------------------------- 다운로드
@@ -277,16 +278,27 @@ def main():
         print(f"\n[{mid}] 참가자–헤드셋 채널 대응(meetings.xml): " +
               ", ".join(f"{L}→Headset-{info['channels'][L]} ({info['global'][L]})" for L in sorted(info["channels"])))
         files = {f"Headset-{c}": raw / "audio" / mid / f"{mid}.Headset-{c}.wav" for c in sorted(info["channels"].values())}
-        files["Array1-01"] = raw / "audio" / mid / f"{mid}.Array1-01.wav"
         for ch, dst in files.items():
             if not download(AUDIO_URL.format(m=mid, ch=ch), dst, f"{mid}.{ch}"):
                 raise SystemExit(f"{mid}.{ch} 다운로드 실패")
+        # 원거리 마이크: 기본 Array1-01. 미러에 없으면(예: IS1003b) 정해진 순서로 대체하고 기록한다.
+        far = None
+        for ch in FAR_FIELD_ORDER:
+            dst = raw / "audio" / mid / f"{mid}.{ch}.wav"
+            if download(AUDIO_URL.format(m=mid, ch=ch), dst, f"{mid}.{ch}"):
+                far = ch
+                break
+        if far is None:
+            raise SystemExit(f"{mid}: 원거리 마이크({FAR_FIELD_ORDER}) 없음")
+        if far != "Array1-01":
+            print(f"  ⚠ {mid}: Array1-01 없음 → {far} 사용")
+        files["far"] = raw / "audio" / mid / f"{mid}.{far}.wav"
         n = int(args.minutes * 60 * SR)
         das = [d for d in load_das(ann, mid) if d["start"] < args.minutes * 60]
         (data / f"ami_{mid}.das.json").write_text(json.dumps(
             {"meeting": mid, "minutes": args.minutes, "channels": info["channels"], "das": das},
             ensure_ascii=False), encoding="utf-8")
-        b_raw = read_wav(files["Array1-01"])[:n]
+        b_raw = read_wav(files["far"])[:n]
         mask_all = speech_mask(das, len(b_raw))
         b_clean, gb = normalize(b_raw, mask_all)
         bs = {"clean": b_clean}
@@ -294,7 +306,7 @@ def main():
             if c.startswith("snr"):
                 bs[c] = mix_noise(b_clean, noise, mask_all, float(c[3:]), seed=zlib.crc32(mid.encode()) % 1000)
         take = "take1" if mid == calib else "take2"
-        log["meetings"][mid] = {"channels": info["channels"], "global": info["global"], "take": take,
+        log["meetings"][mid] = {"channels": info["channels"], "global": info["global"], "take": take, "far_field": far,
                                 "das": len(das), "array_gain_db": gb, "wearers": {}}
         for L in sorted(info["channels"]):
             a_raw = read_wav(files[f"Headset-{info['channels'][L]}"])[:n]
@@ -317,10 +329,10 @@ def main():
                 (data / f"{name}.json").write_text(json.dumps({
                     "scenario": name, "source": "AMI Meeting Corpus", "synthetic": False, "meeting": mid,
                     "wearer": L, "wearer_global": info["global"][L], "headset_channel": info["channels"][L],
-                    "far_field": "Array1-01", "condition": c, "split": take, "minutes": args.minutes,
+                    "far_field": far, "condition": c, "split": take, "minutes": args.minutes,
                     "noise": None if c == "clean" else f"DEMAND PCAFETER @ SNR {c[3:]}dB",
                     "gain_db": {"A": ga, "B": gb}, "duration_s": round(len(a) / SR, 1),
-                    "devices": [f"AMI {mid} Headset-{info['channels'][L]}", f"AMI {mid} Array1-01"]},
+                    "devices": [f"AMI {mid} Headset-{info['channels'][L]}", f"AMI {mid} {far}"]},
                     ensure_ascii=False, indent=1), encoding="utf-8")
             print(f"  ✓ 착용자 {L} (Headset-{info['channels'][L]}): {', '.join(conds)} → ami_{mid}_w{L}_*_{take}")
     out = data / f"ami_import_{time.strftime('%Y%m%d_%H%M%S')}.json"

@@ -1,0 +1,310 @@
+﻿seg_id,label,t_start,t_end,speaker_id,is_wearer,text
+w00001,w,26.38,27.42,,1,"Okay, everyone's ready."
+w00002,w,30.04,31.7,,1,so we are here for
+w00003,w,32.78,34.42,,1,or functional design
+w00004,w,40.88,43.82,,1,So we are here for the functional design meeting.
+s00001,w,43.936,44.384,,0,Thank you.
+w00005,w,44.94,45.4,,1,So...
+s00002,w,45.504,45.984,,0,Thank you.
+w00006,w,46.06,48.4,,1,First I will show the agenda.
+w00007,w,49.76,50.6,,1,We will...
+w00008,w,51.26,53.52,,1,"I will take notes during this meeting, so..."
+w00009,w,54.78,56.12,,1,I will try to summarize it.
+w00010,w,56.94,57.26,,1,and put
+w00011,w,57.9,61.68,,1,That's a summary in the shared folder if you want to look at it afterwards.
+w00012,w,63.28,64.44,,1,So then...
+w00013,w,65.26,68.36,,1,Each of you will lead a presentation on the task.
+w00014,w,69.04,70.38,,1,that has been required.
+w00015,w,70.84,74.6,,1,last time so user requirements specification technical function design
+s00003,w,74.72,75.136,,0,Thank you.
+w00016,w,75.26,76.26,,1,and work in design.
+w00017,w,78.42,80.48,,1,Then I will present you some...
+w00018,w,80.8,81.86,,1,new project requirements
+w00019,w,82.46,83.12,,1,I received
+w00020,w,84.44,85.54,,1,from
+w00021,w,86.0,87.5,,1,the management board
+s00004,s,87.616,88.0,,0,Thank you.
+w00022,w,89.08,93.46,,1,Then we will take the decision on the remote control.
+s00005,w,93.568,94.048,,0,you
+w00023,w,94.06,94.74,,1,needed function.
+w00024,w,96.82,99.12,,1,and then I will assign you
+w00025,w,99.9,101.0,,1,to task for the next.
+s00006,w,101.12,101.888,,0,Thank you.
+s00007,w,102.304,102.656,,0,Thank you.
+w00026,w,103.54,104.08,,1,of the meeting.
+w00027,w,105.58,107.16,,1,of the process.
+w00028,w,109.26,110.28,,1,So who wants
+s00008,w,110.4,110.72,,0,Thank you.
+s00009,w,111.008,111.36,,0,you
+w00029,w,111.36,112.02,,1,the...
+s00010,w,112.128,112.704,,0,Thank you.
+w00030,w,113.24,113.88,,1,the presentation of
+w00031,w,114.4,115.22,,1,what they
+s00011,s,115.328,115.776,,0,you
+s00012,n,119.232,120.288,1,0,Do you want to understand that?
+w00032,w,122.06,122.42,,1,We can start.
+s00013,n,124.992,125.952,,0,Thank you.
+w00033,w,128.6,129.46,,1,Do you have a PowerPoint?
+w00034,w,134.0,134.74,,1,I am maybe there.
+w00035,w,135.7,136.18,,1,okay
+w00036,w,137.4,138.2,,1,Who are you?
+w00037,w,147.48,147.88,,1,Ouch.
+w00038,w,149.3,150.04,,1,and
+w00039,w,153.52,153.74,,1,We have it.
+w00040,w,154.04,155.36,,1,Technical problem.
+w00041,w,163.48,164.06,,1,20 tons.
+w00042,w,180.98,182.02,,1,I have no...
+w00043,w,186.84,187.08,,1,Over.
+w00044,w,188.28,188.5,,1,Okay?
+w00045,w,195.34,196.2,,1,There's no...
+w00046,w,197.58,197.8,,1,We have a...
+w00047,w,198.24,198.8,,1,technical problems
+s00014,n,200.544,202.272,2,0,As could you just describe?
+w00048,w,206.9,208.02,,1,"if you remember, yeah."
+w00049,w,208.88,209.28,,1,But that's...
+s00016,g,214.848,220.64,4,0,"So, of course, we will have water control. Most people won't have..."
+s00017,g,221.12,227.584,4,0,for the hi-fi and stuff like that. But other people want also moots for...
+s00018,g,228.032,228.768,,0,controlling
+s00019,g,229.696,230.048,,0,in.
+s00020,g,230.496,233.824,5,0,toys like robotic pads
+s00021,g,234.56,237.856,4,0,Other people also won't have remotes for controlling me.
+s00022,g,238.304,240.384,6,0,whole house
+w00050,w,240.4,240.64,,1,Yeah.
+s00023,g,240.768,248.768,7,0,So there's a project called X-House or something. It does that. You can integrate with the filters and stuff.
+s00024,n,249.184,250.272,8,0,No.
+s00025,n,251.008,252.704,9,0,That's one thing. The other thing is...
+s00026,n,253.184,253.824,,0,Yeah.
+s00027,n,256.064,256.768,,0,We'll find the difference.
+s00028,n,257.536,258.432,,0,by whiskey.
+s00029,g,259.712,262.528,10,0,If you have the founder features then you can also have.
+s00030,g,264.032,266.336,11,0,"in general, those commanders."
+s00031,g,266.848,267.328,,0,Thank you.
+s00032,n,267.968,268.384,,0,Mm-hmm.
+s00033,g,269.92,271.488,12,0,I think we'll split back up in the case.
+s00034,g,273.28,275.552,4,0,so that the user interface will be just the full part.
+s00035,g,276.032,279.712,10,0,One is the voice command part and one is the actual button part.
+s00036,g,280.576,281.632,13,0,Thank you.
+s00037,g,282.112,290.112,4,0,"The buttons part would be a set of buttons for choosing devices, a set of buttons for spatial navigation, to space."
+s00039,g,292.384,293.696,15,0,Linear
+s00040,g,294.784,296.128,16,0,Access video.
+s00041,g,296.608,299.584,14,0,and set the buttons for random access
+w00051,w,300.34,300.62,,1,Okay.
+s00042,n,301.152,307.424,17,0,What do you mean by being a sexy? Like a video tape to work backwards faster.
+w00052,w,308.72,310.42,,1,okay so special navigation
+s00043,w,310.528,310.976,,0,Thank you.
+w00053,w,311.06,313.94,,1,"Linear access, random access, and there's a false one, no?"
+s00044,y,314.784,315.104,,0,Amen.
+w00054,w,316.24,318.5,,1,So the buttons are for special navigation.
+s00045,y,319.168,322.336,18,0,"Yeah, for some of the kids, you might have a sleep in the menu."
+w00055,w,322.36,322.74,,1,Okay.
+s00046,y,322.848,323.232,,0,Yeah.
+w00056,w,323.42,324.44,,1,then linear access
+w00057,w,325.34,326.24,,1,Then random access.
+s00047,g,326.368,328.256,19,0,and also parameters
+w00058,w,328.54,329.74,,1,"Ah, yeah, parameter. Okay."
+s00048,g,330.272,333.92,4,0,So it's a common parameter to be used to be salvaged for that.
+w00059,w,333.98,334.34,,1,Okay.
+s00049,g,335.584,337.056,20,0,You have a single day.
+s00050,g,337.632,339.776,21,0,but there are a lot of
+s00051,g,341.728,343.328,22,0,remotes on the market right now.
+w00060,w,343.44,343.72,,1,Okay.
+s00052,g,343.84,344.224,,0,Thank you.
+s00054,g,347.008,348.512,4,0,everybody have to start.
+w00061,w,348.7,348.94,,1,Okay.
+w00062,w,349.3,350.54,,1,and voice command
+w00063,w,350.9,351.6,,1,you
+s00055,n,351.712,356.416,22,0,"You can use command to speak for anything. Assign any button, a command to any button."
+w00064,w,356.54,356.86,,1,Okay.
+s00056,n,356.96,358.688,24,0,hard enough to put some power in.
+w00065,w,361.26,361.68,,1,Okay.
+w00066,w,363.0,366.02,,1,So that's close your investigations.
+s00057,g,366.144,367.04,,0,Yeah
+s00058,n,367.808,369.536,25,0,Thank you.
+w00067,w,370.1,372.78,,1,Maybe we can have a look at the user requirements with...
+s00059,s,372.896,373.664,,0,Yeah.
+s00060,g,374.272,375.264,,0,Thank you.
+w00068,w,378.64,379.84,,1,"I don't know if I can, Penny."
+s00061,y,379.968,380.384,,0,Thank you.
+w00069,w,380.4,380.8,,1,Maybe you can...
+s00062,y,380.928,381.632,,0,Not you.
+w00070,w,386.86,387.1,,1,
+s00063,w,387.2,387.808,,0,Thank you.
+w00071,w,396.1,396.6,,1,in which folder?
+s00064,n,396.704,397.728,26,0,Thank you.
+w00072,w,401.52,402.46,,1,shortcut to
+s00065,w,402.56,403.264,,0,Let's go.
+s00066,n,403.424,404.032,,0,Thank you.
+w00073,w,407.32,409.22,,1,Maybe you can send it to me by email.
+s00067,s,409.344,410.08,,0,Thank you.
+w00074,w,411.8,412.48,,1,just to party.
+w00075,w,412.86,413.66,,1,
+w00076,w,416.78,417.1,,1,
+s00068,y,417.216,418.848,27,0,Amen.
+w00077,w,419.64,420.96,,1,I'll try to show it.
+w00078,w,421.26,421.78,,1,"Thank you, everyone."
+w00079,w,422.78,423.62,,1,That would be more.
+s00069,w,425.28,425.6,,0,Thank you.
+w00080,w,425.6,425.82,,1,
+s00070,n,425.92,427.552,28,0,Okay.
+s00071,s,429.856,430.784,,0,Thank you.
+s00072,y,432.992,434.336,29,0,It's possible.
+w00081,w,436.62,437.8,,1,This is this email.
+s00073,g,443.744,444.288,,0,Thank you.
+w00082,w,476.44,479.9,,1,So maybe I can switch slides whenever you ask.
+w00083,w,481.18,482.42,,1,That would be more convenient.
+w00084,w,482.86,483.16,,1,So
+w00085,w,484.54,485.4,,1,functional requirement
+s00074,g,493.408,495.296,30,0,remote control use around them.
+s00075,g,496.032,497.12,29,0,and read the subject.
+s00076,g,498.496,502.496,29,0,Is this subject also filled? Questionnaire?
+s00077,s,502.784,503.712,,0,Thank you.
+s00078,g,505.152,507.936,29,0,and you have the results.
+s00079,g,508.352,514.816,29,0,So you can see that 25% of users find most remote control ugly.
+s00080,g,515.488,517.856,29,0,So we have to find something to...
+s00081,g,518.4,519.808,30,0,Make them more.
+s00082,g,520.896,522.56,29,0,"more nice, more kind."
+s00083,g,522.976,528.064,29,0,80% of users would spend more money when a remote control would look fancy.
+s00084,n,529.568,535.008,29,0,80% of users would spend more money when a remote control would work out.
+s00085,n,535.712,537.888,1,0,Too bad. Too good.
+w00086,w,539.88,541.02,,1,We can just keep tuning.
+s00086,n,541.12,542.08,,0,I can I can
+s00087,g,542.848,550.848,29,0,75% of users say they zap a lot. So we have to have a remote control.
+s00088,g,550.848,558.848,29,0,"control, very hard for that. The buttons are hard to be."
+s00089,g,560.384,563.04,29,0,"like you say, resisting it to..."
+w00087,w,563.04,563.4,,1,Okay.
+s00090,g,563.52,563.936,,0,Thank you.
+s00091,n,564.672,568.672,29,0,and 50% of users say they're unused.
+s00092,n,569.152,573.888,29,0,10% of the button.
+w00088,w,573.9,574.32,,1,Okay.
+s00093,g,574.432,577.376,29,0,in the remote control. So all the buttons win.
+s00094,g,578.368,581.856,29,0,we have to put our... have to...
+s00095,g,582.304,582.784,,0,to have
+s00096,g,584.384,586.464,29,0,a use a real use
+w00089,w,586.48,586.92,,1,Okay.
+w00090,w,588.0,588.94,,1,okay so fewer
+s00097,w,589.056,589.568,,0,Thank you.
+w00091,w,589.58,589.86,,1,Maybe...
+w00092,w,590.22,590.44,,1,be good
+s00098,g,590.56,593.888,29,0,Not many buttons and...
+w00093,w,597.82,598.18,,1,Okay.
+s00100,n,598.304,600.48,7,0,But what kind of human control is?
+s00102,n,604.384,605.184,,0,Thank you.
+s00103,g,605.92,607.52,29,0,Yes.
+w00094,w,610.0,610.6,,1,"Yeah, but..."
+w00095,w,611.0,613.3,,1,"In fact, it seems that we are..."
+w00096,w,613.72,615.5,,1,going to make a TV remote control.
+s00105,w,615.616,615.968,,0,Thank you.
+w00097,w,615.98,620.74,,1,according to new requirements I received from the management board. I will present them in the following.
+s00106,w,621.248,622.08,,0,"Ah, please."
+s00107,w,622.624,622.976,,0,Thank you.
+s00108,y,624.064,625.056,,0,you can use.
+s00110,g,628.224,636.224,30,0,There are frustrations expressed by users. So they said they lost their family.
+s00111,g,636.224,638.336,30,0,We might control the name.
+s00112,g,638.56,641.856,29,0,so they want to have a way to
+s00113,g,642.752,643.136,,0,Thank you.
+w00098,w,644.54,644.98,,1,to find it.
+s00114,w,645.088,645.664,,0,find it.
+s00115,n,646.784,647.392,,0,um
+s00116,n,648.192,649.536,29,0,and
+s00117,g,650.048,654.528,29,0,a lot of the time that it takes too much time to learn how to use
+w00099,w,654.68,654.88,,1,Yeah.
+s00118,g,655.008,659.488,29,0,a new remote control. They want something very simple.
+w00100,w,659.66,660.02,,1,Okay.
+s00119,g,660.128,661.472,29,0,Easy to use
+s00120,g,663.392,664.352,,0,and
+s00121,g,665.056,667.008,29,0,remote controls are bad for
+s00122,s,668.032,668.384,,0,Thank you.
+w00101,w,668.6,669.74,,1,What is the RSI?
+s00123,n,669.856,670.976,1,0,Thank you.
+s00124,y,673.76,675.744,5,0,"I just said yeah, wake your wrist"
+s00125,y,677.824,679.552,4,0,"come, come, come, come tell them this."
+w00102,w,680.14,680.38,,1,Oh yeah?
+s00126,w,680.48,680.8,,0,Yeah.
+w00103,w,681.74,682.48,,1,I didn't knew that.
+s00127,g,682.592,685.216,7,0,I'll see if you tap on the computer and you can see it.
+w00104,w,685.26,688.7,,1,"Ok, so we have to make it more ergonomic."
+s00128,n,688.8,689.344,,0,Yeah.
+s00129,g,690.24,691.936,20,0,We'll see you.
+w00105,w,693.14,693.42,,1,
+s00130,g,693.536,693.952,,0,Thank you.
+w00106,w,694.46,695.58,,1,It's your job.
+s00131,w,695.68,696.576,,0,Thank you.
+s00132,w,698.752,699.424,,0,Thank you.
+w00107,w,701.78,702.32,,1,Sorry.
+w00108,w,704.46,706.04,,1,Got a message from Microsoft.
+s00133,g,706.624,710.304,29,0,Before that I have some...
+s00134,g,710.816,712.416,30,0,Thank you.
+s00135,g,713.344,714.432,29,0,Some things.
+s00137,g,717.504,718.272,,0,to say
+w00109,w,718.3,718.56,,1,Yeah.
+s00138,s,718.976,720.16,29,0,um
+s00139,g,722.88,729.408,29,0,We know that they use a lot remote control.
+s00140,g,730.08,732.384,29,0,to change the channel.
+w00110,w,732.4,732.66,,1,Yeah.
+s00141,g,733.632,734.4,,0,um
+s00142,g,734.912,739.616,29,0,and to change the volume selection
+w00111,w,739.62,739.98,,1,Okay.
+s00143,g,741.056,742.016,,0,and
+s00144,g,742.912,745.92,29,0,and not a lot for setting
+w00112,w,746.4,746.6,,1,Yeah.
+s00145,g,746.72,747.392,,0,Thank you.
+s00146,g,747.872,750.848,29,0,the channels and things like that.
+w00113,w,751.38,751.72,,1,Okay.
+s00147,g,751.84,752.224,,0,"So,"
+s00148,g,752.864,754.56,29,0,it better to put
+s00149,g,756.48,759.2,29,0,something very easy to that.
+s00150,n,759.584,760.032,,0,Thank you.
+w00114,w,760.92,763.38,,1,This function should be very accessible.
+s00151,w,763.488,764.096,,0,Thank you.
+w00115,w,764.12,764.52,,1,"Oh, okay."
+s00152,w,764.64,765.664,13,0,Thank you.
+w00116,w,765.86,767.14,,1,"This is the main function, okay."
+s00153,g,767.264,771.296,29,0,So then we asked some questions to them.
+s00154,g,771.584,774.432,29,0,who has this question
+s00155,g,774.624,782.624,29,0,prefer an easy screen or when the relative function is not control and if they pay more for
+s00156,g,782.624,784.352,29,0,speech recognition
+w00117,w,784.36,784.6,,1,yet
+s00157,g,784.704,789.376,29,0,"and you can go, we have here the results."
+s00158,g,791.104,791.552,,0,Thank you.
+s00159,g,793.504,794.112,,0,Christians?
+s00160,g,794.56,795.424,,0,"So, you know."
+s00161,g,796.288,797.312,29,0,that
+s00162,g,798.624,800.416,29,0,for the younger.
+s00163,g,800.96,802.4,29,0,It's very important.
+w00118,w,802.74,803.84,,1,To have LCD and voice.
+s00164,g,803.968,805.952,29,0,and then speech recognition.
+s00165,g,806.528,807.808,29,0,and
+s00166,g,808.224,811.488,29,0,And give us a chance to talk to yourself.
+s00167,g,811.936,813.12,29,0,We know that
+s00168,g,813.888,820.16,29,0,people between 15 and 25 are people who watch a lot of TV.
+s00169,g,822.016,824.608,29,0,can use this.
+w00119,w,824.72,825.1,,1,Okay.
+s00170,g,825.44,827.328,29,0,So maybe we can have this one.
+w00120,w,827.34,829.28,,1,"Yeah, maybe this is important."
+w00121,w,830.22,830.76,,1,More word.
+w00122,w,831.18,837.26,,1,Maybe those like those teenagers customers can advise their parents to buy.
+w00123,w,838.5,839.46,,1,this equipment and
+w00124,w,840.02,840.84,,1,so we can...
+w00125,w,841.36,842.16,,1,We have to take care of.
+w00126,w,842.74,843.68,,1,that point of view I think.
+s00171,w,843.808,844.416,,0,Thank you.
+w00127,w,844.44,844.66,,1,Also.
+s00172,n,844.768,846.08,13,0,Mmm.
+s00173,g,847.136,850.496,29,0,So...
+s00174,g,851.36,858.208,29,0,"As we said before, I think a remote control lagging in the dark is a good thing."
+w00128,w,858.22,858.5,,1,Okay.
+s00175,g,858.624,861.984,29,0,not too many buttons like we said before
+s00176,n,862.304,867.328,29,0,"easy to use, a way to find it easily in the room."
+s00177,n,867.968,869.024,30,0,and
+s00178,n,869.728,870.048,,0,Amen.
+s00179,n,871.072,871.968,,0,resistance
+s00180,n,872.896,873.344,,0,tool.
+s00182,n,876.032,876.608,,0,Thank you.
+w00129,w,877.78,878.1,,1,Okay.
+s00184,n,879.392,880.0,,0,Thank you.
+w00130,w,881.0,882.1,,1,"Okay, these aren't used."
+s00185,g,882.208,883.104,,0,I don't know if you...
+s00186,g,883.52,886.112,29,0,see something else
+s00187,g,889.44,890.976,1,0,Thank you.
+s00188,n,892.288,892.896,,0,I love you.
+s00190,g,897.088,900.0,1,0,I don't have a general...
