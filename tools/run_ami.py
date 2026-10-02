@@ -70,17 +70,28 @@ def calibrate_margin(cfg, data: Path, calib: list[dict], results: Path) -> float
     return margin
 
 
-def main():
+def main(argv=None, _final_test_ok: bool = False):
     ap = argparse.ArgumentParser()
+    ap.add_argument("--split", default=None, choices=["dev", "test"],
+                    help="splits.json 집합만 실행. test 는 tools/final_test.py 를 통해서만(한 번)")
+    ap.add_argument("--no-report", action="store_true")
     ap.add_argument("--meeting", nargs="*", default=None)
     ap.add_argument("--wearer", nargs="*", default=None)
     ap.add_argument("--conds", default="clean,snr10,snr5")
     ap.add_argument("--no-llm-cache", action="store_true")
     ap.add_argument("--yes", action="store_true", help="예상 시간이 60분을 넘어도 그대로 진행")
-    args = ap.parse_args()
+    args = ap.parse_args(argv)
     args.conds = [c.strip() for c in args.conds.split(",") if c.strip()]
+    from splits import guard, meetings as split_meetings
+    if args.split == "test" and not _final_test_ok:
+        raise SystemExit("[splits] 시험 세트 재생은 tools/final_test.py 로만(한 번) 실행합니다.")
+    if args.split:
+        args.meeting = (args.meeting or []) + split_meetings(args.split) if not args.meeting else args.meeting
 
-    over = {"llm": {"always_call": True}}
+    # 재생은 '특징 추출'이다: dev·test 모두 같은 고정 구성(v1 판정기 P1c·qwen3:4b, 손 가중치, 플래그 끔)으로 돌리고,
+    # 후보 구성(판정기 변형·융합·플래그)은 기록된 입력으로 오프라인 적용한다(judge_offline / tune_dev / final_test).
+    over = {"llm": {"always_call": True, "variant": "P1c", "models": ["qwen3:4b", "qwen3:1.7b", "qwen2.5:3b"]},
+            "policy": {"fusion": {"type": "hand"}, "candidate_rejudge": False, "short_skip_llm": False}}
     if args.no_llm_cache:
         over["llm"]["cache"] = False
     cfg = load_config("ami", overrides=over)
@@ -88,6 +99,8 @@ def main():
     allsc = scenarios(data, argparse.Namespace(meeting=None, wearer=None, conds=["clean"]))
     calib = [m for m in allsc if m["split"] == "take1"]
     todo = [m for m in scenarios(data, args) if m["split"] == "take2"]
+    if args.split:
+        guard([m["scenario"] for m in todo], "tune" if args.split == "dev" else "test")
     if not todo:
         raise SystemExit("평가용(take2) AMI 시나리오가 없습니다. 먼저: python tools/import_ami.py")
 
@@ -150,9 +163,12 @@ def main():
               f"캐시 {fc.stats()} · LLM 호출 {getattr(models.judge, 'calls', 0)} · 경과 {el / 60:.1f}분, "
               f"남은 예상 {el / i * (len(todo) - i) / 60:.0f}분" + ("" if ok else " [시간 초과]"), flush=True)
 
+    if args.no_report:
+        return [m["scenario"] for m in todo]
     from ami_report import ami_report
     from evaluate import TO_ME
     ami_report(cfg, [m["scenario"] for m in todo], results, list(TO_ME))
+    return [m["scenario"] for m in todo]
 
 
 if __name__ == "__main__":

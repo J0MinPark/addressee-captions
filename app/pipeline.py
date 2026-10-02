@@ -104,7 +104,18 @@ def load_models(cfg: dict, log=print, skip: tuple = ()) -> Models:
     log("[load] 사용 모델: " + ", ".join(f"{k}={v}" for k, v in m.describe().items()))
     if m.judge is not None:
         log_llm_banner(m.judge, log)
+    log(f"[구성] {config_name(cfg)}")
     return m
+
+
+def config_name(cfg: dict) -> str:
+    """판정 구성 이름: <판정기 변형>-<LLM 모델>-<융합>[+플래그]. 시작 로그·결과 메타에 찍힌다."""
+    p, l = cfg["policy"], cfg["llm"]
+    if p.get("config_name"):
+        return p["config_name"]
+    fusion = "learned" if (p.get("fusion") or {}).get("type") == "logistic" else "hand"
+    flags = "".join(f"+{n}" for n, k in (("rejudge", "candidate_rejudge"), ("shortskip", "short_skip_llm")) if p.get(k))
+    return f"{l.get('variant', 'P1c')}-{l['models'][0]}-{fusion}{flags}"
 
 
 def log_llm_banner(judge, log=print) -> None:
@@ -602,6 +613,12 @@ class Pipeline:
             return
         rec = self.records.get(seg_id, {})
         rec["llm_input"] = {"prev": prev, "a": a_text, "b": b_text}
+        # P3 문맥(화자 표시 최근 4턴)도 함께 기록 — 오프라인 판정기 비교(tools/judge_offline.py)와 같은 함수
+        from app.llm_judge import recent_turns
+        a3, prev3 = recent_turns([r for r in self.records.values() if r.get("t_start") is not None], rec)
+        rec["llm_input_p3"] = {"prev": prev3, "a": a3 or a_text, "b": b_text}
+        if getattr(self.m.judge, "variant", "P1c") == "P3":
+            prev, a_text = prev3, a3 or a_text
         rec["llm_called"] = True
         self.llm_deadline[seg_id] = time.monotonic() + self.cfg["llm"]["timeout_s"] + 1.5
         self.m.judge.judge_async(prev, a_text, b_text, lambda res: self.ctl.put(("llm", seg_id, res)))
@@ -666,6 +683,8 @@ class Pipeline:
                     "wearer": self.cfg["wearer"]["name"],
                     "llm_model": getattr(self.m.judge, "model", None),
                     "llm_prompt_version": getattr(self.m.judge, "prompt_version", None) or _prompt_version(),
+                    "llm_variant": getattr(self.m.judge, "variant", None),
+                    "config_name": config_name(self.cfg),
                     "language": self.cfg["asr"].get("language"),
                     "llm_cache": bool(self.cfg["llm"].get("cache", True)),
                     "synthetic": bool(getattr(self.src, "meta", {}).get("synthetic", False))}

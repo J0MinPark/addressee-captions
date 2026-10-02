@@ -58,10 +58,11 @@ def load_labels(path: Path, to_me: str = "single") -> dict[str, str]:
     return {k: (g if v == "g" else v) for k, v in raw.items()}
 
 
-def simulate(cfg: dict, segs: list[dict], mode: str) -> dict:
+def simulate(cfg: dict, segs: list[dict], mode: str, llm_override: dict | None = None) -> dict:
     """정책을 캐시로 재생.
     반환: roles/probs {seg_id}, reg {spk: 등록 시각}, pre_state {seg_id: 판정 직전 화자 상태}."""
     llm_available = any(s.get("llm_called") for s in segs)
+    # llm_override: {seg_id: 판정 결과} — 오프라인으로 다시 매긴 판정기(v2) 결과를 재생 기록 대신 쓴다
     p = PolicyEngine(cfg, mode=mode, llm_available=llm_available)
     roles, probs, reg, pre = {}, {}, {}, {}
     last_tick = 0.0
@@ -96,7 +97,10 @@ def simulate(cfg: dict, segs: list[dict], mode: str) -> dict:
         if s.get("name_call"):
             handle(p.on_name_call(feat.speaker_id, "name", 1.0, now=t), t)
         if dec["pending_llm"]:
-            res = s.get("llm") if s.get("llm_called") else None
+            if llm_override is not None:
+                res = llm_override.get(s["seg_id"])
+            else:
+                res = s.get("llm") if s.get("llm_called") else None
             t_llm = t + ((res or {}).get("latency_ms") or cfg["llm"]["timeout_s"] * 1000) / 1000
             upd, ev = p.on_llm_result(s["seg_id"], res, now=t_llm)
             handle(ev, t_llm)
@@ -181,8 +185,9 @@ def summarize(ms: list[dict]) -> dict:
     prec = tp / (tp + fp) if tp + fp else 0.0
     rec = tp / (tp + fn) if tp + fn else 0.0
     f1 = 2 * prec * rec / (prec + rec) if prec + rec else 0.0
+    f05 = 1.25 * prec * rec / (0.25 * prec + rec) if (0.25 * prec + rec) else 0.0
     return {
-        "precision": prec, "recall": rec, "f1": f1,
+        "precision": prec, "recall": rec, "f1": f1, "f05": f05,
         "contamination": agg["bad_chars"] / agg["shown_chars"] if agg["shown_chars"] else 0.0,
         "misreg_rate": agg["misreg"] / agg["n_nonpartner"] if agg["n_nonpartner"] else None,
         "misreg": f"{int(agg['misreg'])}/{int(agg['n_nonpartner'])}",

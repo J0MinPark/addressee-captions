@@ -175,6 +175,8 @@ def serve(cfg, source, models=None, mode=None, port=None, on_finished=None, run_
     if models.judge is not None:
         from app.pipeline import log_llm_banner
         log_llm_banner(models.judge)
+    from app.pipeline import config_name
+    print(f"[구성] {config_name(cfg)}")
     print()
 
     if on_finished is not None:

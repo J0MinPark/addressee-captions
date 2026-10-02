@@ -4,6 +4,7 @@ __pycache__/
 models/
 logs/
 data/*.wav
+!data/judge_pairs_ko.example.csv
 results/*.segments.jsonl
 .venv/
 cache/
