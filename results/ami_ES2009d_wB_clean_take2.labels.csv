@@ -1,0 +1,328 @@
+﻿seg_id,label,t_start,t_end,speaker_id,is_wearer,text
+s00001,n,26.08,26.912,,0,"Oh, it's good news."
+s00002,n,28.608,29.504,,0,Maybe just be a little bit happy.
+s00003,g,42.144,42.624,,0,That was it?
+s00004,s,43.136,43.776,,0,Cool.
+s00005,g,45.024,46.88,1,0,"Alright, it is PowerPoint time."
+s00006,g,48.576,51.968,1,0,I did more powerpoints in this particular experiment.
+s00007,g,52.416,56.384,2,0,I've ever done in my life before this experiment.
+s00008,g,56.544,57.216,,0,Thank you.
+s00009,g,62.272,65.312,2,0,Here we have our detailed design meeting where we will
+s00010,g,65.92,68.704,3,0,look at the prototype and um
+s00011,n,69.92,71.264,4,0,"Right. So, um..."
+s00012,g,71.904,78.816,2,0,I finally figured out what this whole second bullet point is about that my coach was sending to me. It means I'm supposed to read the minutes from the previous minutes.
+w00001,w,78.82,79.28,,1,"Oh, really?"
+s00013,y,79.904,81.984,2,0,I think. I don't know.
+s00014,n,82.464,85.472,2,0,Otherwise it's just saying I'm the secretary and I'm...
+s00015,n,85.888,89.44,2,0,Therefore I'm taking the meetings. So just to go around with me.
+s00016,n,89.984,92.576,2,0,Just real briefly to go over minutes from last meeting.
+s00017,n,94.368,95.104,,0,open
+s00018,n,95.552,96.032,,0,slowly
+s00019,n,98.4,98.784,,0,All right.
+s00020,n,99.264,100.256,,0,"Wait, alright."
+s00021,n,106.24,106.816,,0,Amen.
+s00022,n,107.424,109.6,5,0,"Yeah, that's not you."
+s00023,n,109.888,110.208,,0,Thank you.
+s00024,g,114.176,115.232,6,0,This is a very...
+s00025,g,115.808,116.928,7,0,High-powered stuff here.
+s00026,n,117.344,118.848,2,0,There we go.
+s00027,g,119.456,123.808,2,0,"So, basically the moral of the story from our last meeting was that..."
+s00028,g,124.48,124.992,,0,I am good.
+s00029,g,125.76,133.76,2,0,"that we had meetings from, we had presentations done by the industrial designer, or from Nathan and Ron and Sarah about what we can do here."
+s00030,g,134.336,135.968,8,0,and what
+s00031,g,137.088,145.088,2,0,"sort of limitations we're operating with, or excuse me, what limitations we're operating under, what kind of risk we'd be looking at with some of the..."
+s00032,g,145.088,153.088,2,0,the various approaches we were discussing and we essentially came to the conclusion that we should develop a remote with their voice recognition
+s00033,g,153.088,161.088,2,0,that had a vaguely non-remote like shape because you didn't really need to use it as a remote since you could just use your voice.
+s00034,g,161.088,169.088,2,0,mostly just the simple design features for television operation but with a slider fold out bay for more fans functions for users.
+s00035,n,169.344,171.488,2,0,and the
+s00036,g,172.384,177.632,2,0,the UID and the ID were asked to go ahead and start developing a prototype for us to look at.
+s00037,n,178.752,179.392,,0,So.
+s00038,g,181.472,183.328,2,0,That's sorted. Back with the main.
+s00039,g,187.328,188.896,2,0,Meet here.
+s00040,g,189.312,191.008,9,0,"Go ahead and take it away, guys."
+w00002,w,192.28,192.72,,1,Wow.
+w00003,w,193.24,193.82,,1,Um...
+w00004,w,195.42,195.68,,1,We have.
+s00041,w,195.808,196.16,,0,have.
+w00005,w,196.18,196.72,,1,simple
+s00042,w,196.832,197.216,,0,are.
+w00006,w,197.88,198.4,,1,prototype
+s00043,w,198.88,199.2,,0,Thank you.
+w00007,w,199.98,200.72,,1,What's to be said about it?
+s00044,w,201.888,202.432,,0,um
+w00008,w,202.9,205.22,,1,we took into account a lot of things that we went over.
+s00045,w,205.824,206.272,,0,meeting.
+w00009,w,207.74,208.34,,1,some of the most important
+s00046,w,208.8,209.248,,0,things.
+w00010,w,209.36,209.74,,1,to consider
+s00047,w,209.856,210.592,,0,are that.
+w00011,w,212.16,213.12,,1,not to go for the touch screen.
+w00012,w,213.44,213.92,,1,you can see.
+w00013,w,214.7,215.38,,1,and opted for support.
+s00048,w,215.488,215.84,,0,Thank you.
+w00014,w,215.84,216.24,,1,very
+w00015,w,216.7,217.5,,1,large button.
+s00049,w,217.6,217.952,,0,for this.
+w00016,w,217.96,218.2,,1,there
+w00017,w,218.9,219.24,,1,primary
+w00018,w,219.7,220.3,,1,functions.
+w00019,w,222.32,223.38,,1,This is going to be the on and off.
+w00020,w,224.04,224.34,,1,and we have...
+w00021,w,225.4,227.28,,1,these buttons to go through the channel
+s00050,w,227.744,228.384,,0,Thank you.
+w00022,w,228.4,229.16,,1,and then two.
+w00023,w,229.46,230.2,,1,volume buttons down
+s00051,w,230.304,230.688,,0,down here.
+w00024,w,231.18,232.62,,1,We decided those were the most important.
+w00025,w,233.52,234.02,,1,buttons
+w00026,w,235.8,236.4,,1,for the more advanced.
+w00027,w,237.18,238.58,,1,functions. There's a slide.
+s00053,w,238.688,239.04,,0,I hope.
+w00028,w,239.68,239.96,,1,panel here.
+s00054,w,241.28,241.92,,0,Thank you.
+w00029,w,241.92,242.68,,1,You can see that.
+s00055,w,242.784,243.136,,0,wants with.
+w00030,w,243.16,243.52,,1,things going
+s00056,w,243.648,244.0,,0,on.
+w00031,w,244.34,245.84,,1,But this actually can slide back in.
+w00032,w,246.48,246.8,,1,I pray it's very...
+s00057,w,246.912,247.648,,0,Okay.
+w00033,w,247.66,249.06,,1,aesthetic when it's all put away.
+w00034,w,250.52,251.0,,1,Um...
+w00035,w,255.26,256.26,,1,far as the whole
+w00036,w,256.64,258.96,,1,visible light thing we decided to go with
+s00058,w,259.072,259.872,,0,Thank you.
+w00037,w,259.88,260.32,,1,multiple colors.
+s00059,y,260.896,263.488,10,0,Why not?
+w00038,w,264.34,266.14,,1,course if that's annoying for some people
+w00039,w,266.44,267.5,,1,can be a trend
+s00060,w,267.616,268.416,,0,And perfect.
+s00061,g,270.976,278.976,11,0,"Now, it's important to we talked quite a bit about, you know, the interchangeable faces, and what we've done here is come up."
+s00062,g,278.976,284.16,11,0,up with a bit of a natural look here. We call it fruity.
+s00063,s,284.384,289.504,11,0,Of course that's interchangeable.
+s00064,g,289.952,292.16,11,0,"I think it would be desirable for the, uh,"
+s00065,g,292.832,295.072,11,0,for the regular product in the...
+s00066,g,295.68,303.712,11,0,in the first packaging to be something a little bit more subdued but this is kind of something that can be done and as you can see on the television
+s00067,g,303.712,304.096,,0,in there.
+s00068,g,304.544,308.096,11,0,"We have the voice detector device. Oh, right."
+s00069,g,309.44,315.2,11,0,So that will work quite well with with regard to finding this.
+s00070,g,316.224,316.832,,0,contraption.
+s00071,g,317.504,325.504,11,0,"Um, what other things do we see here? Well, um, if you give it a touch, it does have actually a bit of a spongy feel."
+s00072,n,325.504,330.816,11,0,So I think that will work well with regards to our market.
+s00073,n,331.52,332.32,,0,and uh
+s00074,n,334.976,339.616,11,0,"Let's see. Well, clearly there's going to be some more colors and whatnot available."
+s00075,n,340.544,341.28,,0,Um...
+s00076,y,341.888,343.424,12,0,Do you have anything else to add to that?
+s00077,w,344.192,344.768,,0,um
+s00078,w,345.824,346.336,,0,about the material.
+s00080,w,347.712,348.384,,0,uh
+w00040,w,348.4,349.04,,1,The entire thing is covered.
+s00081,w,349.152,350.304,13,0,covered in rubber.
+w00041,w,350.32,350.78,,1,coding.
+s00082,w,351.552,352.256,,0,so it's very
+w00042,w,352.66,352.96,,1,durable
+s00083,w,353.888,354.24,,0,All right.
+w00043,w,354.24,354.46,,1,It's not going to...
+s00084,w,355.456,355.904,,0,click.
+w00044,w,355.92,356.72,,1,some types of plastic.
+w00045,w,358.84,359.14,,1,um
+s00085,w,359.264,359.84,,0,Thank you.
+w00046,w,359.84,360.64,,1,course as you can see
+s00086,w,360.768,361.152,,0,We'll see you next time.
+s00087,w,361.344,361.728,,0,I appreciate this.
+s00088,w,362.496,363.264,,0,squishy.
+s00089,g,365.92,371.328,11,0,"It's actually important to know that the television, if there's an earthquake or anything like that."
+s00090,n,372.576,377.696,11,0,It actually is edible inside.
+s00091,n,377.856,378.432,,0,I don't know if he knows.
+s00092,w,378.624,378.976,,0,Thanks for having me.
+s00093,w,379.104,379.968,,0,yeah
+s00094,w,380.288,384.256,14,0,"Oh, well done, yeah. This is actually..."
+s00095,n,385.76,386.72,,0,Too many times.
+s00096,g,386.848,390.144,15,0,Did they worry about rot factors?
+s00097,n,390.72,393.056,11,0,It's encased in a new type of...
+s00098,n,393.632,396.352,16,0,"Oh, okay. There's preservatives."
+w00047,w,396.7,396.94,,1,of ourselves.
+s00099,n,397.056,397.632,,0,I know we're not.
+s00100,w,398.176,398.656,,0,making
+s00102,g,400.128,405.184,18,0,It's a couple years off at least.
+s00103,g,406.016,406.592,,0,Um...
+s00104,g,407.2,415.232,11,0,But I think that sums up the main features of the remote. I don't know if you guys have any questions or whether that...
+s00105,g,415.232,420.0,11,0,whether we need to worry about any other marketing areas or anything.
+s00106,y,421.056,423.232,11,0,nature um can we come in under budget
+s00107,w,423.808,424.384,,0,We did.
+s00108,w,424.64,426.24,19,0,"Yeah, this costs..."
+w00048,w,426.26,426.86,,1,"Well, to put this..."
+s00109,w,427.36,428.736,20,0,production
+w00049,w,429.4,429.74,,1,looking at about
+s00110,w,429.856,430.496,,0,out.
+s00111,w,431.648,432.576,,0,Who's our coach?
+s00113,w,433.28,434.592,19,0,1250 euro
+s00114,w,435.136,435.936,,0,And this...
+s00115,w,436.096,436.576,,0,actually
+s00117,w,437.312,438.464,21,0,11.99
+s00118,n,439.424,439.808,,0,you
+s00119,w,441.472,441.952,,0,Mm-hmm.
+w00050,w,442.48,443.06,,1,one thing that we didn't
+s00120,w,443.168,444.736,22,0,into.
+w00051,w,445.2,446.02,,1,choice with the button.
+w00052,w,446.64,446.94,,1,to use.
+s00121,w,447.424,448.032,,0,into rest.
+s00122,w,448.16,448.8,,0,standard road.
+s00123,w,449.696,450.208,,0,went for a class.
+s00124,w,451.104,451.872,,0,Rubber button.
+s00125,w,452.32,452.96,,0,and done.
+w00053,w,453.66,454.08,,1,Since we did that.
+s00126,w,454.208,456.192,23,0,we didn't have to use as many microchipers.
+s00127,w,456.384,457.952,24,0,which is quite nice.
+s00128,w,458.944,459.552,,0,Brilliant.
+s00129,w,459.872,460.736,,0,even though it has a lot of...
+s00130,w,461.536,462.112,,0,modern
+w00054,w,462.14,462.56,,1,Thank you.
+s00131,w,462.688,463.328,,0,technology.
+s00132,w,463.872,464.48,,0,for example.
+s00133,w,464.64,467.488,24,0,or the voice recognition. In a lot of ways it's just a simple...
+s00134,w,467.648,468.928,25,0,Yeah.
+w00055,w,471.02,471.66,,1,if we shopped around.
+s00135,w,472.128,472.64,,0,I don't know.
+s00136,w,472.8,473.76,,0,manufacturers.
+s00137,w,474.592,475.04,,0,um
+w00056,w,475.96,476.2,,1,to
+s00138,w,476.32,476.704,,0,Thank you.
+w00057,w,477.26,477.76,,1,it even cheaper
+s00139,y,480.0,482.144,11,0,Did we talk about the voice recognition?
+s00140,w,482.816,485.152,26,0,option oh no
+s00141,g,486.016,488.512,11,0,so on the back here you'll notice this
+s00142,g,489.056,492.032,11,0,area here which is actually the voice recognition
+s00143,g,492.864,493.472,,0,console
+s00144,g,494.016,494.784,,0,and
+s00145,g,495.68,498.752,11,0,I think it's nicely designed into the overall look.
+s00146,g,499.232,507.232,11,0,But basically the voice recognition incorporates the latest designs that our research team has been able to come up with.
+s00147,g,507.232,509.952,11,0,Basically quite similar to the coffee maker.
+s00148,g,510.432,512.704,11,0,design that we were talking about earlier.
+s00149,g,514.624,517.12,11,0,I think that has given a proven.
+s00150,g,519.648,521.568,11,0,ease of use and whatnot.
+s00151,g,522.048,524.512,11,0,and allows features.
+s00152,g,525.024,525.568,,0,Like...
+s00153,g,526.112,529.344,11,0,the remote actually talking back to the user.
+s00154,w,532.288,533.248,,0,Cool. Any questions?
+s00155,y,534.944,537.952,27,0,"No, no, I think that's... Do we have other..."
+s00156,y,538.56,545.632,28,0,Black Matterward skins covers in play now. Are those going to be developed later once we see how the cup we have go?
+s00157,n,546.496,550.688,29,0,"Well, we didn't quite have enough material."
+s00158,g,551.328,554.24,30,0,"Oh, I was expecting a prototype. I just don't know if you guys had any in mind. Right."
+s00159,w,554.848,555.232,,0,uh
+w00058,w,557.78,558.16,,1,This is just...
+s00160,w,558.272,560.448,23,0,the most superficial layer.
+s00161,w,561.056,561.568,,0,Yeah.
+s00162,w,561.984,562.592,,0,be very easy
+s00163,w,562.848,563.456,,0,okay
+s00164,w,563.712,566.08,24,0,It's nowhere. It's something else.
+s00165,w,566.24,566.944,,0,Yeah.
+s00166,n,567.36,574.464,11,0,Okay. Actually this bottom red ring here just unclips and then you put in a new... a new... Okay.
+s00167,n,574.976,575.488,,0,anew.
+s00168,n,575.936,582.624,11,0,"plate on top of that. So I mean there are, we definitely priced out spongy, even spongier."
+s00169,n,583.68,591.68,11,0,"non-natural look materials, which I think worked out fine. We also continued on with the ideas of following apples."
+s00170,n,591.68,596.736,11,0,color schemes with kind of the light orange and green.
+s00171,w,596.992,597.76,,0,a fish
+s00172,w,598.048,598.56,,0,play.
+s00173,w,598.688,600.096,23,0,It's more like a pseudo-face.
+s00174,y,600.992,601.44,,0,Okay.
+w00059,w,601.44,601.7,,1,because...
+w00060,w,602.36,602.76,,1,It's simple.
+s00175,w,602.88,604.896,19,0,enough that in the factory
+s00176,w,606.592,607.104,,0,different one on it.
+s00177,w,607.264,607.776,,0,Thank you.
+w00061,w,608.2,608.88,,1,to play such things.
+s00178,w,611.072,611.488,,0,permanent.
+w00062,w,612.14,612.54,,1,"At the same time,"
+s00179,w,612.64,612.992,,0,time.
+s00180,w,614.048,614.752,,0,I might go the other way.
+w00063,w,614.76,614.96,,1,
+s00181,w,615.072,615.616,,0,a matter of
+s00182,w,616.32,616.736,,0,Thank you.
+s00183,w,617.056,617.696,,0,Okay.
+w00064,w,617.7,618.02,,1,faceplate.
+s00184,w,618.144,619.328,23,0,way if you know what I mean
+s00185,y,619.84,622.464,16,0,It's still an option if we eat it. Very cool.
+s00186,g,623.2,623.808,,0,Just drop.
+s00187,g,624.256,625.856,9,0,"Right, thanks guys."
+s00188,g,626.368,628.832,2,0,Very good work. I like it. Brilliant.
+s00189,g,630.272,631.264,,0,um
+s00190,g,631.968,636.768,2,0,"What we need to discuss now is the finance of it. I got me, you've got..."
+s00191,g,637.184,640.736,2,0,You provided a number that actually sounds quite nice.
+s00192,g,641.504,647.104,2,0,The trouble is I was just given this by finance. It's a spreadsheet of the parts. And I've just...
+s00193,g,647.712,650.528,2,0,tentatively put in what it's going to look like.
+s00194,g,651.072,653.344,2,0,I'm just going to clear this out real quickly.
+s00195,n,654.08,655.136,2,0,But it looks like...
+s00196,s,660.032,665.472,2,0,so we'll just if we can just itemize what's in here we've got this it's a solar cell thing right
+s00197,w,666.304,666.752,,0,Right.
+w00065,w,666.76,667.12,,1,So...
+s00198,w,667.232,667.776,,0,with the backup.
+w00066,w,667.78,668.02,,1,Thank you.
+s00199,w,668.128,670.944,2,0,"It's in there. With the back, okay."
+s00200,n,671.744,675.36,11,0,The voice recognition area actually doubles.
+s00201,n,676.608,679.488,1,0,"as the solar cell area. Clever, clever, well done."
+s00202,n,680.16,682.656,2,0,So I guess that would mean we've got a bit of a...
+s00203,n,684.128,688.832,2,0,"It's a speaker and a sensor at the same time, isn't it? Yeah."
+s00204,w,689.408,690.56,23,0,It's just making me see.
+s00205,w,691.072,692.16,19,0,Yes.
+s00206,y,692.32,692.768,,0,Okay.
+s00207,g,693.824,699.04,2,0,um in the case it's more of a single curved case i guess would be that would be the general yeah one
+s00208,w,699.2,700.864,19,0,"A big curve, I guess you could say."
+s00209,g,702.08,706.176,2,0,We've got a rubber skin material basically throughout
+s00210,g,707.072,707.712,,0,um
+s00211,g,708.736,710.24,2,0,push button interface
+s00212,g,711.872,717.76,2,0,with this other drop down so maybe it's got two push button interfaces
+s00213,n,719.136,721.312,2,0,and special.
+s00214,g,722.592,727.744,2,0,I guess it's a we've got a sort of wood material or a rubbery type material
+s00215,w,727.904,730.496,19,0,"Yeah, especially throughout."
+s00216,w,730.656,731.488,,0,That's my special card.
+s00217,w,732.0,732.928,,0,special form as well.
+s00218,w,733.696,738.464,2,0,It is very unconventional.
+s00219,g,739.84,741.344,2,0,So it looks like...
+s00220,g,742.208,744.192,2,0,I'm coming in at 16. A bit over...
+w00067,w,744.22,744.44,,1,Oh.
+s00221,g,745.536,746.144,,0,um
+s00222,g,748.64,750.688,2,0,So what we could do perhaps...
+s00223,g,751.328,754.848,2,0,A simple fix would maybe to switch away from the solar cells.
+s00224,g,756.128,758.496,2,0,or take out the backup battery.
+s00225,w,759.808,760.288,,0,You feel better.
+s00226,g,761.248,766.848,11,0,"I mean, I think that if we were talking about it being one of our main selling features, being environmental."
+s00227,g,768.928,771.232,11,0,"Although it does still have a battery, so I'm not sure that..."
+s00228,y,772.384,774.336,11,0,you know what the cell is on that i mean we could
+w00068,w,774.36,775.02,,1,take
+s00229,w,775.712,777.248,19,0,the battery out of it you see
+s00230,w,777.408,778.816,24,0,"Oh, you work 99% of the time."
+s00231,w,778.944,779.36,,0,time.
+s00232,w,779.776,780.288,,0,You're going to have to see.
+s00233,w,781.408,782.464,24,0,"for that, 1%."
+s00234,w,782.624,784.448,24,0,"people are calling and saying, oh look."
+s00235,w,784.928,785.536,,0,My remote isn't working.
+s00236,n,785.696,788.288,19,0,I'm not gonna do. People be really upset.
+s00237,w,789.12,790.496,24,0,"I think in the long run, especially"
+w00069,w,790.86,791.08,,1,to keep the back.
+w00070,w,792.5,792.84,,1,It's hard to describe.
+s00238,w,792.96,794.336,19,0,the whole solar battery.
+s00239,w,794.944,795.36,,0,because that's...
+s00240,w,796.224,796.544,,0,70.
+s00241,w,796.768,797.216,,0,Hamilton.
+s00242,w,797.984,798.624,,0,that we have.
+s00243,n,801.184,802.208,17,0,Hmm.
+s00244,g,809.12,813.12,2,0,"Well, it's difficult. We have all these things integral to the, um..."
+s00245,g,813.664,817.28,2,0,to the design of it that we just can't back out of now. It would have to be...
+s00246,g,817.824,819.52,2,0,Seems like we'd have to go back to...
+s00247,g,820.672,821.632,,0,square one
+s00248,g,824.576,825.12,,0,in a way.
+s00249,g,826.016,827.456,2,0,if we were going to try that.
+s00250,g,828.064,836.064,2,0,undo one bit we'd probably have to undo most of it. Although we don't want to get rid of the whole environmental...
+s00251,g,836.96,842.016,28,0,I mean obviously the solar cell is a big piece of the way we're marketing this is like a natural new
+s00252,g,843.264,843.808,,0,Thing.
+s00253,g,844.672,850.464,15,0,but honestly if we cut that one piece out we're actually coming in under budget if i've done that correctly
+s00254,n,852.064,854.336,11,0,You might be able to sway me on the idea that...
+s00255,n,855.2,863.2,11,0,"Our main selling point could be already this voice recognition thing. That's what sets us apart, right? Yeah, that's what's setting us into this young market."
+s00256,n,863.328,865.024,28,0,"I mean, that's where we started from."
+s00257,g,867.968,875.968,28,0,"I don't know, and I mean, you know, perhaps when the cell technology comes down in price, we can bring that back into the game, but it looks like at this point that may be out of our league."
+s00258,g,875.968,876.32,,0,league.
+s00259,n,877.856,884.896,11,0,"And the reality is, you know, for me, from an ideological standpoint, I'd like to stick with the solar cell, but..."
+s00260,g,885.664,890.944,11,0,I kind of have to throw myself in the business structure and model here.
+s00261,g,891.744,898.24,11,0,It's either or. I think that we need to come to a compromise here and maybe move ahead with the project.
+s00262,g,899.136,900.0,,0,Without the solar system.

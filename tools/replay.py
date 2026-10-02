@@ -33,6 +33,7 @@ def main():
     ap.add_argument("--mode", default=None)
     ap.add_argument("--no-llm", action="store_true")
     ap.add_argument("--no-llm-cache", action="store_true", help="LLM 판정 캐시 끄기(매번 새로 호출)")
+    ap.add_argument("--no-selected", action="store_true", help="선택 구성 대신 v1 구성(P1c·손 가중치)")
     ap.add_argument("--loop", action="store_true", help="--realtime 과 함께: 무한 반복")
     ap.add_argument("--port", type=int, default=None)
     args = ap.parse_args()
@@ -41,6 +42,9 @@ def main():
         over["llm"]["enabled"] = False
     if args.no_llm_cache:
         over["llm"]["cache"] = False
+    if args.no_selected:
+        import os
+        os.environ["HEARME_NO_SELECTED"] = "1"
     cfg = load_config(args.profile, overrides=over)
     results = resolve_path(cfg, "results_dir")
 

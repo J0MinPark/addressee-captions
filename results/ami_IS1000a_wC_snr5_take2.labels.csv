@@ -1,0 +1,148 @@
+﻿seg_id,label,t_start,t_end,speaker_id,is_wearer,text
+s00001,s,18.56,19.04,,0,Good morning.
+s00002,s,19.168,19.616,,0,Good morning.
+w00001,w,37.3,37.94,,1,Okay.
+w00002,w,47.58,47.94,,1,Nightmare.
+w00003,w,49.96,51.16,,1,and you have to adjust the length.
+w00004,w,111.1,113.1,,1,You can put it anywhere you want actually.
+s00003,y,114.912,116.544,1,0,The mic?
+w00005,w,116.92,118.62,,1,It's not a directional mic anyway.
+s00004,n,225.856,226.368,,0,Morning everyone.
+s00005,g,242.464,243.328,,0,this meeting
+s00006,g,262.72,264.032,2,0,hard but from
+s00007,g,264.896,266.528,3,0,I could do this to work.
+s00008,g,268.128,269.504,4,0,Communicate and cool.
+s00009,s,271.232,279.232,5,0,learn from each other's plans
+s00010,g,279.232,280.064,,0,Thank you.
+s00011,g,281.408,289.408,5,0,"according to this tool, so they're also new to me, I don't know whether you've worked with them before"
+s00012,g,289.728,291.36,6,0,then we will come to where we are doing.
+s00013,g,292.16,300.192,5,0,actual project plan I hope so it's about remote control design
+s00014,g,300.192,306.848,5,0,Then we will discuss... well...
+s00015,g,309.92,312.896,5,0,what our computer player is like.
+s00016,g,313.536,315.424,7,0,And well then...
+s00017,g,316.32,317.888,8,0,25 minutes.
+s00018,n,322.72,323.04,,0,Cheers.
+s00019,n,323.808,324.672,,0,Um...
+s00020,g,325.728,327.136,9,0,"Thank you, David."
+s00021,g,328.192,332.544,10,0,Remote control.
+s00022,g,334.016,342.016,5,0,We want to be distinguished.
+s00024,g,343.872,347.168,5,0,want to look at the shelf.
+s00025,g,347.84,351.584,5,0,"Well, I need... Oh, it needs to be trendy."
+s00026,g,352.416,356.032,12,0,"The trend is what people want, they will buy a product."
+s00027,g,357.728,359.232,13,0,Good day.
+s00028,g,359.712,360.992,14,0,and also food work.
+s00029,g,361.6,367.136,15,0,"I'm a music friendly man, and otherwise people are wrong."
+s00030,g,368.224,369.28,16,0,will not be
+s00031,g,370.688,373.888,5,0,We rate it very well in consumer articles or something like that.
+s00032,n,378.784,379.36,,0,so
+w00006,w,379.36,379.58,,1,Thank you.
+s00033,g,379.68,380.864,17,0,The hotline of...
+s00034,g,381.6,382.016,,0,Thank you.
+s00035,g,383.584,385.536,18,0,the project will come.
+s00036,g,386.304,389.28,5,0,First we have a functional design page.
+s00037,g,390.752,391.264,,0,Amen.
+s00038,g,393.024,395.072,19,0,you all get
+s00039,g,395.616,398.464,5,0,task in this space.
+s00040,g,399.392,400.32,,0,"Oh, no, no."
+s00041,g,401.472,405.184,5,0,Then we will meet again and discuss this room for design.
+s00042,g,406.08,408.512,20,0,I'm going to say hope for anybody.
+s00043,g,410.112,411.168,21,0,Two faces.
+s00044,g,411.68,413.44,5,0,after this because that's all the time
+s00045,g,413.92,414.272,,0,Thank you.
+s00046,g,414.784,415.136,,0,Thank you.
+s00047,g,415.744,421.76,5,0,of the more detailed design in which the final project should get.
+s00048,g,423.04,424.256,22,0,Definitely.
+s00049,g,426.528,429.664,5,0,"Alright, first we will do tooth hanging."
+s00050,g,431.36,432.832,23,0,and hold it front of you later.
+s00051,g,433.888,435.712,24,0,See ya.
+s00052,g,436.672,440.448,5,0,No blocks. We have PRAs.
+s00054,n,445.952,446.784,,0,"And, uh..."
+s00055,g,447.488,451.008,5,0,"Well, it took work. I've read it for my..."
+s00056,g,451.68,459.104,5,0,"I was a colleague that I should work with on the tool bar. I didn't find out yet how it works, but maybe one of the students know."
+s00057,n,460.0,463.552,25,0,Thank you.
+s00058,n,464.32,465.024,,0,Yes.
+s00059,n,465.696,467.168,26,0,We have to be honest about that.
+s00060,s,468.64,476.672,27,0,"Not fully updated about this shared folder. Yeah, I guess we'll have a shared folder."
+s00061,g,478.048,479.296,28,0,"Yes, well, roll."
+s00062,g,479.712,483.232,5,0,Let's find out how it works.
+s00064,g,486.496,488.16,5,0,"Well, this seems to me, yes."
+s00065,g,488.832,490.88,29,0,I think it's a good program that I did in Spanish.
+s00066,n,491.872,492.448,,0,Oh.
+s00067,g,492.928,494.304,30,0,Later.
+s00068,s,495.008,501.856,5,0,So now we will crowd the whiteboard team here.
+s00069,n,502.4,502.848,,0,So...
+s00070,s,503.616,511.616,5,0,I suggest...
+s00071,g,512.16,512.928,,0,Congratulations.
+s00072,g,513.44,514.72,4,0,drawn in and then
+s00073,g,515.488,517.504,5,0,"Well, you should be smart."
+s00074,g,517.952,519.232,5,0,I'm not really.
+s00075,g,519.808,522.496,27,0,"Sure, how this works. Okay, shall I start?"
+w00007,w,522.5,522.72,,1,Yeah.
+w00008,w,523.08,523.98,,1,"That's it, you know."
+s00076,n,524.096,528.864,15,0,"I think for us it's just like a normal whiteboard, but they'll be recording."
+w00009,w,528.88,532.78,,1,Now they will record through that. There's a sensor over there which is going to record the stroke.
+s00077,w,532.896,533.376,,0,Thanks.
+s00078,n,533.504,535.808,15,0,For us it's just like an old whiteboard.
+s00079,s,536.256,536.704,,0,Okay.
+w00010,w,538.04,538.36,,1,Mmm.
+s00080,s,543.456,543.776,,0,you
+s00081,n,553.952,558.464,5,0,"Maybe Anna, maybe you can start and you can maybe find out."
+s00082,n,559.584,561.376,20,0,It's cool. Right.
+s00083,n,562.656,563.776,5,0,"So, uh..."
+s00084,n,566.208,571.328,5,0,Why don't you draw your favorite animal walk?
+s00085,n,579.456,580.64,5,0,"Oh, I think..."
+s00086,n,598.24,599.136,,0,That's a very bad drawing.
+s00089,n,639.424,642.624,5,0,It's like a so I guess it's good.
+w00011,w,663.8,664.02,,1,Bye.
+w00012,w,667.28,668.66,,1,I just don't want to cut it off.
+w00013,w,671.38,672.64,,1,"Man, this wire now..."
+w00014,w,673.46,674.92,,1,We need a wireless microphone.
+w00015,w,681.1,683.36,,1,especially we should next project we should take like that.
+w00016,w,695.7,697.12,,1,"Oh, the dog doesn't have a tail?"
+w00017,w,699.86,700.48,,1,"Sure, yeah."
+w00018,w,701.42,703.08,,1,"I thought so, the dogs have a tail."
+w00019,w,704.58,705.94,,1,
+s00090,n,706.048,706.816,,0,Yes.
+w00020,w,708.14,708.38,,1,Yeah.
+s00091,s,712.448,713.12,,0,Okay.
+w00021,w,715.9,717.84,,1,it will still not extend right it's not
+w00022,w,718.18,718.38,,1,to that.
+s00092,g,723.904,725.184,28,0,"So, very pleasant."
+s00093,g,726.56,729.28,15,0,Dogs are much friendly and loyal and fun.
+w00023,w,750.78,751.22,,1,to heart.
+s00094,n,756.736,761.952,12,0,"designer. Yeah. Yeah, definitely."
+s00095,n,762.784,768.288,1,0,"So, yes, with different photos."
+w00024,w,768.64,769.72,,1,I think you can put that
+s00096,s,769.824,776.384,27,0,"Ben Ritz, I'll bet, hey, 2.4 basically."
+s00097,s,779.36,781.184,1,0,"No, no, it's a zebra."
+w00025,w,781.2,782.14,,1,Thank you.
+s00098,n,782.24,784.032,15,0,blue and black zebra
+w00026,w,784.22,785.44,,1,Yeah.
+s00099,n,785.568,786.4,,0,Thank you.
+s00100,n,794.656,795.072,,0,Very bad.
+s00101,n,795.232,796.352,2,0,the Zebras.
+w00027,w,797.02,797.4,,1,Hola.
+s00102,w,798.112,798.56,,0,Thank you.
+w00028,w,798.58,799.88,,1,I have to get rid of my...
+s00103,s,801.056,801.92,,0,All I have to do is...
+s00104,s,804.256,806.912,2,0,I don't need to come up.
+s00105,s,807.68,808.256,,0,Thank you.
+s00106,w,809.024,810.784,30,0,Thank you.
+s00108,y,817.824,823.04,29,0,I hope you have some space near the sea whore
+s00109,s,823.776,824.192,,0,Thank you.
+s00110,w,826.464,827.936,30,0,"That's great, huh?"
+s00111,w,829.056,830.432,15,0,Thank you.
+s00112,y,831.552,832.352,,0,I have a good dog.
+s00113,y,832.992,833.696,,0,Thank you.
+s00114,y,852.608,853.696,15,0,I'll bring it back.
+s00115,y,855.808,857.024,4,0,Okay.
+s00116,y,857.536,857.856,,0,Thank you.
+s00117,n,860.672,867.36,27,0,And we should sum up its favorite characteristics.
+s00118,n,872.448,872.896,,0,So...
+s00120,y,876.704,877.504,,0,I knew.
+s00121,y,878.08,880.224,1,0,"They like to sleep, that's why you use it."
+s00122,y,881.152,881.984,,0,"No, look at this."
+s00123,s,882.56,883.04,,0,"Oh, man."
+s00124,y,885.184,893.184,7,0,"It is just taking a rest. It's quite a relaxed equation. Yeah, it requires a relaxing..."
+s00125,y,893.184,894.4,30,0,Thank you.
+s00126,s,896.352,898.56,13,0,Thank you.

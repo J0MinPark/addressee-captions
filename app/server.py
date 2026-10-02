@@ -202,6 +202,8 @@ def main(argv=None):
     ap.add_argument("--single-mic", action="store_true")
     ap.add_argument("--no-llm", action="store_true")
     ap.add_argument("--no-llm-cache", action="store_true", help="LLM 판정 캐시 끄기(매번 새로 호출)")
+    ap.add_argument("--no-selected", action="store_true",
+                    help="개발 세트 선택 구성(app/selected_config.yaml) 대신 v1 구성(P1c·손 가중치)으로 실행")
     args = ap.parse_args(argv)
     over = {}
     if args.single_mic:
@@ -210,6 +212,9 @@ def main(argv=None):
         over.setdefault("llm", {})["enabled"] = False
     if args.no_llm_cache:
         over.setdefault("llm", {})["cache"] = False
+    if args.no_selected:
+        import os
+        os.environ["HEARME_NO_SELECTED"] = "1"
     cfg = load_config(args.profile, args.config, over)
     print(f"[server] 프로필: {cfg['_profile']}")
     try:
