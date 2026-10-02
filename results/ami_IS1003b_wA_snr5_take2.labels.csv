@@ -1,0 +1,429 @@
+﻿seg_id,label,t_start,t_end,speaker_id,is_wearer,text
+w00001,s,45.8,46.0,,1,It's fine.
+w00002,s,48.12,48.36,,1,Thank you.
+w00003,s,70.68,72.08,,1,Don't be pregnant.
+w00004,w,73.7,74.56,,1,So I will have to know.
+w00005,w,75.02,75.56,,1,Functional.
+w00006,w,76.08,76.3,,1,
+w00007,w,79.12,79.48,,1,Bye.
+w00008,w,81.26,81.6,,1,play the role
+w00009,w,85.6,86.6,,1,So we'll have a free...
+w00010,w,87.02,87.46,,1,presentations.
+w00011,w,88.92,90.64,,1,in industry designer
+w00012,w,91.26,91.84,,1,user interface
+w00013,w,92.6,93.04,,1,I need some.
+w00014,w,95.32,97.14,,1,Marketing expert. Market expert.
+w00015,w,99.42,101.02,,1,And after that we...
+s00001,g,101.216,101.792,,0,Thank you.
+w00016,w,101.8,102.06,,1,you
+w00017,w,103.44,103.64,,1,you
+w00018,w,105.48,106.32,,1,project requirements.
+w00019,w,107.8,109.0,,1,the decision on the remote
+w00020,w,109.38,109.98,,1,function
+w00021,w,111.2,111.44,,1,and
+w00022,w,113.36,113.74,,1,...mutees.
+w00023,w,123.1,123.34,,1,Okay.
+w00024,w,126.24,126.86,,1,"One, two."
+w00025,w,128.2,128.44,,1,"No, no, no."
+w00026,w,131.1,134.48,,1,"3, 3, it's your song."
+w00027,w,134.84,135.2,,1,I'm...
+s00002,s,135.328,135.808,,0,Thank you.
+w00028,w,139.0,140.84,,1,Did you save your presentation?
+w00029,w,141.24,142.12,,1,In one's.
+s00003,s,142.24,142.56,,0,Thank you.
+s00004,s,144.96,145.504,,0,Thank you.
+s00005,s,145.664,146.784,1,0,Thank you.
+w00030,w,146.8,147.08,,1,technical film.
+s00006,s,147.2,148.416,2,0,Thank you.
+s00007,s,148.736,149.888,3,0,Thank you.
+w00031,w,153.54,154.44,,1,So you didn't save it maybe.
+s00008,n,156.704,157.152,,0,Thanks.
+w00032,w,157.16,159.58,,1,It's baby Jordan.
+w00033,w,161.36,161.68,,1,Bye.
+w00034,w,162.24,162.78,,1,David Bruton.
+w00035,w,163.38,163.64,,1,Yeah.
+w00036,w,167.18,167.82,,1,and it's David.
+w00037,w,168.14,168.4,,1,Thank you.
+w00038,w,168.92,169.18,,1,too.
+w00039,w,170.26,170.66,,1,Okay.
+w00040,s,171.12,171.66,,1,Thank you.
+w00041,w,173.54,174.1,,1,Don't...
+w00042,w,175.86,176.16,,1,This one.
+w00043,w,176.86,179.4,,1,doesn't want to be moved.
+w00044,w,181.3,182.3,,1,first I will present
+w00045,w,182.62,185.4,,1,the technique function design for user interface
+w00046,w,186.56,186.98,,1,
+s00009,g,187.488,187.872,,0,Thank you.
+w00047,w,188.12,189.14,,1,Remove TV control.
+w00048,w,191.28,194.02,,1,I will focus on user interface design.
+s00010,g,194.688,195.296,,0,Oh.
+w00049,w,195.32,196.7,,1,So move to the next slide.
+s00011,n,196.8,197.44,,0,Thank you.
+w00050,w,197.44,197.9,,1,As we know.
+w00051,w,199.58,199.9,,1,Remote.
+w00052,w,200.34,201.16,,1,your mood
+w00053,w,201.66,204.8,,1,TV control has very sophisticated functions.
+s00012,g,204.928,205.44,,0,Thank you.
+w00054,w,205.46,206.72,,1,as we showed from this picture
+w00055,w,207.58,208.46,,1,There's a lot of functions
+w00056,w,209.6,210.66,,1,"over, I think over."
+s00013,g,212.864,213.216,,0,Thank you.
+w00057,w,213.22,213.96,,1,all to these.
+w00058,w,214.96,215.28,,1,Functions.
+w00059,w,216.34,217.76,,1,of a remote TV controller.
+s00014,s,217.888,218.368,,0,Thank you.
+w00060,w,219.44,220.28,,1,So how can we...
+w00061,w,221.66,222.08,,1,Thank you.
+w00062,w,222.38,223.64,,1,design a user interface
+w00063,w,224.28,225.8,,1,with so many
+s00015,g,225.92,226.464,,0,Thank you.
+w00064,w,226.48,227.52,,1,sophisticated functions
+w00065,w,229.96,230.74,,1,Let's move to the next slide.
+s00016,s,230.848,231.392,,0,Nice.
+s00017,s,231.904,232.992,4,0,Thank you.
+w00066,w,233.6,233.92,,1,Thank you.
+s00018,n,235.232,235.552,,0,Yes.
+s00019,n,236.704,237.152,,0,Thank you.
+w00067,w,237.16,238.1,,1,So we want to design
+s00020,g,238.208,238.592,,0,Thank you.
+w00068,w,238.62,238.86,,1,elegant
+w00069,w,239.18,240.52,,1,easy to use in the interface
+s00021,s,240.64,240.96,,0,Thank you.
+w00070,w,241.74,243.18,,1,A very good example is Google.
+w00071,w,243.58,243.88,,1,Let me know.
+w00072,w,244.24,244.54,,1,Hello.
+w00073,w,245.52,246.94,,1,Google is very successful.
+w00074,w,247.8,248.56,,1,because his
+w00075,w,250.48,252.24,,1,powerful function but with very
+w00076,w,252.66,254.04,,1,easy to use using interface
+s00022,s,254.144,254.976,,0,Thank you.
+w00077,w,258.16,258.48,,1,
+w00078,w,262.66,263.86,,1,So my job is to...
+w00079,w,264.16,266.26,,1,Design Google TV control.
+w00080,w,267.56,268.76,,1,Which I want to...
+w00081,w,269.22,270.74,,1,sophisticated functions
+w00082,w,271.18,272.6,,1,while it's very easy to use.
+w00083,w,272.94,273.58,,1,using interface
+w00084,w,278.1,280.58,,1,That's the end of the presentation.
+w00085,w,281.58,282.32,,1,So you proposed to...
+s00023,n,282.432,283.04,,0,Thank you.
+s00024,s,284.128,284.512,,0,Thank you.
+w00086,w,284.52,285.22,,1,Remote control.
+s00025,n,285.344,285.728,,0,Thank you.
+w00087,w,285.74,286.12,,1,We'll see.
+w00088,w,286.86,288.58,,1,with the FaceTicket functions.
+s00026,n,288.704,289.024,,0,Thank you.
+w00089,s,289.04,291.02,,1,very powerful.
+s00027,n,291.136,291.616,,0,Thank you.
+w00090,w,291.64,292.74,,1,Yes. And very easy.
+w00091,w,294.58,298.24,,1,So it's maybe difficult to merge into systems.
+w00092,w,299.1,300.78,,1,"I mean, the one on the right."
+w00093,w,301.64,302.74,,1,It doesn't look so simple then.
+w00094,w,305.34,306.4,,1,You mean this one?
+w00095,w,307.4,310.42,,1,You have to learn the manual before using this remote.
+s00028,s,311.328,311.84,,0,Thank you.
+w00096,w,311.84,312.16,,1,Yeah.
+w00097,w,314.44,315.74,,1,But if we have worry...
+w00098,w,316.06,317.86,,1,very good user interface
+w00099,w,318.32,319.6,,1,Yeah. Just take last time.
+w00100,w,320.02,321.58,,1,for users to learn how to use it.
+w00101,w,322.12,324.56,,1,and maybe you have some international standards
+w00102,w,325.08,326.8,,1,where if you can use one
+w00103,w,327.74,330.24,,1,The other are almost the same.
+w00104,w,332.02,332.78,,1,"Oh, you mean for the..."
+w00105,w,333.68,334.14,,1,pictogram
+w00106,w,335.48,337.42,,1,"For example, I don't know, here, escape, you know."
+w00107,w,337.94,339.78,,1,you have escape in computers.
+w00108,w,340.66,341.0,,1,Thank you.
+w00109,w,341.44,343.78,,1,It should be the same.
+w00110,w,344.2,345.38,,1,The shooters are usually there.
+w00111,w,346.1,346.98,,1,"Alright, time for that."
+w00112,w,347.64,347.92,,1,
+w00113,w,348.26,350.22,,1,but then it is something really international.
+w00114,w,356.44,356.9,,1,Gone.
+w00115,s,358.92,370.08,,1,"The question is how to merge the Google system to the system. Yeah, that's my job. That's my job. It's not easy, Silvatte."
+w00116,w,374.88,375.34,,1,and easy to
+w00117,w,376.96,378.6,,1,"Power quality, easy to use."
+w00118,w,379.34,379.98,,1,I have this point.
+w00119,w,382.06,382.34,,1,soon.
+w00120,w,383.12,383.9,,1,I propose the...
+w00121,w,384.26,384.64,,1,Just film.
+w00122,w,385.04,386.6,,1,Face to present.
+w00123,w,389.42,389.8,,1,Thank you.
+w00124,w,390.26,390.9,,1,That's the contour
+w00125,w,400.4,401.02,,1,Bye bye.
+w00126,w,402.22,404.2,,1,That's a narrow point.
+w00127,w,404.62,405.16,,1,Thank you.
+w00128,w,405.5,406.0,,1,Thank you.
+w00129,w,406.38,406.62,,1,
+w00130,w,415.44,417.78,,1,"can move to the next slide. As you all know,"
+w00131,w,418.86,420.44,,1,my job is to design
+s00029,g,420.608,420.96,,0,Thank you.
+w00132,w,422.26,424.66,,1,to give an initial design of the remote control.
+s00030,g,424.832,425.472,,0,Thank you.
+w00133,w,425.5,428.28,,1,So basically the remote control will be in front.
+s00031,g,428.768,429.472,,0,Thank you.
+w00134,w,430.02,430.38,,1,for ease.
+w00135,w,431.3,432.62,,1,how to relate the
+w00136,w,434.14,436.18,,1,how to relate the remote control device like
+s00032,g,436.288,436.672,,0,Amen.
+w00137,w,436.74,437.94,,1,for example this one
+w00138,w,438.28,438.86,,1,in my hand.
+w00139,w,439.22,439.74,,1,and the TV.
+w00140,w,440.86,442.8,,1,So this one is laser based.
+s00033,g,442.912,443.776,,0,Thank you.
+w00141,w,443.8,444.04,,1,Good.
+w00142,w,446.0,448.1,,1,goes on infrared infrared base
+w00143,w,449.92,450.42,,1,"Yeah, so..."
+w00144,w,451.18,453.44,,1,"So for me, I think that 80 is better."
+w00145,w,453.82,454.2,,1,It's...
+s00034,g,454.304,454.848,,0,Thank you.
+w00146,w,455.96,457.38,,1,It's better to control TV.
+s00035,n,457.504,459.264,5,0,Thank you.
+w00147,w,459.28,462.18,,1,It will be cheaper and it is less technology.
+s00036,g,462.304,462.816,,0,Thank you.
+w00148,w,464.24,465.22,,1,for the cheap price we have.
+w00149,w,466.18,468.26,,1,the cheap price we want. So you mean that infrared control...
+w00150,w,470.24,471.14,,1,I think Steve was an lizard.
+s00037,n,471.264,471.808,,0,Thank you.
+w00151,w,471.82,472.82,,1,Yeah.
+w00152,w,473.36,473.86,,1,You know the...
+s00038,n,474.016,474.368,,0,Thank you.
+w00153,w,474.8,475.04,,1,you
+s00039,n,475.168,476.128,,0,Thank you.
+w00154,w,478.38,479.4,,1,What? Because...
+s00040,w,479.968,480.32,,0,Thank you.
+w00155,w,480.4,481.78,,1,"Yeah, I think for the cost we weren't."
+w00156,w,482.08,483.7,,1,"For the cost of you, aren't it?"
+w00157,w,484.72,486.0,,1,It's better to have it.
+w00158,s,486.78,487.0,,1,All right.
+w00159,w,489.72,490.66,,1,you can move to the next slide.
+w00160,w,491.48,494.48,,1,"So the different, the findings, you know, what you will find inside."
+s00041,g,495.04,495.616,,0,Thank you.
+w00161,w,495.82,498.4,,1,"The system here inside it is just, you know."
+w00162,w,499.28,501.3,,1,a bulb and an infrared bulb so here
+w00163,w,502.04,504.18,,1,"For example, the infrared bulb will be here."
+w00164,w,505.5,505.96,,1,and the body
+w00165,w,506.34,506.62,,1,somewhere
+s00042,g,506.912,507.648,,0,Thank you.
+s00043,w,509.248,509.856,,0,Thank you.
+w00166,w,510.38,510.94,,1,you can go to the next
+w00167,w,511.24,512.46,,1,I have some kind of pictures.
+s00044,s,512.576,513.184,,0,Thank you.
+w00168,w,513.2,513.5,,1,You know him.
+w00169,w,515.26,517.44,,1,You have the... the butter...
+w00170,w,517.74,519.2,,1,It is the blue stuff here.
+w00171,w,519.92,521.24,,1,and in front
+w00172,w,522.22,524.18,,1,and the infrared bulb it is the right stuff
+w00173,w,524.5,525.2,,1,and so
+w00174,w,525.82,527.62,,1,and you have the other subcomponent that are not.
+w00175,w,528.56,529.18,,1,"Yes, so much."
+w00176,w,533.5,535.22,,1,We hear in fact some other components that are
+w00177,w,535.62,536.98,,1,in between the electrical
+s00045,n,537.088,537.408,,0,Thank you.
+w00178,w,537.42,538.26,,1,electronic device
+s00046,s,538.368,538.848,,0,Thank you.
+w00179,w,539.52,542.5,,1,But here what I wanted to emphasize is just the bullet pen.
+s00047,n,543.488,544.32,,0,Thank you.
+w00180,w,545.26,545.82,,1,"So, and the next."
+w00181,w,546.16,547.08,,1,is the last one.
+s00048,n,547.2,547.52,,0,Thank you.
+w00182,w,548.18,548.54,,1,So it's...
+s00049,s,549.536,550.112,,0,Thank you.
+w00183,w,550.14,552.16,,1,I think it should be a wireless
+s00050,g,552.288,552.704,,0,I don't know.
+s00051,g,552.928,553.504,,0,Thank you.
+w00184,w,554.28,554.7,,1,Because you know it's...
+w00185,w,555.32,555.7,,1,Easy to make it.
+s00052,g,555.808,556.192,,0,manage
+w00186,w,556.2,556.62,,1,and
+s00053,g,557.888,558.72,,0,the
+w00187,w,558.72,560.0,,1,the battery problem can hold
+s00054,g,560.128,560.48,,0,Thank you.
+w00188,w,560.48,561.14,,1,will you use the button?
+w00189,w,561.48,561.76,,1,"Oh, no."
+w00190,w,562.32,563.3,,1,the wire to connect
+s00055,s,563.424,563.744,,0,Thank you.
+w00191,w,564.76,566.58,,1,or maybe some kind of things that we can have both.
+s00056,g,566.688,567.68,,0,Thank you.
+w00192,w,568.06,569.38,,1,I myself prefer OIL.
+s00057,s,569.504,569.888,,0,Thank you.
+w00193,w,572.78,574.1,,1,If you have some question A.
+w00194,w,574.7,575.22,,1,didn't answer
+w00195,w,578.08,579.04,,1,That's the average price of it.
+w00196,w,580.28,580.9,,1,I think I'm going to do it.
+w00197,w,581.8,583.26,,1,The average
+w00198,w,583.58,583.8,,1,Prices?
+w00199,w,584.12,585.66,,1,I think that this technology will cost
+s00058,y,586.56,587.296,,0,Thank you.
+w00200,w,587.3,588.4,,1,around 8 euros
+w00201,w,589.36,589.96,,1,only you know
+w00202,w,592.44,592.68,,1,So what?
+w00203,w,593.34,594.24,,1,The wireless removed.
+w00204,w,595.44,596.12,,1,There's the...
+w00205,w,597.1,599.04,,1,Why will the most contour...
+w00206,w,599.96,601.26,,1,Yes.
+w00207,w,602.04,603.82,,1,It's super easy to have to decide how
+s00059,g,603.936,604.32,,0,Thank you.
+w00208,w,604.32,606.12,,1,how you will put some
+w00209,w,606.46,606.84,,1,energy
+s00060,g,606.944,607.36,,0,inside.
+w00210,w,607.38,609.16,,1,So you can think about wireless.
+w00211,w,610.16,610.7,,1,It's...
+w00212,w,611.12,612.4,,1,It's a question that we can raise.
+w00213,w,613.56,614.34,,1,we can think
+w00214,w,614.84,616.12,,1,with a wire
+w00215,w,616.92,618.32,,1,We can have both
+w00216,s,618.66,618.86,,1,you
+s00061,s,618.976,619.712,,0,Thank you.
+w00217,w,620.18,620.56,,1,Okay.
+w00218,w,621.84,622.56,,1,So you think that...
+w00219,w,624.24,625.06,,1,
+w00220,w,625.78,626.24,,1,cable.
+w00221,w,626.56,627.44,,1,"between the remote, come on."
+w00222,w,627.84,629.06,,1,Thank you.
+w00223,w,629.58,630.28,,1,On the TV.
+w00224,w,631.0,633.26,,1,Thank you. Won't be a good idea.
+w00225,w,633.84,634.24,,1,Thank you.
+w00226,w,635.56,637.24,,1,"No, maybe it would be cheaper."
+w00227,w,638.32,638.7,,1,I don't know.
+w00228,w,639.54,639.92,,1,I'm just...
+w00229,w,640.48,641.66,,1,Maybe making...
+s00062,n,641.76,642.336,,0,Thank you.
+w00230,w,642.34,643.92,,1,This is what you would like to ask the user.
+w00231,w,644.34,645.12,,1,I don't think.
+w00232,w,645.5,647.38,,1,the user would be ready to have a
+w00233,w,647.92,649.22,,1,Yeah.
+w00234,w,650.36,650.62,,1,Thank you.
+w00235,w,650.96,652.82,,1,"Vardy, good control."
+w00236,w,653.14,653.34,,1,you
+w00237,s,655.42,661.86,,1,I always want to have wire because...
+w00238,w,662.3,662.64,,1,Do you think it would be...
+w00239,w,662.96,663.88,,1,it will be
+w00240,w,664.3,665.04,,1,to have them.
+w00241,w,665.5,666.14,,1,Linktorn.
+w00242,w,666.9,669.92,,1,Do you have a link between the remote control and the television?
+w00243,w,670.56,670.92,,1,I don't know.
+s00063,n,671.04,671.552,,0,Thank you.
+w00244,w,672.6,673.48,,1,I'm just asking you.
+w00245,w,674.14,675.08,,1,Do you think it will be cheaper?
+w00246,w,676.04,678.82,,1,I don't need to do it.
+s00064,s,681.184,682.24,6,0,Thank you.
+w00247,w,682.26,683.02,,1,Okay.
+w00248,w,684.08,685.52,,1,"Could you answer, please?"
+s00065,n,686.048,686.368,,0,We'll be right back.
+w00249,w,692.46,693.96,,1,I have to think about the question.
+w00250,w,695.12,695.58,,1,I think with...
+w00251,w,696.22,697.46,,1,"You know, you can always, you know..."
+w00252,w,701.04,701.56,,1,I think what
+w00253,w,701.94,702.76,,1,With the wall it's...
+w00254,w,703.28,705.22,,1,cheaper but you know the wireless it's
+w00255,w,705.66,706.32,,1,more practical.
+w00256,w,707.26,709.5,,1,"Yeah, but I think the wireless problem is more..."
+w00257,w,709.86,710.4,,1,Yeah.
+w00258,w,711.54,713.58,,1,David Jordan's brother.
+w00259,w,713.98,715.06,,1,As it's... The wire?
+w00260,w,715.6,715.9,,1,Yeah.
+w00261,w,717.02,719.44,,1,I think it's more your problem. Maybe you have to...
+s00067,n,719.552,719.872,,0,just
+s00068,n,720.128,721.12,,0,Thank you.
+w00262,w,721.12,721.86,,1,kind of research
+s00069,n,721.984,722.432,,0,Thank you.
+w00263,w,722.8,723.64,,1,try to
+s00070,n,723.744,724.512,,0,Thank you.
+w00264,w,724.54,725.24,,1,Ask people.
+s00071,n,725.344,726.016,,0,Thank you.
+w00265,w,726.52,726.76,,1,Good luck.
+s00072,n,726.88,727.296,,0,Thank you.
+s00073,n,727.488,728.032,,0,Thank you.
+w00266,w,728.06,728.8,,1,That's my job.
+s00074,w,728.928,729.28,,0,Thank you.
+w00267,w,729.28,730.92,,1,"That's the... Okay, cool. Sorry."
+w00268,w,731.26,732.18,,1,"No, no, no."
+w00269,w,732.6,732.82,,1,it would be
+w00270,w,733.12,734.48,,1,"It should be an agreement, you know, because..."
+s00075,g,734.592,735.104,,0,Thank you.
+w00271,w,735.12,735.44,,1,Even if
+w00272,w,735.82,737.12,,1,You can think that the wireless is
+w00273,w,737.48,738.52,,1,it is the job of
+w00274,w,738.94,739.5,,1,Thank you.
+w00275,w,740.14,740.58,,1,Is it?
+w00276,w,741.12,743.24,,1,"The graphical user design you would, you know."
+s00076,s,743.36,743.84,,0,Thank you.
+w00277,w,744.76,748.7,,1,if it is a lot cheaper and if you want to reach for example some
+w00278,w,750.1,752.46,,1,the money we have if you want to
+s00077,g,752.576,752.896,,0,Thank you.
+w00279,w,753.44,756.34,,1,It can be good to have wireless. It is a question.
+s00078,g,756.448,757.344,,0,Thank you.
+s00079,g,757.632,757.984,,0,Thank you.
+w00280,w,758.0,758.54,,1,
+s00080,n,758.656,759.2,,0,Thank you.
+s00081,n,761.152,761.504,,0,Thank you.
+w00281,w,762.02,765.9,,1,Just think of the problem.
+w00282,w,766.32,768.42,,1,and remote control and if you lose it
+w00283,w,770.32,772.0,,1,It would be easier to have a link.
+w00284,w,772.56,775.66,,1,"between the remote control and the television. Well, that's actually one of the points, yeah."
+s00082,y,775.776,776.256,,0,Thank you.
+w00285,w,776.66,778.6,,1,This you will see in my presentation then.
+w00286,w,779.06,780.22,,1,So I will bullet you.
+w00287,w,780.54,781.94,,1,to your presentation.
+w00288,s,783.22,783.64,,1,Thank you.
+w00289,w,783.98,784.8,,1,Participant 4
+w00290,w,791.38,793.1,,1,So just trying to answer all the questions.
+w00291,w,793.74,796.0,,1,if the user would be happy to have something.
+w00292,w,796.46,796.92,,1,something else.
+s00083,s,798.528,799.04,,0,Thank you.
+w00293,w,799.1,799.88,,1,We've made a study.
+w00294,w,800.26,801.74,,1,So could you go to the next slide?
+w00295,w,802.84,804.22,,1,Sorry for the functional recording.
+w00296,w,805.78,809.48,,1,So that's the standard method for marketing. We have 100 subjects.
+w00297,w,810.02,810.54,,1,Um...
+w00298,w,811.1,812.04,,1,We observe the...
+w00299,w,812.34,813.66,,1,remote control use in a lab
+w00300,w,814.78,818.32,,1,and then after all the experiments they had to fill up the questionnaire.
+w00301,s,818.88,819.28,,1,Amen.
+w00302,w,821.2,822.72,,1,see what was okay or not for them.
+s00084,w,823.52,823.84,,0,Thank you.
+w00303,w,825.04,828.7,,1,So then some statistics about what we observed and what they answered.
+s00085,s,828.8,829.216,,0,Thank you.
+w00304,w,830.2,830.7,,1,Um...
+w00305,w,831.44,835.2,,1,"Actually, 75% of the users find the most remote controls."
+w00306,w,835.74,836.18,,1,Okay.
+w00307,w,837.64,837.84,,1,So that
+w00308,w,838.2,838.42,,1,You mean...
+w00309,w,838.96,839.24,,1,Yeah.
+w00310,w,840.46,843.72,,1,The look is bad for them.
+s00086,w,843.84,844.64,,0,Thank you.
+w00311,w,844.66,845.6,,1,Good job David maybe.
+w00312,w,846.7,849.04,,1,then 80% of users would spend more money.
+s00087,w,849.152,849.664,,0,Thank you.
+w00313,w,849.68,849.9,,1,"Um,"
+s00088,w,850.016,851.2,7,0,Thank you.
+w00314,w,851.22,851.5,,1,actually.
+w00315,w,851.82,853.94,,1,if the remote controls were not so ugly.
+w00316,w,854.38,854.66,,1,So...
+w00317,w,855.08,855.76,,1,This is where we could...
+s00089,w,855.872,856.192,,0,Thank you.
+w00318,w,859.12,859.88,,1,"Good market, I guess."
+s00090,w,860.0,860.32,,0,Thank you.
+w00319,w,860.92,862.1,,1,if people are ready to pay more.
+w00320,w,863.1,863.34,,1,So...
+w00321,w,863.72,864.06,,1,It's...
+s00091,w,864.16,864.576,,0,Thank you.
+w00322,w,864.6,865.62,,1,"Interesting information, I think."
+s00092,w,865.728,866.24,,0,Thank you.
+w00323,w,866.48,867.58,,1,And then...
+s00093,w,869.504,869.824,,0,Thank you.
+w00324,w,870.1,873.48,,1,"Yeah, the remote control is like the one you've shown previously."
+w00325,w,874.68,875.86,,1,It's not so...
+w00326,w,876.28,879.92,,1,It doesn't fit the user requirements sometimes because it's too many buttons and so on.
+w00327,w,880.78,881.28,,1,So...
+w00328,w,881.82,883.62,,1,We should change this as well.
+s00094,w,884.864,885.536,,0,Thank you.
+w00329,w,885.74,887.2,,1,Users are actually zapping a lot.
+s00095,w,887.328,887.648,,0,Thank you.
+w00330,w,887.66,892.32,,1,So they are using the device intensively. That's something to take into account as well.
+w00331,w,892.7,893.34,,1,And...
+w00332,w,894.44,897.88,,1,"you know, 10% of the buttons are actually used in a remote control."
+s00096,s,897.984,898.656,,0,Thank you.
+w00333,w,899.1,899.72,,1,and

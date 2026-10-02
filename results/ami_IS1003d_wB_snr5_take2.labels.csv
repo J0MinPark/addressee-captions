@@ -1,0 +1,350 @@
+﻿seg_id,label,t_start,t_end,speaker_id,is_wearer,text
+w00001,w,45.18,45.5,,1,It's working.
+w00002,w,53.14,53.34,,1,I'm afraid.
+w00003,w,55.68,56.32,,1,this remote control
+w00004,w,56.66,57.84,,1,will stay a prototype.
+s00001,w,57.952,58.944,,0,Where is the reward?
+s00002,w,59.136,59.616,,0,control.
+w00005,w,60.28,61.4,,1,Thank you.
+s00003,w,61.504,63.712,1,0,See you.
+s00004,g,67.712,71.84,2,0,That's a good boy on her detailed design meeting.
+s00005,g,73.088,78.112,3,0,So I will still play the role of the secretry and...
+s00006,g,78.72,86.752,4,0,We'll have first the project presentation by our user interface designer.
+s00007,g,86.752,87.84,5,0,David Jordan?
+w00006,w,87.86,88.08,,1,Yeah.
+s00008,g,88.192,89.056,,0,Thank you.
+s00009,g,89.472,92.032,6,0,"and our industrial designer, Baba."
+s00010,w,92.192,92.512,,0,Yeah.
+s00011,g,92.864,93.216,,0,Thank you.
+s00012,g,93.664,98.784,7,0,So we'll have to evaluate the first three-minute control.
+s00013,g,101.12,104.256,8,0,I have no idea of the class that this.
+s00014,g,104.832,105.44,,0,Yes.
+w00007,w,105.46,105.74,,1,you
+s00015,g,105.856,106.4,,0,Thank you.
+s00016,g,107.232,115.232,7,0,and in case we all agree on building the space.
+s00017,g,115.232,123.232,9,0,We will evaluate the products. So maybe I will...
+s00018,g,123.232,131.232,10,0,Let's be our two designers
+s00019,s,131.232,132.8,11,0,Thank you.
+w00008,w,132.82,133.6,,1,one slide and
+s00021,g,135.616,136.384,,0,Thank you.
+s00022,s,137.088,141.28,13,0,Thank you.
+s00023,g,143.168,147.456,14,0,So this is our product process.
+s00024,g,148.48,149.888,15,0,This is made by Flynn.
+s00025,n,151.68,152.576,,0,Yep.
+s00026,g,153.92,155.808,16,0,The basic color is
+s00027,g,156.48,164.48,17,0,yellow and red. Yellow is our company color. Red is more
+s00028,g,164.48,172.48,17,0,"attractive so we have two basic colors, yellow and red and the chic, there are two basic chic"
+s00029,g,172.48,176.832,17,0,I'm checking the triangle space
+s00030,g,177.664,180.96,16,0,We call it the mushroom design. It looks like the mushroom design.
+s00031,g,181.152,183.2,16,0,So we call it Marshall Design.
+s00032,n,183.36,191.36,17,0,This is the introduction of our program.
+s00033,g,191.36,195.904,17,0,There are several key features of our prototype.
+s00034,g,196.384,201.696,17,0,The first is that it is fancy. I'm sure this would be the unique design in the market.
+w00009,w,201.72,201.94,,1,We...
+w00010,w,202.24,203.02,,1,"Yeah, I'm sure."
+s00035,g,203.136,203.776,,0,"Yeah, I hope so."
+w00011,w,203.8,204.16,,1,All right.
+s00036,g,204.288,207.328,18,0,"Yeah, so it's a fancy design and a unique design."
+s00037,n,208.192,208.96,,0,I don't know.
+s00038,n,209.44,210.144,,0,and um
+s00039,g,211.232,219.232,17,0,The second key feature is that the circle channel selection in the traditional
+s00040,g,219.232,227.232,17,0,use button to select the channel but now we have a circle so we can clean this ball
+s00041,g,227.232,228.096,,0,See you later.
+s00042,g,228.576,234.368,17,0,channel is quite convenient for user to use it
+w00012,w,234.38,234.72,,1,Thank you.
+s00043,g,234.848,242.848,17,0,"Okay, the third feature is a stable triangle piece."
+s00044,g,242.848,244.992,17,0,The triangle piece is very stable.
+s00045,n,246.56,247.232,,0,Oh.
+s00046,g,247.84,255.84,17,0,So it's unlikely you cannot find it. You can put it in the table so you can paint the...
+s00047,g,255.84,258.24,17,0,to both the kids who select the channels.
+s00048,g,259.744,266.944,17,0,Under some cute buttons you can see the shape of buttons is a mushroom too.
+s00049,g,267.424,272.384,19,0,everything is mushroom. So it's gonna be a lot of control.
+w00013,w,272.4,274.7,,1,it's not like really mushroom because you have you know
+w00014,w,275.96,276.68,,1,like lemon
+s00050,w,277.472,277.92,,0,Thank you.
+s00051,w,278.048,278.432,,0,Yeah.
+w00015,w,279.08,279.42,,1,yellow
+s00052,w,279.52,280.832,20,0,"Yeah, that's why if you"
+s00053,g,281.088,282.144,21,0,to the table.
+w00016,w,282.78,283.24,,1,to integrate.
+s00054,g,283.36,285.376,22,0,Because somebody will eat it.
+w00017,w,285.4,287.1,,1,I don't see- I hope nobody will eat-
+s00055,g,287.584,288.192,,0,Thank you.
+w00018,w,288.2,290.52,,1,"You know, to integrate the fruit aspect, you know, the..."
+s00056,w,290.688,291.584,,0,"Yeah, yeah."
+s00057,g,291.744,293.92,23,0,Thank you.
+s00058,g,294.784,295.968,24,0,Fish and vegetables.
+w00019,w,296.82,298.86,,1,fruit and vegetables so mushroom was the kind of
+s00059,n,299.744,300.768,25,0,Thank you.
+w00020,w,303.64,304.46,,1,Yeah.
+s00060,g,305.6,306.176,,0,Thank you.
+w00021,w,307.2,307.5,,1,kind of
+s00061,w,307.616,308.096,,0,Thank you.
+s00062,w,308.256,308.832,,0,you know
+w00022,w,308.86,310.3,,1,We integrated a different color.
+s00063,g,310.4,313.888,26,0,This is not a mushroom anymore.
+w00023,w,314.48,316.6,,1,I think we take into account what you said about
+w00024,w,316.98,318.62,,1,"fruit and vegetable by using, you know, this."
+s00064,w,318.72,319.68,,0,Thanks.
+w00025,w,319.7,320.74,,1,very enlightened colors.
+s00065,n,320.864,322.176,27,0,"Yeah, inspiration."
+s00066,n,322.464,322.976,,0,Thank you.
+w00026,w,325.24,325.54,,1,and very
+s00067,w,325.664,326.4,,0,sophisticated.
+s00068,w,326.848,327.456,,0,Thank you.
+w00027,w,330.38,330.62,,1,So...
+s00069,n,332.544,335.232,28,0,Next one?
+w00028,w,335.26,335.86,,1,So what we...
+w00029,w,336.16,337.96,,1,"What I can add is that, you know..."
+s00070,w,338.08,338.464,,0,Thank you.
+w00030,w,339.24,340.06,,1,He talked about what he
+s00071,w,340.16,340.512,,0,he's
+w00031,w,340.52,340.96,,1,outside
+w00032,w,341.7,342.68,,1,So what is inside is what we have.
+s00074,w,343.68,344.032,,0,Thank you.
+w00033,w,344.04,344.32,,1,about
+s00075,w,344.448,345.536,29,0,It was cheap.
+w00034,w,346.34,346.62,,1,a low level.
+s00077,g,346.72,348.96,30,0,We'll be positive.
+w00035,w,348.98,350.04,,1,we don't need to cut it.
+s00078,g,350.88,351.2,,0,Good.
+w00036,w,351.94,354.48,,1,low-level chips inside and you know the
+w00037,w,355.0,355.5,,1,LCD
+s00079,y,357.984,359.424,17,0,To wear the battery.
+w00038,w,359.44,360.54,,1,The pressure it is under
+s00081,w,361.472,361.856,,0,It is.
+w00039,w,361.88,363.14,,1,in the bay this year.
+s00082,g,364.16,366.816,19,0,And where is the solar cell?
+w00040,w,367.64,368.02,,1,"In fact, this"
+s00083,y,368.128,368.512,,0,This...
+w00041,w,368.52,369.02,,1,"This, this."
+w00042,w,369.52,369.8,,1,This is a...
+s00085,w,369.92,370.24,,0,current
+s00086,w,370.4,372.256,17,0,new revolutionaries
+w00043,w,372.78,373.14,,1,that we can
+s00087,w,373.248,377.952,10,0,Increase the price.
+s00088,w,378.176,378.592,,0,Thank you.
+s00089,w,378.848,379.2,,0,Thank you.
+w00044,w,379.2,379.64,,1,I don't think so.
+w00045,w,379.96,381.24,,1,It's mad
+s00090,w,381.344,382.88,26,0,to be difficult.
+s00091,w,383.104,383.648,,0,Thank you.
+s00092,n,385.152,385.824,,0,See you soon.
+s00093,n,386.336,389.376,4,0,You still have a million. It's European. What are you doing today?
+s00094,g,390.112,394.24,26,0,"I mean, we're gonna try to measure how."
+s00095,g,395.264,397.088,23,0,Good it is.
+s00096,n,398.592,399.072,,0,"Uh, are we here?"
+s00097,n,399.2,400.288,17,0,three keys
+s00098,g,401.568,402.688,1,0,Keep on the steering wheel.
+s00100,g,407.104,407.808,,0,Thank you.
+s00101,g,408.48,409.12,,0,Thank you.
+s00102,s,409.888,410.336,,0,Thank you.
+s00103,g,411.456,412.224,,0,Thank you.
+s00104,g,418.368,419.136,,0,We tried to get it.
+w00046,w,429.7,430.0,,1,4.
+s00105,w,430.112,430.432,,0,Thank you.
+w00047,w,430.46,431.16,,1,point five with me
+s00106,w,431.264,431.872,,0,Thank you.
+s00107,g,432.0,436.544,19,0,"One being two, seven."
+s00108,s,437.056,440.0,13,0,Thank you.
+s00109,s,441.6,442.144,,0,Okay.
+s00110,g,442.72,444.064,23,0,We have our friends with the three of us.
+s00111,g,444.704,445.472,,0,Thank you.
+w00048,w,445.48,446.4,,1,I think you have nice color.
+s00112,w,446.528,446.976,,0,Thank you.
+s00113,w,447.648,448.256,,0,Thank you.
+w00049,w,448.28,449.34,,1,"The shape, the ball shape."
+s00114,s,449.92,454.56,17,0,It's a 3 piece unit and the color unit is pretty good.
+w00050,w,455.6,456.28,,1,Is it really fun?
+s00116,n,456.384,457.856,22,0,How did you feel? It's all impressive.
+s00117,n,458.528,460.064,26,0,Amen.
+s00119,w,463.552,464.256,,0,Thank you.
+w00051,w,464.5,465.88,,1,you have the lemon aspect
+w00052,w,467.28,468.26,,1,Interesting.
+s00120,w,468.416,469.376,,0,Thank you.
+s00121,w,469.888,470.496,,0,Thank you.
+s00122,g,471.072,474.688,14,0,I'm going to change the tape onto this house.
+w00053,w,474.7,475.64,,1,"Don't do that, please"
+s00123,g,475.744,478.4,28,0,things like that.
+s00124,g,479.296,479.68,,0,Thank you.
+w00054,w,479.7,480.28,,1,It's...
+s00127,s,483.68,486.592,9,0,More like a lemon.
+s00128,g,488.96,492.48,26,0,So maybe improving the texture.
+w00055,w,492.5,492.94,,1,less button
+s00129,g,493.056,494.048,,0,Thank you.
+s00130,s,494.784,495.392,,0,I'm sorry.
+s00132,g,498.816,500.128,5,0,Looks like more beautiful.
+w00056,w,500.52,501.44,,1,But you don't have any button.
+s00134,g,504.928,506.016,7,0,And you can do something else.
+s00135,g,507.36,507.808,,0,Thank you.
+s00136,g,508.288,510.08,13,0,Thank you.
+s00137,w,510.752,511.136,,0,Thank you.
+w00057,w,511.62,512.7,,1,That's a good idea.
+w00058,w,513.04,513.38,,1,That's great.
+s00138,g,513.504,515.392,2,0,It looks more like a pineapple.
+w00059,w,515.86,516.18,,1,Thank you.
+s00139,n,516.288,518.176,4,0,What's the use for that?
+w00060,w,518.18,519.2,,1,I have no idea.
+s00140,n,519.328,520.768,17,0,If you want to clean the bone
+w00061,w,520.78,521.28,,1,I have no idea.
+s00141,n,521.76,522.112,,0,"Bye, buddy."
+w00062,w,522.12,522.44,,1,you
+s00142,w,522.816,527.168,17,0,"It's very convenient for you to change the boat, to change the tail."
+s00143,n,528.0,536.0,17,0,And where is the voice recognition? It's embedded in the microphone. There are two functions.
+s00144,g,536.0,538.976,17,0,So the best one is we have to judge the...
+w00063,w,538.98,539.32,,1,
+s00145,g,539.424,542.528,3,0,Okay. Is it better like that?
+w00064,w,542.54,543.78,,1,So we can we can say
+s00146,g,543.904,545.376,7,0,Let's take the pineapple now.
+w00065,w,545.38,546.54,,1,The color is the color acceptable.
+s00147,g,546.656,548.512,5,0,"No, the croix became it."
+w00066,w,548.54,549.0,,1,So the shape.
+s00148,n,549.12,549.472,,0,Thank you.
+s00149,n,550.016,551.52,26,0,It looks like it.
+w00067,w,553.02,553.44,,1,"Thanks so much, Fred."
+s00150,w,553.568,554.464,,0,Thank you.
+w00068,w,554.48,555.16,,1,in the basement
+s00151,g,555.264,559.104,9,0,It looks like pineapple and cherry on top.
+w00069,w,560.0,560.4,,1,you
+s00152,g,560.512,561.44,,0,Thank you.
+s00153,g,561.888,563.744,17,0,"Okay, bye."
+s00154,g,564.16,564.48,,0,Thank you.
+s00155,g,564.64,565.856,23,0,Seven.
+s00156,w,566.016,566.336,,0,Thank you.
+w00070,w,566.36,566.7,,1,I don't give
+s00157,g,568.0,569.6,3,0,7 is the maximum?
+w00071,w,569.6,569.94,,1,Elgue.
+s00158,n,570.048,570.88,,0,in this course.
+s00159,n,571.392,571.936,,0,One.
+w00072,w,574.0,574.46,,1,I'll give.
+s00160,w,574.592,574.912,,0,Thank you.
+w00073,w,575.0,575.4,,1,two or three.
+s00161,w,576.352,577.344,,0,I will say a little bit.
+w00074,w,577.72,578.4,,1,"It's really, it seems fine."
+s00162,s,579.2,580.192,,0,Thank you.
+s00163,g,583.072,585.44,23,0,Then...
+s00164,n,586.336,586.656,,0,Thank you.
+w00075,w,587.2,587.74,,1,What are the...
+s00165,g,588.928,590.88,26,0,The other criterion is...
+s00166,g,591.168,591.968,,0,Easy to use.
+s00167,g,592.128,596.032,23,0,Thank you.
+s00168,w,596.608,597.024,,0,you
+s00169,n,597.184,603.424,26,0,"Yeah, this is McMarie."
+w00076,w,603.44,603.74,,1,
+s00170,g,603.84,611.84,14,0,Four microphones. So there's a microphone array.
+s00171,g,611.84,614.336,14,0,So you can capture it boy.
+s00172,g,614.592,616.288,17,0,It's technical.
+w00077,w,616.3,616.74,,1,I think...
+w00078,w,617.06,619.34,,1,you've never seen a run on remote controls.
+s00174,n,619.968,621.632,17,0,"Yeah, but when you say technology..."
+s00175,g,626.176,627.744,10,0,We have talked to our gutters.
+s00176,s,629.6,630.016,,0,Thank you.
+w00079,w,630.04,631.98,,1,"You have microphones embedded, you have"
+w00080,s,632.88,633.88,,1,"That's good. And you have, you know."
+s00177,s,633.984,634.336,,0,This is...
+w00081,s,634.34,634.66,,1,
+w00082,w,635.66,636.76,,1,solar receptor.
+s00178,g,636.896,638.464,26,0,"Yeah, that was..."
+w00083,w,640.48,640.94,,1,I think Technicolor is...
+w00084,w,641.36,641.7,,1,acceptable.
+s00180,g,648.096,649.184,23,0,Thank you.
+s00181,n,649.856,652.224,26,0,Town may be the most critical one.
+s00182,g,653.632,655.456,23,0,That's what we'd like to do.
+s00183,g,656.768,658.624,23,0,Thank you.
+s00184,w,661.952,662.528,,0,Thank you.
+w00085,w,662.54,663.4,,1,The vocal common yes.
+s00185,w,663.52,664.128,,0,It's my
+s00186,w,664.288,666.656,30,0,It's a bit easier.
+w00086,w,666.68,666.94,,1,the common
+s00187,n,667.04,670.432,17,0,Can you send me this way? Can you just reach for me?
+w00087,w,670.46,671.24,,1,Principle?
+s00188,w,671.36,672.256,,0,Yeah.
+s00189,g,672.96,674.4,17,0,This is beast.
+s00190,g,674.88,675.84,,0,So you can turn
+s00191,g,676.48,677.792,17,0,to change the channel
+s00192,n,678.432,680.416,26,0,"Yeah, but I will do it again."
+s00193,n,681.312,682.752,14,0,Okay.
+w00088,w,682.78,683.42,,1,I think maybe if you...
+s00194,n,683.52,685.312,11,0,"Oh, I understand."
+w00089,w,685.42,686.22,,1,If you hear some click
+s00195,g,686.336,687.552,7,0,Take the animals.
+s00196,g,688.512,696.512,10,0,I think it's quite easy to do zapping. Maybe it will be too fast.
+s00197,g,696.512,697.088,,0,Thank you.
+w00090,w,697.26,697.6,,1,Okay.
+s00198,g,697.728,702.592,26,0,I'm definitely convinced it's the best way to do it.
+s00199,g,703.104,705.376,26,0,I jumped from 1 to 20.
+w00091,w,705.38,705.7,,1,"Oh, yeah, that's it."
+s00201,n,706.784,709.088,26,0,"So, 30 to 20."
+s00202,s,709.6,715.456,17,0,"No no no, it depends on the angle you think the..."
+w00092,w,715.64,716.22,,1,"Yeah, but you hold"
+s00203,n,716.32,717.12,,0,"I agree, but I mean..."
+w00093,w,717.12,717.58,,1,You need to know.
+s00204,g,718.144,721.376,17,0,"If this is a channel wide, it could be..."
+w00094,w,721.4,722.16,,1,I think something that...
+s00205,g,722.272,725.536,17,0,"3, channel 4, channel 5, 13."
+w00095,w,725.54,726.16,,1,And you can...
+s00206,g,726.272,734.272,17,0,Just imagine you have 50 channels. 50 channels divided by 313.
+s00207,g,734.272,740.704,19,0,degree because how many degrees
+w00096,w,741.14,742.26,,1,"You can, if you have a scale."
+s00208,g,742.368,746.624,17,0,"No, when you stop, it's when you stop."
+s00210,n,748.8,749.12,,0,Thank you.
+s00211,g,749.696,755.712,17,0,Then the angle you stop is the channel you... How do you know this angle?
+s00212,s,756.608,757.184,,0,Thank you.
+s00213,g,757.6,763.296,17,0,It's very easy because you know how many channels are there.
+s00214,n,764.48,766.56,16,0,"Yeah, yeah, yeah, you can do it."
+s00215,g,767.008,768.512,13,0,Thank you.
+w00097,w,768.54,770.58,,1,"Yes, wait to meet you."
+s00216,g,772.8,774.016,17,0,I think so.
+w00098,w,774.04,777.76,,1,"I think, but the vocal command is easy too. You can say 50 and..."
+s00217,w,777.888,778.56,,0,Thank you.
+s00218,g,778.784,780.384,26,0,It's okay.
+s00219,g,781.44,784.672,17,0,There's also a number.
+s00220,g,785.312,786.944,13,0,Thank you.
+s00221,g,788.608,794.4,4,0,"So when you say I want to go to the tournament, you decide to go to Challenge 1, so you can say Challenge 1."
+w00099,w,794.42,795.3,,1,"Alright, yeah."
+s00222,g,795.424,803.424,4,0,because you really want to be on this channel but if you really want to do zapping you don't really know what you want to do you can turn it
+s00223,g,803.424,805.44,9,0,go through all the channels and maybe stop us.
+s00224,g,805.568,807.744,10,0,There's something interesting.
+s00225,g,808.672,809.984,13,0,Thank you.
+s00226,n,812.096,813.28,7,0,I'm sure I've missed a really good job.
+s00227,n,813.44,814.624,19,0,Thank you.
+w00100,w,816.34,817.02,,1,
+s00229,n,817.6,821.888,17,0,If you... you can... you can... you can...
+w00101,w,821.9,823.48,,1,"It's a turn off button, man."
+s00230,g,823.584,831.584,17,0,"If you want to skip from channel 1 to channel 2, you skip this."
+s00231,g,831.584,833.088,17,0,one to channel two.
+w00102,w,833.1,833.52,,1,I like that.
+s00232,g,833.632,837.216,17,0,It's like fine from cost to fine. This is cost. This is fine.
+w00103,w,837.22,837.7,,1,"Yeah, yeah, yeah."
+s00233,g,838.08,839.456,17,0,So it's called to fight.
+w00104,w,839.46,840.58,,1,That's very technologic.
+s00234,w,840.704,842.432,29,0,Yeah.
+s00235,n,842.592,845.376,17,0,"Yeah, you see, this is from one channel to..."
+w00105,w,845.38,845.98,,1,I didn't...
+s00236,n,846.08,846.432,,0,See you.
+w00106,w,847.28,847.5,,1,turn off
+w00107,w,847.92,848.9,,1,Turn and turn off buttons.
+s00238,y,849.44,852.64,9,0,"Yeah, you have the vocal comment."
+w00108,w,852.64,852.88,,1,Uh...
+s00239,w,852.992,856.8,26,0,On off.
+w00109,w,857.64,858.5,,1,"No, no, no, no."
+s00240,g,858.624,862.336,2,0,So it's on you as in the end of the day.
+w00110,w,862.34,862.6,,1,Yes.
+s00241,g,863.072,863.872,,0,you
+s00242,g,865.44,868.032,4,0,"That's true, that's why we have the solar."
+s00243,g,868.928,869.952,22,0,Thank you.
+s00244,g,870.592,870.944,,0,Thank you.
+s00245,n,871.584,872.608,23,0,Thank you.
+w00111,w,873.94,876.94,,1,"Easy to use, it's very relative, but three, it's fine."
+w00112,w,878.1,878.62,,1,It's reasonable.
+s00246,g,878.72,882.176,26,0,Do you agree?
+w00113,w,883.08,883.32,,1,through for me.
+w00114,w,884.12,885.0,,1,It's okay.
+w00115,w,888.32,888.76,,1,"Oh, sweet."
+w00116,w,889.3,890.36,,1,Maybe you can vote to see how...
+s00247,w,890.464,891.008,,0,community.
+w00117,w,891.98,893.32,,1,and just take them in.
+s00248,n,893.44,894.208,,0,Thank you.
+w00118,w,895.12,895.4,,1,
+s00249,n,895.52,896.192,,0,Thank you.
+s00250,g,897.024,898.24,23,0,Thank you.

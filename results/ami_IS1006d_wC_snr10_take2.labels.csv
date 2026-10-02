@@ -1,0 +1,381 @@
+﻿seg_id,label,t_start,t_end,speaker_id,is_wearer,text
+s00001,g,54.976,55.712,,0,Thank you.
+s00002,g,56.768,62.4,1,0,Then Samir proposed some criteria to evaluate.
+s00003,n,62.56,66.624,2,0,Then...
+s00004,n,67.488,75.2,3,0,Yes. Yes. Then we're going to do some findings to see if it's feasible.
+w00001,w,75.22,75.64,,1,Thank you.
+s00005,g,75.744,76.416,,0,Thank you.
+s00006,g,77.12,79.456,4,0,At the end we will be living.
+s00007,g,80.128,82.72,5,0,valued ourselves as a team.
+s00008,g,86.4,88.672,6,0,So first...
+w00002,w,91.36,91.56,,1,Yeah.
+w00003,w,92.54,93.3,,1,Here we have
+w00004,w,93.74,94.98,,1,our prototype model.
+s00009,g,95.456,96.0,,0,Thank you.
+s00010,g,96.16,96.864,,0,have some sense.
+w00005,w,96.92,98.1,,1,We have also some slides.
+s00011,g,98.208,100.416,7,0,Please subscribe.
+s00013,n,103.616,104.128,,0,political.
+s00014,n,111.616,112.256,,0,So
+s00015,g,113.472,114.752,9,0,Thank you.
+s00017,g,117.856,120.544,10,0,It's a walking prototype of music now.
+w00006,w,120.56,120.82,,1,Thank you.
+s00018,g,121.152,122.496,11,0,Thank you.
+s00019,g,123.456,127.296,12,0,"First I present, we came to this perfect model."
+s00020,g,127.872,130.976,13,0,and then we'll give some technical specifications.
+s00021,n,133.152,134.336,14,0,"Wow, it's a lot of stuff."
+s00022,n,135.008,135.68,,0,Thank you.
+s00023,g,136.576,140.768,15,0,We analyzed all the fruits and contacted NASA.
+s00024,n,141.92,142.816,,0,Thank you.
+s00025,n,143.584,145.536,16,0,Really good. Yeah.
+s00026,n,146.08,151.136,17,0,"If you can see this, the stars are showing that you are doing right."
+s00027,n,151.392,151.872,,0,Thank you.
+s00028,n,152.384,152.736,,0,Mm-hmm.
+w00007,w,152.76,152.98,,1,Bye.
+s00029,n,153.984,156.992,18,0,society will accept it.
+w00008,w,158.54,159.2,,1,Ha ha ha.
+w00009,w,159.98,160.2,,1,Thank you.
+s00031,n,160.96,163.232,20,0,I'm making some of those different foods
+s00032,n,163.808,166.784,21,0,and choose the internet for internet covers.
+s00034,n,170.432,171.488,22,0,Next slide.
+s00035,g,173.056,177.504,23,0,But we still don't want to go far from our 39 idea.
+s00036,g,177.92,180.512,24,0,"because it's a monster, the modern..."
+s00037,g,181.408,184.48,25,0,The cover model material you can...
+s00038,g,184.96,185.568,,0,"So, left."
+s00039,g,187.072,188.512,26,0,and it's vertical.
+s00040,g,190.016,191.808,27,0,And it's just a Roman song.
+s00042,g,194.176,195.488,28,0,"Thanks, man."
+s00043,g,195.68,197.664,29,0,Okay.
+w00010,w,197.68,198.56,,1,Ha ha ha ha.
+s00044,n,198.688,199.04,,0,Thank you.
+w00011,w,199.06,199.64,,1,Ha ha ha ha.
+w00012,w,200.82,201.3,,1,Mixed press.
+s00046,n,202.912,204.064,30,0,Everyone is around.
+s00047,n,204.96,205.44,,0,Thank you.
+w00013,w,209.32,210.24,,1,see this design
+s00048,n,210.368,211.744,17,0,Thank you.
+s00049,n,212.64,215.52,10,0,so you can touch it with your hands.
+w00014,w,215.54,215.76,,1,You can...
+s00050,n,215.872,219.168,6,0,What do you say?
+s00051,g,219.616,221.216,8,0,It says...
+w00015,w,221.24,222.3,,1,you
+s00052,w,222.4,223.072,,0,Thank you.
+w00016,w,223.08,223.56,,1,Spongy.
+s00053,g,223.68,225.568,8,0,I'll buy it.
+w00017,w,225.58,226.54,,1,you
+s00054,g,226.656,227.392,,0,Thank you.
+s00055,n,227.616,229.536,28,0,If I need to.
+w00018,w,229.56,230.54,,1,I don't know.
+s00056,n,231.136,233.216,28,0,Hopefully my daughter will like it.
+s00057,n,233.504,234.016,,0,Okay.
+s00058,n,235.296,239.904,27,0,"And you got the answer? Yes, of course."
+s00059,n,242.464,243.584,10,0,This is the prototype.
+s00060,n,244.448,245.632,10,0,look at it
+s00061,n,246.912,248.256,17,0,That's all I wanted to say.
+s00062,n,248.8,251.008,10,0,technical specification but our
+s00063,s,252.832,254.272,23,0,Call me.
+s00064,y,258.336,260.64,14,0,There was a button missing.
+s00065,n,260.96,261.28,,0,I don't know.
+w00019,w,261.28,263.06,,1,This is really flexible. You can...
+s00066,n,263.168,263.552,,0,Bye.
+w00020,w,263.56,264.58,,1,add your buttons
+w00021,w,265.42,265.84,,1,Yeah.
+w00022,w,266.72,267.8,,1,So function
+w00023,w,269.02,270.2,,1,So as we discussed
+s00069,w,270.304,270.816,,0,Thank you.
+w00024,w,271.02,272.66,,1,where to switch on switch off
+s00070,w,272.768,273.344,,0,Thank you.
+w00025,w,273.36,274.04,,1,whenever we want.
+w00026,w,274.62,276.04,,1,and so we have buttons
+w00027,w,276.86,278.3,,1,and using LCD or
+w00028,w,278.7,281.16,,1,like you can use this jack wheel and
+s00071,w,281.28,281.888,,0,Thank you.
+w00029,w,282.08,283.44,,1,select whichever option.
+w00030,w,283.74,284.76,,1,on the LCD and then
+w00031,w,285.36,286.26,,1,do on and off
+w00032,w,286.98,287.9,,1,then you will have
+w00033,w,288.22,288.92,,1,volume control
+w00034,w,289.58,289.84,,1,So you can
+w00035,w,290.2,290.68,,1,You can...
+w00036,w,291.28,292.22,,1,press this button
+w00037,w,292.56,294.02,,1,to increase or decrease.
+w00038,w,294.8,295.3,,1,your volume
+w00039,w,296.72,298.22,,1,and we have some LCD controls.
+w00040,w,299.48,301.42,,1,switching the LCD display
+w00041,w,301.74,302.92,,1,if you want to use LCD or
+w00042,w,303.32,304.6,,1,you don't want you can just use
+w00043,w,305.14,305.74,,1,normal button
+w00044,w,306.36,307.08,,1,and we have
+w00045,w,307.68,308.54,,1,Speech Recognizer.
+w00046,w,309.1,310.8,,1,Here you have microphone and then
+w00047,w,311.22,314.24,,1,it records your voice and then try to recognize
+w00048,w,315.02,316.58,,1,and it converts into the action.
+s00072,n,317.696,318.048,,0,Thank you.
+w00049,w,318.06,319.66,,1,and location finder
+s00073,w,319.776,320.16,,0,Thank you.
+w00050,w,320.18,323.7,,1,and we want to do the location basically using speech recognizer.
+s00074,w,323.808,324.192,,0,Yes.
+w00051,w,324.22,325.04,,1,You can just say.
+w00052,w,325.68,327.1,,1,Where is my remote controller?
+w00053,w,327.48,329.82,,1,you can just give some nickname to your remote controller.
+w00054,w,330.2,331.14,,1,like bobby doley
+w00055,w,331.58,332.66,,1,And then...
+w00056,w,333.08,334.36,,1,It will say hi.
+s00075,w,334.464,335.68,8,0,"Hey, Bob."
+w00057,w,335.7,336.0,,1,you
+s00076,w,336.128,336.704,,0,Thank you.
+w00058,w,336.92,337.86,,1,"Yeah, hi and then."
+s00077,w,337.984,338.336,,0,Thank you.
+w00059,w,338.64,339.5,,1,you can use it
+w00060,w,342.38,342.68,,1,So.
+w00061,w,343.54,345.32,,1,Our theme is no fruits
+w00062,w,345.94,346.84,,1,I made strawberry.
+w00063,w,347.24,347.82,,1,So you can...
+s00078,n,347.936,348.864,,0,Thank you.
+w00064,w,348.88,349.12,,1,How?
+s00079,n,349.376,349.888,,0,Thank you.
+s00080,n,351.264,351.584,,0,Thank you.
+w00065,w,351.64,352.12,,1,And then
+w00066,w,352.72,354.28,,1,You can see the look LCD.
+w00067,w,354.78,355.64,,1,and all the switches
+s00081,s,355.744,356.128,,0,Thank you.
+s00082,y,357.12,357.856,,0,Thank you.
+w00068,w,358.9,359.34,,1,material
+w00069,w,359.9,360.38,,1,We want to...
+w00070,w,360.7,361.8,,1,stick to titanium.
+s00083,y,361.92,363.072,13,0,Thank you.
+w00071,w,363.1,364.26,,1,because and we want to
+s00084,y,364.384,367.2,8,0,It's smelling spongy tiger.
+s00085,w,367.968,370.496,8,0,I didn't know it existed but that's great
+w00072,w,370.64,371.12,,1,"Yeah, or..."
+s00086,w,371.36,371.712,,0,Thank you.
+s00087,s,372.384,373.728,28,0,Thank you.
+w00073,w,375.76,376.86,,1,So we want to have
+w00074,w,377.98,379.52,,1,simple and perfect shape.
+w00075,w,380.18,381.44,,1,application in this phone
+w00076,w,382.1,384.12,,1,you can have your own designs and
+w00077,w,384.54,385.26,,1,and you can feel
+w00078,w,386.06,386.52,,1,simple
+w00079,w,387.8,388.18,,1,designs
+w00080,w,390.3,391.72,,1,and you can choose colors
+w00081,w,392.38,393.1,,1,on your day.
+w00082,w,395.0,396.8,,1,they are even mini colors
+s00088,y,396.928,400.224,3,0,You mean we can change the color?
+w00083,w,401.06,401.74,,1,Fardel Cd.
+w00084,w,402.96,403.88,,1,with titanium.
+s00089,w,404.32,404.736,,0,I don't
+w00085,w,404.76,405.4,,1,It's silver.
+s00090,n,405.504,406.08,,0,to the walk note.
+s00091,n,406.4,407.136,,0,Thank you.
+w00086,w,407.5,407.92,,1,Yeah.
+s00092,g,408.096,410.688,15,0,"You can start with LCD, you can ask Bob."
+w00087,w,410.7,410.98,,1,Yeah.
+s00093,g,411.104,413.216,28,0,"You used it. Bob, please."
+s00094,g,413.344,414.048,,0,"You know, you're..."
+s00095,g,414.208,416.288,3,0,pink today. choose the color.
+w00088,w,416.3,419.26,,1,Even you can configure your colors for each
+w00089,w,419.8,420.68,,1,day depending on
+w00090,w,421.24,422.34,,1,your mood or...
+s00096,n,422.688,423.296,,0,Thank you.
+s00097,n,423.488,424.032,,0,black
+w00091,w,424.86,427.7,,1,And you can have many colors on weekends.
+s00098,y,427.808,430.496,5,0,"Wait, what are the strawberries for?"
+s00099,n,431.68,432.288,,0,Thank you.
+w00092,w,432.54,434.06,,1,These are like sensors.
+s00100,n,434.464,437.152,29,0,Of course.
+w00093,w,437.18,437.58,,1,you
+s00101,n,437.696,439.904,8,0,I think that's what I think. Strawberry sensor.
+w00094,w,439.92,440.32,,1,Thank you.
+s00102,n,440.448,440.928,,0,Thank you.
+s00103,n,443.424,444.576,23,0,I used to.
+s00104,n,445.824,446.176,,0,Come here.
+w00095,w,446.86,447.18,,1,So
+w00096,w,448.14,449.7,,1,"After this meeting, we will propose."
+w00097,w,450.36,452.04,,1,a party for our success
+w00098,w,452.4,452.7,,1,full
+s00105,n,452.8,454.048,8,0,I'm shooting.
+w00099,w,454.06,454.98,,1,Thank you.
+w00100,w,456.24,458.66,,1,So if you are a vegetarian or you have any options.
+w00101,w,459.06,459.96,,1,Please let us know.
+s00106,n,460.064,462.464,15,0,"Yeah, and we can just treat some strobe."
+w00102,w,462.48,462.88,,1,Yeah.
+s00107,n,463.008,463.968,,0,Thank you.
+s00108,n,464.128,465.088,,0,Thank you.
+w00103,w,468.38,470.2,,1,So any specific questions?
+s00110,n,471.072,472.512,4,0,Oh.
+s00111,n,472.672,473.088,,0,Thank you.
+s00112,y,473.984,477.568,5,0,In the financial part of the whole planet.
+s00113,w,478.048,480.832,7,0,Let's make a party first.
+w00104,w,480.86,481.3,,1,you
+s00114,g,481.408,481.76,,0,Thank you.
+w00105,w,482.58,484.72,,1,yeah then we can discuss we can
+s00115,g,484.832,487.776,5,0,It's the 5 or 15 minutes we first made a party.
+w00106,w,488.44,491.14,,1,Then we can have how much money is left.
+s00116,w,491.264,491.744,,0,Thank you.
+s00117,n,494.624,495.36,,0,Thank you.
+s00118,n,495.904,497.12,1,0,I don't know.
+s00119,n,498.528,502.528,5,0,It's my turn.
+s00120,n,502.72,503.84,11,0,"Yeah, if you would."
+w00107,w,503.86,504.14,,1,Thank you.
+s00121,n,504.256,504.704,,0,Thank you.
+s00122,g,506.4,507.168,,0,Thank you.
+s00123,g,520.0,522.368,8,0,made a very nice prototype.
+s00124,g,522.88,525.12,8,0,all together today
+s00125,g,525.696,526.752,8,0,Try to evaluate it.
+s00126,g,528.288,529.408,8,0,Thank you.
+s00128,g,532.832,534.688,8,0,what they do and things like that.
+s00129,n,537.792,538.464,,0,Thank you.
+s00130,g,540.256,540.864,,0,As you know.
+s00131,g,541.28,543.488,8,0,before going
+s00132,g,544.064,544.864,,0,producing
+s00133,g,546.368,547.104,,0,Thank you.
+w00108,w,547.58,547.84,,1,Thank you.
+s00134,g,547.968,548.32,,0,Thank you.
+w00109,w,548.32,548.84,,1,You know.
+s00135,g,549.536,554.656,8,0,"If we want control, it makes sense if we have the chance to send it."
+s00136,g,555.456,556.672,8,0,So we need to enjoy waiting.
+s00138,g,559.904,561.344,8,0,as much as you can.
+s00139,g,562.784,569.408,8,0,So what I propose is that we are going to have this scale of 1 to 7.
+s00140,g,569.984,577.504,8,0,yes it fulfills the criteria whatever it is and seven minutes go with doesn't fulfill at all
+s00141,g,578.176,583.872,8,0,We are going to list all the criteria and we are going to put in the next slide and together try to.
+s00142,g,584.512,588.672,8,0,evaluate this according to this criteria
+s00143,g,589.088,591.168,8,0,Thank you.
+s00144,g,592.16,593.44,8,0,Thank you.
+s00145,n,596.992,597.312,,0,So good.
+s00146,n,597.984,600.096,8,0,"Maybe we can have a good, good crime for you."
+s00147,g,602.272,604.576,8,0,These are the criteria.
+s00148,g,605.088,606.432,8,0,I thought you were important.
+s00150,g,609.664,609.984,,0,Thanks.
+s00151,g,611.776,614.88,8,0,"Let's see, so let's go, do we have pants here together?"
+s00152,g,616.032,618.08,8,0,and we have this scale
+s00153,g,619.968,620.672,,0,Yep.
+s00154,g,622.528,622.976,,0,Seven.
+s00155,g,624.928,625.376,,0,Thank you.
+w00110,w,630.64,631.4,,1,"Yeah, what's this really?"
+s00156,n,631.52,632.864,8,0,Is it fancy?
+w00111,w,632.88,634.06,,1,"Oh, it's really."
+s00157,n,634.176,636.832,5,0,I think that fancy we can say it is fancy
+s00158,n,636.992,644.992,8,0,It is very very fancy or have you ever seen something like that? I am not the only one.
+s00159,n,644.992,646.176,8,0,What do you mean?
+s00161,n,649.888,650.72,,0,Thank you.
+s00162,n,650.912,656.512,8,0,I think it's quite fancy.
+w00112,w,656.52,657.9,,1,"Yeah, we can give you at least five."
+s00163,y,658.368,660.768,1,0,18 days later.
+w00113,w,660.78,661.86,,1,Ok best to close.
+s00164,y,661.984,662.304,,0,Yes.
+s00165,y,662.56,663.264,,0,Very fancy.
+s00166,y,663.584,663.968,,0,Thank you.
+w00114,w,664.3,664.68,,1,"Oh, Krishna."
+s00167,g,665.216,665.6,,0,Thanks.
+s00168,g,666.016,667.104,8,0,I don't know.
+w00115,w,667.12,667.68,,1,maybe two
+s00169,n,668.96,669.376,,0,Thank you.
+w00116,w,671.8,672.14,,1,technology.
+s00170,s,672.256,674.656,28,0,Thank you.
+w00117,w,675.96,676.26,,1,Yeah.
+s00171,g,676.384,681.568,8,0,"So what about technology? We have speech recognition, we have location-based."
+w00118,w,681.78,682.84,,1,and we have LCD
+s00172,g,682.944,684.448,8,0,We have a CD.
+s00173,w,685.088,686.08,,0,It's cool.
+w00119,w,686.1,686.8,,1,change color
+s00174,g,686.912,688.448,8,0,"Oh, that's great."
+w00120,w,688.46,689.0,,1,He's full.
+w00121,w,691.58,692.46,,1,"Yeah, it's really..."
+s00176,n,695.04,695.808,,0,Promise me.
+w00122,w,696.98,697.98,,1,till we need to change.
+s00177,g,698.08,706.08,8,0,So let's suppose my daughter take it and throw it away. Do you think it makes sense that it's going to be...
+s00178,g,706.08,710.08,8,0,to live again.
+w00123,w,710.08,710.74,,1,
+s00179,n,710.848,712.032,8,0,Bye.
+w00124,w,712.04,712.62,,1,Thank you.
+s00180,n,713.632,715.04,8,0,My God.
+w00125,w,715.64,716.38,,1,Movie Straveling.
+s00181,n,716.48,721.152,8,0,You just lost one trauma. No! No!
+w00126,w,721.18,722.3,,1,"Yeah, we can easily plug."
+s00182,n,722.4,726.304,10,0,It's still working and your daughter got a bonus.
+w00127,w,726.32,726.78,,1,Thank you.
+s00184,g,727.904,729.12,8,0,It's not so bad.
+s00185,g,729.408,731.488,8,0,We took three.
+w00128,w,735.7,736.26,,1,useful
+s00187,g,736.384,743.648,8,0,"Yes, good. So the question is, does it have minimum requirements in the control?"
+w00129,w,743.66,743.86,,1,Yeah.
+s00188,g,743.968,748.256,8,0,These buttons are not clear but you have at least...
+s00189,g,749.056,750.976,5,0,Next. What is it?
+w00130,w,751.0,753.44,,1,yeah this is volume control and channel
+w00131,w,753.74,755.18,,1,changes. These are the main
+s00190,y,755.296,756.64,5,0,and you can
+s00191,y,757.408,758.496,5,0,two sides
+w00132,w,758.52,758.72,,1,Yeah.
+s00192,w,758.848,759.296,,0,Thank you.
+w00133,w,759.32,760.28,,1,and you can do
+w00134,w,760.86,761.88,,1,on LCD using these.
+s00193,w,761.984,762.592,,0,Okay.
+w00135,w,762.6,764.04,,1,going to scrolling all the options.
+s00194,w,764.16,764.64,,0,Thank you.
+w00136,w,764.66,765.3,,1,so if you don't want to
+s00195,g,765.408,767.648,8,0,Because the LCD is not touch control
+s00196,g,767.904,770.88,8,0,You cannot go to Channel 25.
+s00197,s,771.04,779.04,10,0,"by using the... So the basic mode... Yeah, so it's simple. Basic mode is you got..."
+s00198,n,779.04,783.68,10,0,just two buttons and drop that off. With two buttons you do this like...
+s00199,n,784.32,786.272,10,0,"roll him up, roll him down"
+w00137,w,786.28,786.76,,1,and channel
+s00200,n,786.88,789.696,10,0,"If you go to the site, it's channel."
+s00201,n,790.144,792.672,10,0,And if you want to make it to 25
+s00202,n,793.568,795.104,10,0,You push on this.
+w00138,w,795.12,795.66,,1,You can sell it.
+s00203,n,795.776,797.28,10,0,"Select 20, you select."
+s00205,n,799.648,800.128,,0,Okay.
+s00206,n,801.248,805.664,8,0,It's much longer than having to confide.
+s00207,n,806.08,807.84,8,0,"Okay, we can do that."
+w00139,w,807.86,810.62,,1,hey you need to like press 2 and 5
+s00208,n,811.488,814.848,8,0,But it's nice because people don't go there.
+w00140,w,815.12,815.36,,1,Yeah.
+s00209,n,815.84,816.32,,0,Thank you.
+s00210,n,817.408,818.272,,0,So what do you think?
+s00211,n,820.0,820.64,,0,Thank you.
+w00141,w,821.58,822.26,,1,yeah we need to address
+w00142,w,822.64,823.56,,1,we want v
+w00143,w,824.06,824.42,,1,Only address.
+w00144,w,824.82,826.3,,1,two main functions here and the other function
+w00145,w,826.7,827.96,,1,will be on LCD.
+s00212,g,829.056,829.44,,0,Let me know.
+s00213,g,829.6,835.776,5,0,"I understand well, I'm not sure that's for this one are the two directional buttons."
+s00214,n,835.968,837.216,8,0,I've done it.
+s00215,g,837.504,839.872,5,0,And what is that?
+w00146,w,841.0,841.24,,1,This is...
+s00216,n,841.344,841.728,,0,"Yeah, so."
+w00147,w,841.74,842.08,,1,Jockwin.
+s00217,n,842.208,844.096,15,0,"Okay, okay."
+s00218,n,844.288,845.376,10,0,It's like selective.
+s00219,n,845.536,846.112,,0,Thank you.
+w00148,w,846.3,847.0,,1,So in LCD light.
+w00149,w,847.44,848.5,,1,you will have blocks and you
+s00220,w,848.608,848.96,,0,Thank you.
+w00150,w,848.96,849.56,,1,select which one.
+s00222,g,853.888,855.424,8,0,Thank you.
+w00151,w,855.82,856.06,,1,Two minutes.
+s00223,w,856.16,856.512,,0,Thank you.
+w00152,w,856.54,856.92,,1,Mm-hmm.
+s00224,w,857.024,857.6,,0,Thank you.
+w00153,w,857.6,858.96,,1,Bye.
+s00225,n,860.416,862.208,8,0,So size and weight.
+w00154,w,863.9,864.36,,1,Yeah.
+s00226,y,865.056,871.04,8,0,"Is it the effective size and weight? Is it real size, real weight?"
+w00155,w,872.08,872.56,,1,
+s00227,n,872.672,872.992,,0,Thank you.
+s00228,y,873.12,874.368,8,0,I'm going to be done.
+w00156,w,874.46,875.02,,1,"Yeah, because..."
+s00229,w,875.136,875.52,,0,Thank you.
+w00157,w,875.54,875.86,,1,It just...
+w00158,w,876.92,877.58,,1,the way it will be
+s00230,w,878.176,878.72,,0,Thank you.
+w00159,w,878.72,879.34,,1,lighter because
+s00231,w,879.456,880.416,,0,Sure.
+w00160,w,880.42,881.06,,1,view is tightened.
+s00233,w,883.392,884.512,8,0,It's going to be nice.
+s00234,n,884.768,885.952,8,0,Seems to be very...
+s00235,n,886.784,887.744,,0,for my daughter
+s00236,n,888.512,892.736,8,0,No choice. She can use it.
+w00161,w,892.74,895.28,,1,but the size should be okay guys
+s00237,w,895.392,895.84,,0,Okay.
+s00238,g,896.96,900.0,8,0,I'll put it for you.

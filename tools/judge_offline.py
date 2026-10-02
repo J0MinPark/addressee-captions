@@ -105,18 +105,21 @@ def ps_model(session, url, name):
 
 
 def run(split: str, models: list[str], variants: list[str], names: list[str] | None = None,
+        conds: list[str] | None = None, subdir: str | None = None,
         out_md: str = "judge_dev.md", _final_test_ok: bool = False) -> dict:
     from app.llm_judge import LLMJudge
     cfg = load_config("ami")
     results = resolve_path(cfg, "results_dir")
     names = names or dev_scenarios(results, split)
+    if conds:   # 조건 일부만(예: 8b 는 clean 만 — tools/compare_8b.py 기준을 통과할 때만 전 조건으로 확장)
+        names = [n for n in names if n.split("_")[3] in conds]
     guard(names, "tune" if split == "dev" else "test")
     if split == "test" and not _final_test_ok:
         raise SystemExit("[splits] 시험 세트 판정은 tools/final_test.py 에서만")
     items = items_of(results, names)
     lab = [it for it in items if it["label"] in ("y", "n")]
     print(f"[judge] {split}: 시나리오 {len(names)}개 · 판정 대상 {len(items)}개(라벨 y/n {len(lab)}개)")
-    outdir = results / "llm_v2" / split
+    outdir = results / "llm_v2" / (subdir or split)
     outdir.mkdir(parents=True, exist_ok=True)
 
     # Whisper 를 같은 GPU 에 올려 둔 채로 측정(동시 탑재 확인)
@@ -213,8 +216,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--models", nargs="+", default=["qwen3:4b", "qwen3:8b"])
     ap.add_argument("--variants", nargs="+", default=["P1", "P2", "P3"])
+    ap.add_argument("--conds", nargs="*", default=None, help="조건 일부만(clean snr10 snr5)")
+    ap.add_argument("--subdir", default=None, help="결과 하위 폴더(기본: dev). 부분 실행은 별도 폴더에")
+    ap.add_argument("--md", default="judge_dev.md")
     a = ap.parse_args()
-    run("dev", a.models, a.variants)
+    run("dev", a.models, a.variants, conds=a.conds, subdir=a.subdir, out_md=a.md)
 
 
 if __name__ == "__main__":

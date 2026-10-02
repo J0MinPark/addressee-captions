@@ -1,0 +1,288 @@
+﻿seg_id,label,t_start,t_end,speaker_id,is_wearer,text
+s00001,s,2.144,3.776,1,0,Thank you.
+s00002,g,34.048,37.28,2,0,here for the concept design meeting.
+s00003,g,40.288,42.944,3,0,first start by summarizing the
+s00004,g,43.648,46.912,4,0,the previous meeting and the decision with the company.
+s00005,g,48.352,56.352,4,0,I will take notes during this meeting so that you can look at my folder to see the summary.
+s00006,g,56.352,58.176,4,0,of this meeting afterwards.
+s00007,g,59.136,62.208,5,0,So each of you will...
+s00008,g,62.72,66.528,3,0,show us the various investigations that they have done.
+s00009,g,67.456,69.504,6,0,previous
+s00010,g,70.24,70.688,,0,powers.
+s00011,g,72.672,76.512,7,0,We then take the decision on concept and then...
+s00012,g,77.344,81.088,8,0,we will find the next class.
+s00013,g,82.08,84.96,9,0,to be done before the next meeting.
+s00014,g,85.696,90.816,5,0,So last time we decided to have a simple interface.
+s00015,g,91.936,97.152,4,0,"We also decided to have a wheel to change channel, to press channel button."
+s00016,g,97.888,98.784,,0,Channel Divis
+s00017,g,99.488,105.312,4,0,the buttons should be protected by plastic cover or something for the
+s00018,g,106.016,107.872,10,0,We must have to look very simple.
+s00019,g,108.768,114.528,4,0,We have also button for volume and to switch on and off the TV.
+s00020,g,115.488,120.928,4,0,We have also the lightning feature for the remote control to be easy to find.
+s00021,g,121.44,129.44,4,0,"And for fast development and low cost, we have decided to have no LCD, no voice features."
+s00022,g,129.44,134.624,4,0,So now we have three presentations.
+s00023,g,135.328,139.424,4,0,So the conceptual specification by industrial designer.
+s00024,g,140.288,141.952,11,0,the specification of
+s00026,g,144.544,146.368,13,0,for Abdullah's adred
+s00027,g,147.36,147.84,,0,Thank you.
+s00028,n,148.256,149.696,14,0,Fuck it.
+s00029,g,150.688,158.688,4,0,and the last point is train watching by market experts so maybe we can
+s00030,s,158.688,165.888,15,0,and then start with industrial design.
+s00031,y,172.96,175.392,4,0,Maybe I can switch slide.
+s00032,w,175.68,176.416,,0,Thank you.
+w00001,w,176.42,176.8,,1,three slides.
+s00033,w,176.928,177.504,,0,Thank you.
+s00034,w,177.824,178.144,,0,Thank you.
+w00002,w,178.16,178.74,,1,look at the
+s00035,w,178.848,179.776,,0,Thank you.
+s00036,w,181.888,182.656,,0,Peace.
+w00003,w,184.28,184.54,,1,pages.
+s00038,w,185.248,185.568,,0,Yes.
+w00004,w,185.98,187.14,,1,documentation and I think
+s00039,w,187.264,187.584,,0,Thank you.
+w00005,w,187.6,189.84,,1,A remote control is as I mentioned
+w00006,w,190.36,190.84,,1,previously
+s00040,s,190.944,191.552,,0,Thank you.
+w00007,w,191.58,192.54,,1,You just have a very...
+w00008,w,192.9,193.26,,1,simple chip
+s00041,w,193.376,193.792,,0,Thank you.
+w00009,w,193.8,194.82,,1,And the...
+w00010,w,195.74,199.26,,1,The user interface is just done usually by push button.
+w00011,w,199.66,201.52,,1,and in our case we are using a
+s00042,w,201.632,202.048,,0,Thank you.
+w00012,w,202.46,202.84,,1,um
+w00013,w,203.2,204.04,,1,a wheel control
+w00014,w,204.6,204.86,,1,So
+w00015,w,205.42,205.88,,1,uh
+w00016,w,206.68,207.64,,1,I was looking
+s00043,w,207.744,208.064,,0,Thank you.
+w00017,w,208.12,209.14,,1,basically for that
+s00044,w,209.248,209.696,,0,Thank you.
+s00045,w,209.888,210.656,,0,Thank you.
+w00018,w,210.66,212.28,,1,is a very very standard
+w00019,w,212.72,216.14,,1,and I just look for the real sensor and the standard push button
+s00046,s,216.256,216.576,,0,Thank you.
+w00020,w,217.06,217.72,,1,"And, um..."
+s00047,w,217.824,218.784,,0,Thank you.
+w00021,w,219.2,219.52,,1,we can
+w00022,w,219.84,220.1,,1,changed.
+s00048,w,220.224,220.672,,0,Thank you.
+w00023,w,220.7,221.02,,1,Directly.
+w00024,w,221.4,221.66,,1,"In fact,"
+w00025,w,222.1,223.04,,1,I have the number of...
+s00049,w,223.168,223.552,,0,Thank you.
+s00050,w,223.84,224.32,,0,Thank you.
+w00026,w,224.34,225.16,,1,element which is
+w00027,w,225.52,226.56,,1,very standard for
+s00051,w,226.688,227.008,,0,Thank you.
+w00028,w,228.12,231.74,,1,remote control the push buttons are usually extremely cheap
+s00052,w,231.84,232.32,,0,Thank you.
+w00029,w,232.7,235.5,,1,I just have one problem and this is related with the Rilsons
+s00053,w,235.616,236.16,,0,Thank you.
+w00030,w,236.16,237.94,,1,which seems to be quite expensive.
+s00054,n,238.848,239.392,,0,Thank you.
+w00031,w,239.42,240.22,,1,And I think we...
+w00032,w,240.56,240.92,,1,if we could
+s00055,w,241.024,241.376,,0,Thank you.
+w00033,w,241.38,242.44,,1,Just talk about that.
+w00034,w,242.74,244.32,,1,we really need a real sensor.
+w00035,w,244.66,245.46,,1,or if we cannot
+s00056,w,245.568,245.92,,0,Thank you.
+w00036,w,245.94,249.08,,1,if we could combine something with a push button
+s00057,s,249.184,249.888,,0,Thank you.
+w00037,w,251.54,253.76,,1,a wheel sensor is 50 times
+s00058,w,253.888,254.4,,0,Thank you.
+w00038,w,254.4,255.24,,1,the price of her
+s00059,w,255.36,255.872,,0,Thank you.
+w00039,w,255.9,256.88,,1,a push button
+s00060,y,256.992,260.16,4,0,But is it significant price on the...
+s00061,y,261.088,262.336,16,0,World remote control
+s00062,y,263.712,268.416,4,0,We can afford up to 12 euros for the price.
+w00040,w,269.04,269.68,,1,"Yeah, I think..."
+s00063,y,269.792,277.792,4,0,So we'll do this with including all possible things. So buttons will handle cheap.
+s00064,y,277.792,280.416,4,0,lower than 12 euros to produce.
+w00041,w,280.42,281.92,,1,But I don't think that.
+s00065,w,282.048,282.592,,0,Thank you.
+s00066,s,284.384,285.44,17,0,Thank you.
+w00042,w,285.46,286.04,,1,talk about
+w00043,w,286.34,287.46,,1,the design of the box
+s00067,w,287.584,287.936,,0,Thank you.
+w00044,w,287.94,288.18,,1,So we...
+s00068,w,288.288,288.672,,0,Okay.
+s00069,g,289.376,289.888,,0,You don't have to.
+s00070,y,290.08,294.368,18,0,I don't know if you receive email about the voice of the government.
+s00071,w,298.176,298.56,,0,No.
+w00045,w,299.46,299.94,,1,I haven't checked.
+s00072,g,300.064,307.424,19,0,"Yeah, we have an email from the manufacturing division that has basically a buzzer in the tip already delivered."
+s00073,n,308.64,309.152,,0,Who's?
+s00074,g,311.712,314.24,20,0,It says that right now they just use it to...
+s00075,g,314.784,315.968,21,0,to record
+s00076,g,316.448,318.176,22,0,answers to particular questions.
+s00077,s,318.912,324.832,23,0,"Could he be a little bit? I guess it's possible, I'm just recording the answer if I just..."
+s00078,g,325.824,326.528,,0,Good morning.
+s00079,n,327.584,333.184,4,0,"Ok, and you can recognize some commands?"
+s00081,g,337.312,344.448,4,0,"Yeah. Okay, maybe we can just listen to this presentation and then take decision later."
+w00046,w,344.46,344.7,,1,Mm-hmm.
+s00082,g,344.8,345.504,,0,Thank you.
+s00083,g,345.824,346.432,,0,There's music.
+w00047,w,346.46,347.36,,1,"But I think it's, yeah."
+w00048,w,348.44,350.06,,1,I haven't written my personal reference.
+s00084,w,350.176,350.624,,0,Thank you.
+w00049,w,350.96,351.26,,1,Um.
+w00050,w,352.18,354.38,,1,And I just want to mention the
+w00051,w,354.74,355.44,,1,problem of the
+w00052,w,356.36,356.58,,1,Err.
+s00085,w,356.704,357.664,,0,Thank you.
+w00053,w,358.12,359.4,,1,real sensor which is
+w00054,w,360.06,362.66,,1,much more expensive than any push button
+w00055,w,363.02,363.44,,1,if we could.
+w00056,w,363.86,364.54,,1,reduce that
+w00057,w,365.7,367.2,,1,We have already some...
+w00058,w,367.8,368.32,,1,Good things.
+s00086,w,368.448,368.768,,0,Thank you.
+w00059,w,369.18,370.0,,1,with the
+w00060,w,370.98,371.36,,1,
+s00087,w,371.488,372.128,,0,Thank you.
+w00061,w,372.28,373.56,,1,with the backlight of the
+s00088,w,373.664,374.112,,0,Thank you.
+w00062,w,374.14,374.44,,1,push bits
+s00089,y,374.56,376.64,24,0,I have a question about it
+s00090,y,377.76,378.432,,0,um
+s00091,y,379.36,380.992,25,0,What is the purpose of the life?
+w00063,w,381.88,382.42,,1,Just to...
+w00064,w,382.72,383.92,,1,to make something which is
+w00065,w,384.24,385.92,,1,slightly more designed that
+w00066,w,386.36,387.8,,1,"uh, a square e-box."
+s00092,w,387.904,388.288,,0,Thank you.
+w00067,w,388.3,389.12,,1,the rubble.
+s00093,n,389.248,392.736,26,0,in the dark
+s00094,n,394.048,396.608,27,0,"Yeah, but is it going to be all listed now?"
+s00095,g,398.016,405.024,4,0,It will be turned on when the user moves the computer.
+s00096,g,407.872,409.088,28,0,"You can see the buttons, beautiful."
+s00097,g,409.696,410.528,,0,Yeah.
+s00098,g,410.976,411.328,,0,Yeah.
+s00099,g,412.544,413.856,29,0,Yeah.
+s00100,y,415.136,417.952,30,0,"But if you move it, you have to have some sense of it."
+s00102,w,422.528,422.88,,0,as you still
+s00103,w,423.072,423.52,,0,Thank you.
+w00068,w,423.52,425.48,,1,the remote control you have the light
+s00104,y,425.6,429.152,14,0,Would you leave another chance?
+s00105,w,429.376,430.048,,0,Thank you.
+s00106,n,430.208,431.488,14,0,Thank you.
+s00107,y,432.672,433.024,,0,Thank you.
+w00069,w,437.42,440.24,,1,I don't think that this is really expensive but at the end this
+w00070,w,440.64,441.22,,1,plenty of
+w00071,w,442.16,443.18,,1,unexplained
+w00072,w,444.84,445.28,,1,very cheap.
+s00108,w,445.408,446.112,,0,Thank you.
+w00073,w,446.14,446.74,,1,but
+s00110,y,448.8,452.768,23,0,"Yeah, but I expect it also will be too much to be in the future."
+w00074,w,454.2,457.5,,1,"First of all, I was thinking to have a continuous light and to"
+s00111,w,457.6,458.016,,0,Thank you.
+w00075,w,458.04,459.44,,1,When you...
+s00112,w,459.552,459.872,,0,Thank you.
+w00076,w,459.88,460.28,,1,you press
+w00077,w,460.68,461.18,,1,the unbuttoned
+s00113,w,461.312,461.76,,0,That's what I'm doing.
+w00078,w,461.78,462.34,,1,You have the light.
+s00114,w,462.464,462.976,,0,Thank you.
+s00115,w,463.328,464.0,,0,Thank you.
+s00116,w,464.16,464.896,,0,Thank you.
+w00079,w,465.38,465.72,,1,Turn it off.
+s00117,w,465.824,466.432,,0,Thank you.
+w00080,w,466.66,467.08,,1,device
+s00118,y,467.2,467.648,,0,Thank you.
+s00119,y,468.64,470.016,7,0,But we continue.
+s00120,y,471.616,472.192,,0,Thank you.
+s00121,w,472.48,473.088,,0,Thank you.
+w00081,w,474.38,474.6,,1,A little bit.
+s00122,w,474.72,475.104,,0,Thank you.
+s00123,s,475.584,480.96,23,0,Why would you say this?
+s00124,n,481.984,483.616,18,0,should be the shared folder.
+s00125,n,484.128,484.512,,0,Yeah.
+s00126,n,486.112,486.816,,0,Thank you.
+s00127,g,515.04,517.184,23,0,That looks like a good design
+s00128,g,517.92,518.656,,0,on the web.
+s00129,g,519.072,520.832,23,0,It's really more complicated.
+s00130,g,521.472,522.464,,0,I'm ready
+s00131,g,522.944,526.304,23,0,Even though they have many buttons they look quite simple.
+s00132,g,526.976,531.488,23,0,In our case we just rejected the battle of the government.
+s00133,n,533.088,535.616,4,0,And also does it fit well in terms of...
+s00134,n,536.096,542.816,23,0,Because it was the risk problem. These emotes are quite big.
+s00135,g,545.12,549.056,23,0,"They have all these battles as you can see, but most of them we just meet the ones in the middle."
+s00136,s,549.504,550.432,,0,Yeah
+s00137,g,550.976,558.976,23,0,from the bottom of the numbers and then the top until the tunnel.
+s00138,g,558.976,561.568,23,0,and the left one is exactly the same.
+s00139,g,562.176,566.464,23,0,"how we like with big volume control, big turn control, mutual power."
+s00140,g,567.072,575.072,23,0,"Yeah, so it's only the sample part. So basically something that will look more or less the same as this two."
+s00141,g,575.072,575.424,,0,Good.
+s00142,g,575.904,580.608,4,0,"Maybe more economic design. Yeah, if you grab for example."
+s00143,g,581.6,589.6,23,0,I think that the volume and the button are there on the top of the top. On the right side of the top.
+s00144,g,589.6,591.872,30,0,I think we don't have this in.
+s00145,g,592.768,596.832,23,0,And I think that the plastic cover is not a very good idea because...
+s00146,g,597.344,598.848,19,0,"You open it, it can break."
+s00148,g,601.184,606.208,23,0,Just need to put the channel numbers somewhere a bit out of the way.
+s00149,g,607.104,609.76,23,0,"Okay, let's just play the beat."
+s00150,g,610.368,613.856,23,0,It's just to put it out the big buttons.
+s00151,g,614.88,617.28,23,0,It should not be difficult to play a general battle prize.
+s00152,g,619.008,621.888,9,0,"I think that if you use the code, it's a good one."
+s00153,g,622.848,623.52,,0,Okay.
+s00155,g,627.328,630.656,23,0,Usually what I have noticed is that people put a plastic cover on things that
+s00156,g,631.136,635.52,23,0,You normally don't mess with buttons for tuning the tanners and stuff like that.
+s00157,g,636.576,638.24,21,0,But you will protect them again.
+s00158,g,639.936,641.376,23,0,I think it's a...
+s00159,g,642.112,642.592,,0,Okay.
+s00160,s,643.36,644.384,29,0,Thank you.
+s00161,s,645.248,653.248,23,0,"Yeah, this is just the wheel. Some wheels can be pushed down. It could be pushed down of the wheel for the core if you want."
+s00162,w,653.44,653.984,,0,Mm-hmm.
+s00163,g,656.032,660.544,23,0,"We just basically use one, just a wheel and the user could use just a wheel to everything."
+s00164,g,661.024,669.024,4,0,Maybe there will be a good advantage over our competitors.
+s00165,s,669.024,670.4,15,0,Thank you.
+s00166,g,670.816,674.752,4,0,because otherwise it's pretty standard and not standard things very simple
+s00167,g,676.064,677.056,,0,So maybe...
+s00168,g,677.76,678.528,,0,It's worse.
+s00169,g,679.104,679.872,,0,Thank you.
+s00170,g,680.672,681.536,,0,to grab some more.
+s00173,s,686.912,689.696,23,0,Thank you.
+s00174,n,690.176,693.28,4,0,So we can move to the...
+s00175,n,693.824,694.88,3,0,Is there any questions?
+s00176,g,695.52,696.352,,0,for...
+s00177,g,697.536,699.168,4,0,designer of userings and things.
+s00179,g,702.016,703.04,8,0,Maybe in this case.
+s00180,g,703.552,704.384,,0,That's all.
+s00182,g,724.224,724.704,,0,Thank you.
+s00183,g,725.504,731.904,25,0,of the virtual control. So the most important aspects for remote controls.
+s00184,g,732.576,740.576,17,0,is to be fancy and feel and not color function you can feel. And the second aspect...
+s00186,g,744.256,752.256,17,0,technological innovative and the third most important aspect to
+s00187,g,752.256,755.488,17,0,remote control should be easy to use.
+s00189,g,758.976,765.824,15,0,Thank you.
+s00190,s,766.656,767.008,,0,Yep.
+s00191,g,769.696,775.424,17,0,and the fashion watchers in Paris and Minas that have detected the foreign trends.
+s00192,g,776.0,784.0,17,0,"fruits and vegetables will be the most important thing for clothes, shoes and furniture."
+s00193,g,784.032,792.032,17,0,Maybe our remote control has to be a food form or a vegetable form.
+s00194,g,792.032,793.28,17,0,Exactly.
+w00082,w,793.3,793.88,,1,or to Naples
+s00195,g,794.304,794.88,,0,Thank you.
+s00196,g,795.52,799.648,17,0,and the material is expected to be spongy.
+s00197,g,800.864,802.208,15,0,Thank you.
+s00200,g,812.8,814.08,4,0,"It was, right? Yeah."
+s00201,g,814.528,815.808,16,0,I think it's good to see.
+s00202,g,816.544,820.064,4,0,"Yeah, because it's..."
+s00203,g,820.224,827.104,19,0,"Hey, that's a cool one."
+s00204,n,828.192,830.912,19,0,"Wait, the text is shook"
+s00205,g,831.84,832.576,,0,"Yeah, of course."
+s00206,g,832.736,833.216,,0,Absolutely.
+w00083,w,833.24,835.1,,1,I know that they do that for Alarm Club
+s00207,n,835.2,843.2,17,0,And this you can see.
+s00208,g,843.424,851.424,17,0,"Before? Before, yes. And you know here the more important aspect is the fancy you can feel after it."
+s00209,s,851.424,859.424,4,0,"is technological and innovative after the debut. Yes, I think it's innovative to use the wheel because..."
+s00210,g,859.904,866.112,17,0,"Yeah, that's why I think we have to keep that lift as well."
+s00211,g,866.272,866.784,,0,Thank you.
+s00212,g,867.68,875.68,4,0,It makes it both easy and most innovative. I think it's a good aspect.
+s00213,n,877.664,879.36,4,0,"Cool, fancy?"
+s00214,n,880.224,881.984,4,0,We have to make it look.
+s00215,n,882.816,886.656,8,0,Like food or digital?
+s00216,g,886.784,887.68,,0,Adios.
+s00217,g,887.84,888.608,,0,Amen.
+s00218,g,889.024,892.0,3,0,the color that remembers something
+s00220,g,897.76,900.0,17,0,"I thought about a pill, for example."
