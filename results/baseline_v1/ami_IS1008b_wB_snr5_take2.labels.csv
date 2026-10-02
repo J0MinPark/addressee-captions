@@ -1,0 +1,352 @@
+﻿seg_id,label,t_start,t_end,speaker_id,is_wearer,text
+s00001,s,13.152,17.568,1,0,I don't need to.
+s00002,g,87.392,87.84,,0,Thank you.
+s00003,g,95.904,103.904,2,0,There are three presentations. One is new project requirements and the second one is the decision of remote control conditions.
+s00004,g,103.936,111.392,2,0,And finally we are closing and the meeting time will be 40 minutes.
+s00005,g,113.024,116.096,3,0,And I have come up with the management of the new proposals.
+s00006,g,116.736,119.072,4,0,and we'll discuss a few points on this.
+s00007,g,119.872,124.128,5,0,The board says new insights in the aim of your product.
+s00008,g,126.656,130.528,2,0,One is the teletexture becomes automotive.
+s00009,g,131.904,133.664,6,0,Thank you.
+s00010,g,134.304,142.304,2,0,So we don't need to consider the competition at all in our new project design.
+s00012,g,144.416,145.6,8,0,the remote control.
+s00013,g,146.528,149.216,2,0,should be yours only for the team
+s00014,g,149.984,152.768,9,0,That's what the management says.
+s00015,g,153.824,156.96,10,0,and the third point it's very very important
+s00016,g,157.408,165.408,2,0,to establish or marketing or corporate image.
+s00017,s,165.408,168.16,11,0,Thank you.
+s00018,s,169.024,173.728,12,0,So I will invite...
+s00019,s,175.36,177.856,13,0,Thank you.
+s00020,g,178.912,183.392,2,0,I invite Christy to discuss about the functional research.
+s00021,w,185.408,186.272,,0,Thank you.
+w00001,w,186.58,186.82,,1,open
+s00022,w,186.944,187.456,,0,Thank you.
+s00023,y,189.92,190.464,,0,Thank you.
+w00002,w,211.9,212.44,,1,"So, um..."
+w00003,w,214.62,215.22,,1,Good day.
+w00004,w,216.2,216.46,,1,We should...
+s00024,w,216.576,216.896,,0,Thank you.
+w00005,w,217.24,218.68,,1,identify some user records.
+s00025,w,218.784,219.328,,0,climbs.
+w00006,w,219.34,219.98,,1,from my experience.
+w00007,w,220.38,220.68,,1,So I want to.
+s00026,w,220.8,221.216,,0,Amen.
+w00008,w,221.3,221.74,,1,uh
+w00009,w,222.1,222.58,,1,and from
+w00010,w,223.64,224.28,,1,Research I did.
+s00027,w,225.12,225.472,,0,Thank you.
+w00011,w,226.1,227.24,,1,The device has to turn the television.
+s00028,w,227.36,227.936,,0,Thank you.
+w00012,w,227.96,228.28,,1,On and off.
+s00029,w,228.384,228.704,,0,Thank you.
+w00013,w,228.72,229.38,,1,First time you press.
+w00014,w,229.82,230.08,,1,big button.
+s00030,w,230.208,231.776,14,0,Can't tell.
+w00015,w,232.52,233.04,,1,can't have like
+w00016,w,233.44,233.84,,1,waffling.
+s00031,w,233.952,234.336,,0,going on this.
+s00032,w,234.848,235.936,15,0,Thank you.
+w00017,w,235.94,236.52,,1,And he's to be able to.
+s00033,w,236.64,237.312,,0,to be
+s00034,s,237.984,238.816,,0,Thank you.
+w00018,w,238.82,239.08,,1,because one of the
+s00035,w,239.2,240.896,16,0,biggest problems with it.
+s00037,w,242.784,243.456,,0,finding them.
+w00019,w,244.66,246.08,,1,"So I also, since we..."
+w00020,w,246.5,247.7,,1,to establish our corporate image.
+w00021,w,248.02,248.72,,1,on the basis of the
+s00038,w,248.832,249.152,,0,this new group.
+w00022,w,249.18,249.46,,1,product.
+s00039,w,249.568,249.888,,0,Thank you.
+w00023,w,250.06,251.9,,1,I thought we'd better look at things that are popular.
+s00040,w,252.0,252.416,,0,and
+w00024,w,252.42,252.68,,1,Thank you.
+w00025,w,253.02,253.3,,1,Go beyond.
+s00041,w,253.952,254.72,,0,Thank you.
+s00042,w,254.848,256.032,18,0,first meeting.
+w00026,w,256.68,259.16,,1,And then we might...
+w00027,w,259.46,261.08,,1,want to talk eventually about them.
+w00028,w,261.46,262.0,,1,that are appropriate.
+s00043,w,262.112,263.936,19,0,to use and construct.
+s00044,w,264.128,264.48,,0,Thank you.
+s00045,w,264.8,265.28,,0,I make these.
+w00029,w,265.9,266.5,,1,outside.
+w00030,w,266.84,267.16,,1,of the
+s00047,w,267.264,267.872,,0,for that.
+w00031,w,267.88,268.14,,1,product.
+s00048,w,268.256,268.64,,0,Thank you.
+w00032,w,268.64,269.2,,1,so that it gives
+s00049,w,269.312,269.952,,0,the appearance.
+s00050,w,270.112,271.36,20,0,and it is really good.
+w00033,w,271.38,271.74,,1,reliable.
+s00051,w,271.872,272.416,,0,I love the words.
+w00034,w,273.72,274.7,,1,I did a little history.
+s00052,w,274.816,275.424,,0,on the
+s00053,w,275.968,276.8,,0,Thank you.
+s00054,w,276.96,277.312,,0,remote control.
+s00055,w,277.6,278.144,,0,and...
+w00035,w,278.16,278.76,,1,when they were invented.
+s00056,w,278.88,279.36,,0,Thank you.
+w00036,w,279.38,279.9,,1,so forth.
+s00057,w,280.0,280.576,,0,Thank you.
+w00037,w,280.58,281.18,,1,I guess this guy...
+s00058,w,281.312,281.632,,0,Xeno
+s00059,w,281.76,282.08,,0,Thank you.
+w00038,w,282.08,282.5,,1,created.
+w00039,w,282.84,283.52,,1,Flashmatic.
+w00040,w,285.02,285.3,,1,the idea
+s00060,w,285.408,285.824,,0,because it may be
+w00041,w,285.84,286.58,,1,made me think of
+s00061,w,286.688,287.52,,0,Thank you.
+s00062,w,287.744,288.16,,0,I love you.
+w00042,w,288.66,289.6,,1,made a big flag
+s00063,w,289.728,290.336,,0,Thank you.
+w00043,w,290.36,290.64,,1,when
+s00064,w,290.752,291.392,,0,You turn.
+s00065,w,291.52,292.576,21,0,Turn the TV on and off the top.
+s00066,w,294.272,294.592,,0,And.
+w00044,w,294.6,294.96,,1,And...
+s00067,w,295.072,295.808,,0,Thank you.
+w00045,w,296.5,297.16,,1,So it was...
+s00068,w,297.28,297.6,,0,Yes.
+w00046,w,298.86,299.46,,1,flashlight.
+w00047,w,300.6,301.26,,1,that
+s00070,w,301.376,301.984,,0,Thank you.
+w00048,w,302.96,303.36,,1,You're on and off.
+s00071,w,303.488,303.84,,0,you
+w00049,w,303.84,304.24,,1,sound on
+s00072,w,304.352,306.432,22,0,on and off and change channels.
+w00050,w,307.18,307.68,,1,I think...
+w00051,w,308.24,308.5,,1,Those are...
+w00052,w,308.84,310.6,,1,requirements we have today.
+s00073,w,310.72,311.392,,0,Yeah.
+s00074,w,311.84,312.16,,0,50 years.
+w00053,w,312.18,312.78,,1,years later.
+s00075,s,312.896,313.536,,0,Thank you.
+w00054,w,314.2,314.84,,1,And it was...
+w00055,w,315.6,316.92,,1,"pioneering innovation, but it"
+s00076,w,317.92,319.296,23,0,to the sun
+w00056,w,319.3,319.68,,1,that day.
+s00077,w,319.808,320.192,,0,it would be.
+s00078,w,320.32,321.12,,0,Thank you.
+w00057,w,321.14,321.8,,1,start off by
+s00079,w,322.336,322.848,,0,Thank you.
+s00080,w,323.008,323.424,,0,you
+w00058,w,324.04,325.14,,1,easily cause some
+s00081,w,325.248,326.336,24,0,problems.
+w00059,w,327.28,327.96,,1,"So, uh..."
+s00082,s,328.064,328.544,,0,Thank you.
+w00060,w,328.94,329.86,,1,"I, in addition,"
+w00061,w,330.74,331.62,,1,looking at
+s00083,w,331.744,332.192,,0,at the end.
+w00062,w,332.22,332.48,,1,"uh,"
+s00084,w,332.608,332.992,,0,Amen.
+w00063,w,333.28,333.72,,1,the funds
+w00064,w,334.04,337.08,,1,of crime. So all of these devices are examples of where
+s00085,w,337.728,338.432,,0,Bye.
+s00086,w,338.624,339.008,,0,Thank you.
+w00065,w,341.6,342.24,,1,available today.
+s00087,w,342.368,343.744,25,0,One of them.
+w00066,w,343.76,344.1,,1,in the middle.
+w00067,w,345.1,346.36,,1,really
+s00088,w,346.464,347.168,,0,I know.
+w00068,w,347.18,348.32,,1,Something to keep in mind.
+s00089,n,348.896,349.408,,0,find
+s00090,n,350.304,350.752,,0,and
+s00091,n,351.072,351.648,,0,Thank you.
+w00069,w,351.92,352.88,,1,it would
+s00092,w,352.992,355.104,26,0,You could throw.
+w00070,w,355.12,355.98,,1,throw it at things.
+w00071,w,356.56,356.84,,1,If.
+s00093,w,356.96,357.44,,0,the TV.
+w00072,w,357.46,357.9,,1,Maybe he didn't turn.
+s00094,w,358.016,359.008,,0,and I'll see you.
+w00073,w,359.66,360.22,,1,it for something else.
+s00095,w,360.32,361.056,,0,else.
+s00096,w,361.632,362.08,,0,Thank you.
+w00074,w,362.1,362.72,,1,not really a
+s00097,w,362.848,363.936,27,0,them.
+w00075,w,363.96,364.48,,1,industrial design.
+s00098,w,365.024,365.376,,0,I know.
+w00076,w,365.78,366.44,,1,with this slide.
+s00099,s,366.56,367.296,,0,Thank you.
+w00077,w,367.3,368.1,,1,But...
+w00078,w,369.2,369.68,,1,I just...
+s00100,w,369.792,370.208,,0,Thank you.
+s00102,w,372.224,373.28,29,0,Thank you.
+w00079,w,373.3,373.64,,1,
+s00103,w,374.176,375.168,,0,and I
+s00104,w,375.328,375.776,,0,them into the
+s00105,w,375.968,377.312,30,0,and I guess this is what it's like.
+s00106,w,377.504,377.984,,0,Thank you.
+s00107,w,378.144,378.976,,0,like if you were down.
+w00080,w,378.98,379.68,,1,circuit board again
+s00108,w,379.808,383.296,28,0,Thank you.
+w00081,w,384.46,384.84,,1,uh
+w00082,w,385.64,386.2,,1,personal preference
+w00083,w,387.32,387.76,,1,"Um,"
+s00109,s,387.872,388.32,,0,Thank you.
+w00084,w,388.32,391.88,,1,"I think we could, I'm really thinking outside the box here, and I think that we should."
+s00110,w,392.0,392.48,,0,Thank you.
+w00085,w,392.48,393.1,,1,Consider perhaps
+s00111,w,393.216,393.728,,0,Thank you.
+w00086,w,394.34,395.98,,1,and a size...
+w00087,w,396.3,396.84,,1,a remote control that
+w00088,w,397.16,397.48,,1,changes
+w00089,w,398.26,398.76,,1,depending on
+s00112,w,398.88,399.456,,0,the user.
+s00113,w,399.648,400.736,14,0,reference.
+w00090,w,401.08,401.72,,1,"very, very flexible."
+w00091,w,402.02,402.3,,1,bone.
+w00092,w,402.66,403.34,,1,inflatable and then you
+s00114,w,404.0,404.48,,0,Thank you.
+s00115,w,405.664,405.984,,0,Bye.
+w00093,w,406.0,406.32,,1,I created...
+s00116,w,406.432,407.104,,0,you could be...
+w00094,w,407.12,407.56,,1,go either one
+s00117,w,407.68,408.064,,0,extreme
+w00095,w,408.08,409.24,,1,be very colorful or
+w00096,w,409.62,409.98,,1,You can make it
+s00118,w,410.08,410.496,,0,Thank you.
+w00097,w,410.5,410.72,,1,Clear.
+s00119,w,410.848,411.2,,0,Thank you.
+w00098,w,411.22,411.6,,1,"And, um,"
+s00120,w,411.712,412.032,,0,Thank you.
+s00121,w,412.224,412.832,,0,Thank you.
+w00099,w,412.84,413.16,,1,Blend in
+s00122,w,413.664,414.432,,0,so you didn't have to
+s00123,w,415.168,416.0,,0,Thank you.
+s00124,w,416.16,416.736,,0,have a
+w00100,w,417.84,418.64,,1,The decoration.
+s00126,w,418.752,419.36,,0,of the
+s00127,w,419.52,421.088,22,0,of the user's home.
+w00101,w,422.06,422.68,,1,I think...
+s00128,w,422.784,423.616,,0,It needs to be.
+w00102,w,423.64,423.98,,1,Waterproof.
+w00103,w,424.58,424.92,,1,Cassette.
+s00129,w,425.024,425.92,,0,sometimes
+w00104,w,425.94,426.58,,1,they fall into
+w00105,w,427.4,427.66,,1,and...
+s00131,w,427.776,428.352,,0,you know
+w00106,w,428.36,428.72,,1,know it might be up
+s00132,w,428.832,429.216,,0,by the swimming
+s00133,w,429.888,430.304,,0,or something like that.
+s00134,s,430.56,431.04,,0,Thank you.
+s00135,w,432.416,432.896,,0,Thank you.
+s00136,w,433.024,433.632,,0,Thank you.
+w00107,w,433.64,434.24,,1,One of my requirements.
+s00137,w,434.368,434.784,,0,was submitted.
+w00108,w,434.8,435.2,,1,about it needs
+s00138,w,435.328,435.84,,0,to
+w00109,w,436.32,436.74,,1,when it's done.
+s00139,w,436.864,437.184,,0,is
+w00110,w,437.2,437.6,,1,job or
+s00140,w,437.728,438.08,,0,Thank you.
+s00141,w,438.24,438.56,,0,at the time.
+w00111,w,438.58,438.82,,1,timeout.
+s00142,w,438.944,439.584,,0,Keep pushing.
+w00112,w,439.6,440.52,,1,on the remote control.
+s00143,w,440.64,441.152,,0,"Oh, no."
+w00113,w,441.34,442.18,,1,Don't know if it's actually.
+s00144,w,442.304,443.136,,0,understood
+s00145,w,443.264,443.936,,0,in my message.
+s00146,w,444.544,445.28,,0,it should give you some
+w00114,w,445.28,445.82,,1,sort of an oral...
+s00147,w,445.92,446.272,,0,cute.
+s00148,w,446.4,447.008,,0,Thank you.
+w00115,w,447.02,447.36,,1,and
+w00116,w,447.68,448.18,,1,"Of course, I never want to."
+s00149,w,448.288,448.64,,0,I don't want to
+s00150,w,449.12,450.112,,0,battery.
+s00151,w,451.488,451.872,,0,Thank you.
+w00117,w,452.64,453.24,,1,preferences and that's
+w00118,w,453.56,454.08,,1,presentation.
+s00152,y,454.208,456.576,5,0,Let me interrupt you.
+s00153,y,457.152,461.632,2,0,"If we can end other facilities, other future life, it's unbreakable."
+s00154,y,461.888,469.888,2,0,"Especially today, you know, you have the family and the kids, okay, the kids throw it and they play with the..."
+w00119,w,470.16,470.56,,1,run over it.
+s00155,y,470.688,478.688,2,0,with the car yes okay so if you can add the future okay for your public whatever in your outline design
+s00156,y,478.688,484.256,2,0,"with unbreakable, I think that will give a lot of advantage for our product."
+s00157,w,485.088,485.824,,0,Thank you.
+s00158,y,486.112,486.496,,0,to help.
+s00159,y,486.72,488.672,2,0,So we can edit it.
+s00160,s,489.92,490.496,,0,Thank you.
+s00161,s,496.992,497.312,,0,Thank you.
+s00162,g,500.288,507.232,2,0,Thank you Christine and any questions or clarification?
+s00163,g,507.712,511.904,2,0,any description on the traditional design.
+s00164,y,513.344,515.68,30,0,Do you have any preconceived ideas in terms of material?
+s00165,y,516.704,524.704,30,0,"For example, in the unbreakable, I think using plastic would be harder with having something."
+w00120,w,524.72,525.0,,1,Thank you.
+s00166,y,525.12,526.176,5,0,Isn't it really?
+s00167,y,526.336,529.44,22,0,economically viable.
+w00121,w,529.46,529.8,,1,be heavy
+s00168,y,530.368,530.88,,0,Yeah.
+w00122,w,533.2,534.3,,1,"No, I haven't really, uh..."
+s00169,w,534.4,535.36,,0,Thank you.
+w00123,w,535.38,535.62,,1,I wanted to.
+s00170,w,536.32,536.832,,0,I think we need to...
+s00171,w,537.408,538.272,,0,Thank you.
+w00124,w,538.3,539.38,,1,But we'll see what you're...
+s00172,w,539.488,540.064,,0,Thank you.
+s00173,w,540.224,540.64,,0,differences.
+s00174,y,540.8,543.36,30,0,"No, I'm just wondering whether you have any."
+w00125,w,544.24,544.92,,1,I like titanium.
+s00175,w,545.44,545.824,,0,light.
+s00176,w,547.008,547.488,,0,Awesome.
+s00177,w,548.352,548.768,,0,Thank you.
+w00126,w,549.04,549.3,,1,Yeah.
+s00178,n,549.792,550.176,,0,Thank you.
+w00127,w,550.18,552.1,,1,Who said we were in...
+w00128,w,552.52,554.06,,1,Nobody told me how much would our finances cost.
+s00179,w,554.176,554.528,,0,financial
+w00129,w,554.54,555.42,,1,objective is so
+s00180,w,555.52,556.256,,0,Thank you.
+w00130,w,557.26,558.62,,1,It'd be hard to inflate something.
+w00131,w,558.96,559.24,,1,of time
+s00181,g,559.36,567.36,2,0,"I'm sorry because the last meeting we were supposed to discuss about the financial thing. Let me go quickly, maybe we can go back."
+s00182,g,567.36,571.296,9,0,and the project plan and the project.
+s00183,s,572.48,572.992,,0,Thank you.
+s00184,g,661.312,664.96,2,0,"Okay, the project may be the project A."
+s00186,g,674.816,682.816,2,0,I believe that it is in bulk of the same time.
+s00187,g,682.816,689.6,2,0,Thank you.
+s00188,g,691.008,691.552,,0,Thank you.
+s00189,g,692.864,700.864,2,0,One may be the suggestion of opinion. This animal control can be for like a universal or anything.
+s00191,s,707.328,708.352,2,0,Not bad.
+s00192,w,712.608,712.928,,0,It's fine.
+s00193,s,713.088,716.768,2,0,Let's play.
+s00194,y,716.96,723.552,2,0,with the different designs. So any other questions?
+s00195,n,724.768,727.456,17,0,"From her side, I don't think."
+s00196,s,728.224,733.952,2,0,Thank you for your time being.
+s00197,g,734.528,741.088,17,0,"Okay, from the marketing side, just to give an idea of what the manager is looking for."
+s00198,g,741.792,743.2,17,0,I'm looking for a...
+s00199,g,743.648,745.696,17,0,remote control to have it
+s00200,g,747.936,750.432,17,0,sale price of 25 euros
+s00201,g,751.168,754.144,17,0,with a production price of about $12.5
+s00202,g,756.896,764.192,17,0,"For what we're trying to find, I don't think that price is exactly in the market."
+s00203,n,765.792,769.536,17,0,I'd like to put myself here now in the sense that...
+s00204,g,770.304,772.544,17,0,in the recent surveys.
+s00205,g,773.376,779.744,17,0,"From the ages from 15 to 35, 80% are willing to spend more money for something as fancy as treatment."
+s00206,g,780.704,787.36,17,0,"25 euros, that's a reasonable price. That's a market price. We're going to take a risk."
+s00207,g,788.32,794.336,17,0,"Push this up a bit make it more expensive, but give them added things that they don't have now"
+s00208,g,794.816,799.456,17,0,"then it could possibly sell. Obviously the bristles are too expensive, they're not going to buy."
+s00209,g,800.128,800.608,,0,You liked it.
+s00210,g,801.248,809.248,17,0,"I think there's one other thing that's interesting, two things that are interesting about it, is that from a 15 to 35 year old,"
+s00211,g,809.248,809.632,,0,Thank you.
+s00212,g,810.144,815.456,17,0,which always spends more money on trending new things. Speech recognition is requested.
+s00213,w,816.64,817.472,,0,We're talking to him.
+s00214,g,817.632,824.448,17,0,75 to 90 percent of this group is willing to pay for speech recognition on their malt.
+s00215,g,825.536,829.824,17,0,Obviously we can't make a remote into a computer but maybe simple commands.
+s00216,g,831.52,832.128,,0,louder
+s00217,g,832.576,833.184,,0,softer.
+s00218,g,833.952,838.944,17,0,on off that might be a possibility even though it costs more
+s00219,g,839.648,847.648,17,0,to be the first on the market to produce things. 35% say they're too difficult to use. So we have to figure out a way to make it more user-friendly.
+s00220,g,847.648,848.0,,0,friend
+s00221,g,850.304,854.272,17,0,50% said they can't find the remote half the time.
+s00222,g,855.488,863.488,17,0,So maybe one word speech recognition command say remote and there's a beep beep beep and they can find it through 10 tons of newspapers.
+s00223,g,863.488,864.896,17,0,"magazines, whatever you have at home."
+s00224,g,866.08,870.336,17,0,but the cost that the management is looking for is not going to be possible.
+s00225,g,871.392,874.272,17,0,"But if his trend, if his fancy's got some color to it."
+s00226,g,874.752,882.752,17,0,"It's very easy to use. It's got simple remote, speech remote control. Like I said, louder, softer, change channel."
+s00227,g,883.936,884.608,,0,on off
+s00228,g,885.248,891.712,17,0,remote because beep beep I can find my memory remote without spending half a day looking forward and getting all upset because I can't turn the TV.
+s00229,g,892.48,899.232,17,0,So we're going to have to look at it in this global idea with the ideas of the industrial design.

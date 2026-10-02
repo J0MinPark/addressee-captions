@@ -1,0 +1,19 @@
+{
+  "_doc": "AMI 수신자 주석 회의 분할(고정, 결과를 보기 전에 커밋). 같은 참가자 그룹(회의 ID에서 마지막 문자를 뺀 것)은 같은 집합. tools/splits.py 가 강제한다.",
+  "minutes": 15,
+  "conditions": ["clean", "snr10", "snr5"],
+  "calib": ["TS3005b"],
+  "dev": ["IS1001b", "IS1001c", "IS1003b", "IS1003d", "IS1006b", "IS1006d"],
+  "test": ["ES2008b", "IS1008b", "IS1000a", "ES2009d"],
+  "groups": {
+    "calib": ["TS3005"],
+    "dev": ["IS1001", "IS1003", "IS1006"],
+    "test": ["ES2008", "IS1008", "IS1000", "ES2009"]
+  },
+  "excluded": {
+    "no_addressee_annotation": ["ES2002a", "ES2002c", "ES2002d", "IS1005a"],
+    "same_group_unused": ["ES2008a", "IS1008a", "IS1008c", "IS1008d", "ES2009c", "IS1001a", "TS3005a"]
+  },
+  "primary_metric": "F0.5 (single 정의, dev 세트 3개 조건 합산)",
+  "secondary_metrics": ["자연 함정 오표시율", "자연 함정 화자 오등록률", "재현율", "정밀도"]
+}

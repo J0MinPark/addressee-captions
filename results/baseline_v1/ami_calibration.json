@@ -1,0 +1,15 @@
+{
+ "own_margin_db": 2.0,
+ "per_wearer": [
+  2.0,
+  2.0,
+  2.0,
+  2.0
+ ],
+ "from": [
+  "ami_TS3005b_wA_clean_take1",
+  "ami_TS3005b_wB_clean_take1",
+  "ami_TS3005b_wC_clean_take1",
+  "ami_TS3005b_wD_clean_take1"
+ ]
+}
