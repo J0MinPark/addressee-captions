@@ -35,7 +35,7 @@ def main():
 
     import run_ami
     run_ami.main(["--split", "test", "--no-report", "--yes"], _final_test_ok=True)
-    if sel["variant"] != "P1c":
+    if sel["variant"] != "P1c" and sel.get("mode", "full") in ("full", "semantic"):
         import judge_offline
         judge_offline.run("test", [sel["model"]], [sel["variant"]], out_md="judge_test.md", _final_test_ok=True)
 
@@ -51,7 +51,8 @@ def main():
     runs = {
         "baseline-v1 (P1c · hand · 플래그 없음)": run_config(cfg, data, None),
         "timing": run_config(cfg, data, None, mode="timing"),
-        f"최종: {sel['config_name']}": run_config(with_policy(cfg, fusion=sel["fusion"], **sel["flags"]), data, judge),
+        f"최종: {sel['config_name']}": run_config(with_policy(cfg, fusion=sel["fusion"], **sel["flags"]), data, judge,
+                                                 mode=sel.get("mode", "full")),
     }
     names = list(runs)
     md = ["# 최종 시험 결과 (AMI test, 한 번만 실행)", "",

@@ -36,7 +36,8 @@ from stats_boot import bootstrap, fmt, paired, unit_of  # noqa: E402
 FLAGS = {"none": {}, "rejudge": {"candidate_rejudge": True}, "shortskip": {"short_skip_llm": True},
          "rejudge+shortskip": {"candidate_rejudge": True, "short_skip_llm": True}}
 CS = [0.01, 0.1, 1.0, 10.0, 100.0]
-THRESHOLDS = [round(x, 2) for x in np.arange(0.30, 0.86, 0.05)]
+THRESHOLDS = [round(x, 2) for x in np.arange(0.10, 0.86, 0.05)]
+K_FOLDS = 6
 
 
 # ---------------------------------------------------------------- 데이터
@@ -158,9 +159,12 @@ def cv_choose_C(X, y, groups, k=6, seed=0):
     return min(scores, key=scores.get), scores
 
 
-def learned_fusion(cfg, data, judge):
+def learned_fusion(cfg, data, judge, C=None, flags=None):
+    """dev(또는 그 부분집합)에서 로지스틱 융합을 학습하고 임계값을 F0.5 최대로 정한다."""
     X, y, g = training_rows(cfg, data, judge)
-    C, cv = cv_choose_C(X, y, g)
+    cv = None
+    if C is None:
+        C, cv = cv_choose_C(X, y, g)
     w = fit_logreg(X, y, C)
     fusion = {"type": "logistic", "C": C, "intercept": float(w[0]),
               "coef": {k: float(v) for k, v in zip(FUSION_FEATURES, w[1:])}, "threshold": 0.5}
@@ -168,11 +172,37 @@ def learned_fusion(cfg, data, judge):
     best = None
     for t in THRESHOLDS:
         f = dict(fusion, threshold=t)
-        r = run_config(with_policy(cfg, fusion=f), data, judge)["pooled"]
+        r = run_config(with_policy(cfg, fusion=f, **(flags or {})), data, judge)["pooled"]
         if best is None or r["f05"] > best[1]:
             best = (t, r["f05"])
     fusion["threshold"] = best[0]
     return fusion, {"n": len(y), "pos": int(y.sum()), "cv_logloss": cv, "thr_f05": best[1]}
+
+
+def fold_units(data, k=K_FOLDS, seed=0):
+    units = sorted({unit_of(n) for n in data})
+    rng = np.random.default_rng(seed)
+    rng.shuffle(units)
+    return {u: i % k for i, u in enumerate(units)}
+
+
+def run_learned_cv(cfg, data, judge, C, flags):
+    """학습된 융합의 정직한 dev 추정: 착용자 단위 K겹 — 학습 겹에서 계수·임계값을 정하고 남긴 겹에서 평가."""
+    fold = fold_units(data)
+    units, per_cond = defaultdict(list), defaultdict(list)
+    for f in sorted(set(fold.values())):
+        tr = {n: v for n, v in data.items() if fold[unit_of(n)] != f}
+        te = {n: v for n, v in data.items() if fold[unit_of(n)] == f}
+        fu, _ = learned_fusion(cfg, tr, judge, C=C, flags=flags)
+        r = run_config(with_policy(cfg, fusion=fu, **flags), te, judge)
+        for u, ms in r["units"].items():
+            units[u] += ms
+        for n, (segs, labels) in te.items():
+            pass
+        for c, v in r["per_cond"].items():
+            per_cond[c].append(v)
+    pooled = summarize([m for v in units.values() for m in v])
+    return {"units": dict(units), "pooled": pooled, "per_cond": {}}
 
 
 # ---------------------------------------------------------------- 메인
@@ -196,13 +226,18 @@ def main():
               f"(dev F0.5 {fusions[jn][1]['thr_f05']:.3f})", flush=True)
         for fl, pol in FLAGS.items():
             runs[f"{jn} | hand | {fl}"] = run_config(with_policy(cfg, **pol), data, judge)
-            runs[f"{jn} | learned | {fl}"] = run_config(with_policy(cfg, fusion=fusions[jn][0], **pol), data, judge)
+            # 선택에는 교차검증(겹 밖) 추정을 쓴다 — 학습된 융합만 dev에 맞춰지는 이점을 없애기 위해
+            runs[f"{jn} | learned | {fl}"] = run_learned_cv(cfg, data, judge, fusions[jn][0]["C"], pol)
+            runs[f"{jn} | learned(in-sample) | {fl}"] = run_config(
+                with_policy(cfg, fusion=fusions[jn][0], **pol), data, judge)
         print(f"  {jn}: hand {runs[f'{jn} | hand | none']['pooled']['f05']:.3f} · "
               f"learned {runs[f'{jn} | learned | none']['pooled']['f05']:.3f}", flush=True)
 
     # 선택(사전 고정 규칙): dev 합산 F0.5 점추정 최대, 동률이면 단순한 쪽(hand < learned, 플래그 적은 쪽)
-    cands = [k for k in runs if "|" in k]
-    simple = lambda k: (k.split(" | ")[1] == "learned", k.split(" | ")[2] != "none", "rejudge+shortskip" in k)  # noqa: E731
+    # 후보 풀: 모든 판정기·융합·플래그 조합 + LLM 없는 기준(timing, timing_speaker). 규칙은 F0.5 최대 하나뿐.
+    cands = [k for k in runs if "in-sample" not in k]
+    simple = lambda k: (("|" in k), "|" in k and k.split(" | ")[1] == "learned",  # noqa: E731
+                        "|" in k and k.split(" | ")[2] != "none", "rejudge+shortskip" in k)
     best = max(cands, key=lambda k: (round(runs[k]["pooled"]["f05"], 4), tuple(not x for x in simple(k))))
     base = "P1c-qwen3:4b | hand | none"
 
@@ -219,6 +254,8 @@ def main():
     md += ["", "## 판정기 × 융합 (플래그 없음)", ""] + hdr
     for jn in judges:
         md += [row(f"{jn} | hand | none"), row(f"{jn} | learned | none")]
+    md += ["", "learned 행은 착용자 단위 6겹 교차검증(겹 밖) 추정이다. 같은 dev 전체로 학습·임계값을 정하고 그대로 잰 "
+           "in-sample 값(낙관적)은 아래:", ""] + hdr + [row(f"{jn} | learned(in-sample) | none") for jn in judges]
     md += ["", "## 플래그 효과 (각 판정기·융합 조합)", "",
            "| 판정기 · 융합 | none | rejudge | shortskip | rejudge+shortskip |", "|---|---:|---:|---:|---:|"]
     for jn in judges:
@@ -232,7 +269,8 @@ def main():
                   " | ".join(f"{f['coef'][k]:+.2f}" for k in FUSION_FEATURES) + f" | {info['n']} ({info['pos']}) |")
     md += ["", "손 가중치(hand, 변경 없음): z = −1.0 + 1.5·T + 2.5·S + 2.0·(2L−1), 임계 0.6", "",
            "## 조건별 F0.5 (선택 구성 vs timing vs v1)", "", "| 구성 | clean | snr10 | snr5 |", "|---|---:|---:|---:|"]
-    for k in ("timing", base, best):
+    best_is = best.replace(" | learned | ", " | learned(in-sample) | ")
+    for k in ("timing", base, best_is):
         md.append(f"| {k} | " + " | ".join(f"{runs[k]['per_cond'].get(c, {}).get('f05', 0):.3f}" for c in ("clean", "snr10", "snr5")) + " |")
     d = paired(runs[best]["units"], runs["timing"]["units"], "f05")
     d2 = paired(runs[best]["units"], runs[base]["units"], "f05")
@@ -242,15 +280,27 @@ def main():
     (results / "dev_results.md").write_text("\n".join(md) + "\n", encoding="utf-8")
     print("\n".join(md))
 
-    jn, fu, fl = best.split(" | ")
-    var, model = jn.split("-", 1)
-    sel = {"config": best, "variant": var, "model": model, "fusion": fusions[jn][0] if fu == "learned" else {"type": "hand"},
-           "flags": FLAGS[fl], "dev_f05": runs[best]["pooled"]["f05"],
-           "config_name": f"{var}-{model}-{fu}" + "".join(f"+{x}" for x in fl.split("+") if x != "none")}
+    if "|" not in best:   # LLM 없는 모드가 이긴 경우 — 그대로 보고하고 선택한다
+        best_is = best
+        sel = {"config": best, "mode": best, "variant": "P1c", "model": "qwen3:4b", "fusion": {"type": "hand"},
+               "flags": {}, "dev_f05": runs[best]["pooled"]["f05"], "config_name": f"{best}(LLM 미사용)"}
+        jn = fu = fl = None
+    else:
+        jn, fu, fl = best.split(" | ")
+        var, model = jn.split("-", 1)
+    if fu == "learned" and fl != "none":   # 플래그와 함께 쓸 때는 그 플래그로 임계값을 다시 맞춘 dev 전체 학습본
+        fusions[jn] = learned_fusion(cfg, data, judges[jn], C=fusions[jn][0]["C"], flags=FLAGS[fl])
+    if jn is not None:
+        sel = {"config": best, "mode": "full", "variant": var, "model": model,
+               "fusion": fusions[jn][0] if fu == "learned" else {"type": "hand"},
+               "flags": FLAGS[fl], "dev_f05": runs[best]["pooled"]["f05"],
+               "config_name": f"{var}-{model}-{fu}" + "".join(f"+{x}" for x in fl.split("+") if x != "none")}
     (results / "selection.json").write_text(json.dumps(sel, ensure_ascii=False, indent=1), encoding="utf-8")
     top = sorted(cands, key=lambda k: -runs[k]["pooled"]["f05"])[:5]
     smd = ["# 최종 구성 선택 (개발 세트만 사용)", "",
-           "**규칙(사전 고정)**: dev(3개 조건 합산) single 정의 F0.5 점추정 최대. 동률이면 단순한 구성(손 가중치, 플래그 없음) 우선.", "",
+           "**규칙(사전 고정)**: dev(3개 조건 합산) single 정의 F0.5 점추정 최대(후보: 모든 판정기·융합·플래그 조합과 "
+           "LLM 없는 timing·timing_speaker). 학습된 융합은 착용자 단위 6겹 교차검증 추정으로 비교한다. "
+           "동률이면 단순한 구성(LLM 없음 → 손 가중치 → 플래그 없음) 우선.", "",
            f"**선택: `{sel['config_name']}`** — {best}", "",
            f"- dev F0.5 = {runs[best]['pooled']['f05']:.3f} (timing {runs['timing']['pooled']['f05']:.3f}, "
            f"v1 구성 {runs[base]['pooled']['f05']:.3f})",
